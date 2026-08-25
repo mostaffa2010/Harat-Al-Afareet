@@ -1,12 +1,13 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Global Constants & Configurations
+ * Global Constants & Configurations (Egyptian Colloquial Theme)
  */
 
 export const GAME_STATES = {
     MAIN_MENU: 'MAIN_MENU',
     CHARACTER_SELECT: 'CHARACTER_SELECT',
     PLAYING: 'PLAYING',
+    COUNTDOWN: 'COUNTDOWN',
     PAUSED: 'PAUSED',
     LEVEL_UP: 'LEVEL_UP',
     BAZAAR: 'BAZAAR',
@@ -19,40 +20,40 @@ export const WORLD_CONFIG = {
     MAP_WIDTH: 2600,
     MAP_HEIGHT: 2600,
     TILE_SIZE: 64,
-    SAFE_ZONE_RADIUS: 120,
+    SAFE_ZONE_RADIUS: 140,
     TOTAL_RUN_DURATION: 600, // 10 minutes in seconds (600s)
 };
 
 export const UPGRADE_RARITIES = {
     COMMON: {
         id: 'COMMON',
-        name: 'شائع (Common)',
+        name: 'شائع (على قد الإيد)',
         color: '#a0aec0',
         glow: 'rgba(160, 174, 192, 0.4)',
         multiplier: 1.0,
-        weight: 60
+        weight: 58
     },
     RARE: {
         id: 'RARE',
-        name: 'نادر (Rare)',
-        color: '#4299e1',
-        glow: 'rgba(66, 153, 225, 0.5)',
+        name: 'نادر (لقطة يا بختك)',
+        color: '#38bdf8',
+        glow: 'rgba(56, 189, 248, 0.55)',
         multiplier: 1.5,
-        weight: 25
+        weight: 26
     },
     EPIC: {
         id: 'EPIC',
-        name: 'ملحمي (Epic)',
-        color: '#9f7aea',
-        glow: 'rgba(159, 122, 234, 0.6)',
+        name: 'ملحمي (حاجة فاخرة)',
+        color: '#a855f7',
+        glow: 'rgba(168, 85, 247, 0.65)',
         multiplier: 2.2,
-        weight: 12
+        weight: 13
     },
     LEGENDARY: {
         id: 'LEGENDARY',
-        name: 'أسطوري (Legendary)',
-        color: '#ecc94b',
-        glow: 'rgba(236, 201, 75, 0.8)',
+        name: 'أسطوري (شغل معلمين)',
+        color: '#fbbf24',
+        glow: 'rgba(251, 191, 36, 0.85)',
         multiplier: 3.2,
         weight: 3
     }

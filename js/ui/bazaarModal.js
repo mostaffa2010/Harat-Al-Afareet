@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Bazaar (سوق العطارين) - Permanent Upgrades Shop
+ * Bazaar (سوق العطارين والبركات الدائمة)
  */
 
 import { PERMANENT_UPGRADES } from '../data/defaultData.js';
@@ -19,7 +19,7 @@ export class BazaarModal {
         this.container.innerHTML = `
             <div class="menu-screen bazaar-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted" id="btn-bazaar-back">⬅ العودة</button>
+                    <button class="btn btn-sm btn-muted" id="btn-bazaar-back">⬅ ارجع ورا</button>
                     <h2 class="screen-title">سوق العطارين والبركات الدائمة</h2>
                     <div class="gold-badge-small">
                         <span>🪙</span>
@@ -27,7 +27,7 @@ export class BazaarModal {
                     </div>
                 </div>
 
-                <p class="bazaar-intro">«اشترِ التمائم والبركات لتقوية جميع أبطالك للأبد في المعارك القادمة»</p>
+                <p class="bazaar-intro">«شخلل جيبك بالعملات الأثرية وطور صحتك وضرر أبطالك عشان الجولات الجاية»</p>
 
                 <div class="bazaar-items-grid">
                     ${PERMANENT_UPGRADES.map(item => {
@@ -50,10 +50,10 @@ export class BazaarModal {
 
                                 <div class="bazaar-card-footer">
                                     ${isMax ? `
-                                        <span class="badge-max">مكتمل بالكامل (MAX)</span>
+                                        <span class="badge-max">متقفل ع الآخر (MAX) ✨</span>
                                     ` : `
                                         <button class="btn btn-sm ${canAfford ? 'btn-gold' : 'btn-disabled'} btn-buy-upgrade" data-id="${item.id}" data-cost="${cost}" ${!canAfford ? 'disabled' : ''}>
-                                            <span>ترقية (🪙 ${cost})</span>
+                                            <span>اشترِ البركة (🪙 ${cost})</span>
                                         </button>
                                     `}
                                 </div>
@@ -81,7 +81,7 @@ export class BazaarModal {
 
                 if (saveSystem.upgradePermanentStat(upgradeId, cost)) {
                     audioSystem.playPickupCoin();
-                    this.render(); // Re-render with updated values
+                    this.render();
                 }
             };
         });

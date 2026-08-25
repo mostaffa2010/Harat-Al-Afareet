@@ -1,8 +1,8 @@
 export const projectileCountUpgrade = {
     id: 'weapon_multishot',
     category: 'weapon',
-    name: 'المقذوف المزدوج (Multi-Cast)',
-    description: 'إضافة مقذوف إضافي (+1) لكل الأسلحة ذات المقذوفات.',
+    name: 'رشقة مضاعفة (طلقة زيادة)',
+    description: 'إضافة مقذوف زيادة (+1) لكل الأسلحة اللي بتحدف قذائف.',
     icon: '✨',
     themeColor: '#06b6d4',
     maxLevel: 3,

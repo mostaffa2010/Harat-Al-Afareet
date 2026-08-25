@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Pause Menu Screen
+ * Pause Menu Screen (Egyptian Colloquial Theme)
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -20,36 +20,37 @@ export class PauseMenu {
         this.container.innerHTML = `
             <div class="modal-overlay">
                 <div class="menu-dialog">
-                    <h2 class="dialog-title">⏸ اللعبة متوقفة مؤقتاً</h2>
+                    <h2 class="dialog-title">⏸ مريح شوية (Pause)</h2>
+                    <p class="dialog-sub">خد نفسك.. العفاريت مستنياك ترجع تدوس!</p>
 
                     <div class="pause-stats-card">
                         <div class="stat-row">
-                            <span>البطل:</span>
+                            <span>البطل اللي نازل بيه:</span>
                             <span class="stat-val" style="color: ${player.themePrimary}">${player.characterName}</span>
                         </div>
                         <div class="stat-row">
-                            <span>وقت الصمود:</span>
+                            <span>وقت الصمود في الحارة:</span>
                             <span class="stat-val">${mins}:${secs}</span>
                         </div>
                         <div class="stat-row">
-                            <span>المستوى:</span>
+                            <span>المستوى الحالي:</span>
                             <span class="stat-val">${xpSystem.level}</span>
                         </div>
                         <div class="stat-row">
-                            <span>العملات المجمعة:</span>
+                            <span>الفلوس اللي جمعتها:</span>
                             <span class="stat-val">🪙 ${xpSystem.runCoins}</span>
                         </div>
                     </div>
 
                     <div class="dialog-buttons">
-                        <button class="btn btn-primary" id="btn-pause-resume">
-                            <span>استئناف المعركة (Resume)</span>
+                        <button class="btn btn-primary btn-large" id="btn-pause-resume">
+                            <span>كمل المعركة (Resume)</span>
                         </button>
                         <button class="btn btn-secondary" id="btn-pause-restart">
-                            <span>إعادة المحاولة (Restart)</span>
+                            <span>ابدأ الجولة من الأول (Restart)</span>
                         </button>
                         <button class="btn btn-muted" id="btn-pause-quit">
-                            <span>العودة للقائمة الرئيسية (Menu)</span>
+                            <span>ارجع للقائمة وسوق العطارين (Menu)</span>
                         </button>
                     </div>
                 </div>

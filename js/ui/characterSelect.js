@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character Selection Screen
+ * Character Selection Screen (Egyptian Colloquial Theme)
  */
 
 import { characterRegistry } from '../characters/characterRegistry.js';
@@ -19,20 +19,17 @@ export class CharacterSelect {
 
     render() {
         const char = this.characters[this.currentIndex];
-        const isUnlocked = true;
 
         this.container.innerHTML = `
             <div class="menu-screen char-select-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted" id="btn-char-back">⬅ العودة</button>
-                    <h2 class="screen-title">اختر بطل المعركة</h2>
+                    <button class="btn btn-sm btn-muted" id="btn-char-back">⬅ ارجع ورا</button>
+                    <h2 class="screen-title">نقي بطل المعركة</h2>
                     <div style="width: 50px;"></div>
                 </div>
 
                 <div class="char-display-card" style="--char-primary: ${char.themePrimary}; --char-secondary: ${char.themeSecondary};">
-                    <div class="char-art-container" id="char-art-slot">
-                        <!-- Canvas illustration drawn here -->
-                    </div>
+                    <div class="char-art-container" id="char-art-slot"></div>
 
                     <div class="char-carousel-nav">
                         <button class="btn-arrow" id="btn-prev-char">❮</button>
@@ -47,18 +44,18 @@ export class CharacterSelect {
 
                     <div class="char-details-grid">
                         <div class="detail-box">
-                            <span class="detail-label">القدرة الخاصة:</span>
+                            <span class="detail-label">ميزة البطل السحرية:</span>
                             <span class="detail-val" style="color: ${char.themeSecondary}">${char.passive.name}</span>
                             <p class="detail-sub">${char.passive.description}</p>
                         </div>
 
                         <div class="detail-box">
-                            <span class="detail-label">السلاح المبدئي:</span>
+                            <span class="detail-label">السلاح الأساسي:</span>
                             <span class="detail-val">${this.getWeaponName(char.startingWeaponId)}</span>
                         </div>
 
                         <div class="detail-box">
-                            <span class="detail-label">ألوان البطل:</span>
+                            <span class="detail-label">ألوان المعلم:</span>
                             <div class="theme-colors">
                                 <span class="color-swatch" style="background: ${char.themePrimary}"></span>
                                 <span class="color-swatch" style="background: ${char.themeSecondary}"></span>
@@ -66,14 +63,13 @@ export class CharacterSelect {
                         </div>
                     </div>
 
-                    <button class="btn btn-primary btn-large btn-glow" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 15px ${char.themePrimary}">
-                        <span>⚔️ بدء المعركة بهذا البطل</span>
+                    <button class="btn btn-primary btn-large btn-glow" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 16px ${char.themePrimary}">
+                        <span>⚔️ انزل الحارة بده ودوس!</span>
                     </button>
                 </div>
             </div>
         `;
 
-        // Render the large pixel-art illustration canvas
         const artSlot = document.getElementById('char-art-slot');
         const illCanvas = assetManager.getIllustration(char.id);
         if (illCanvas) {
@@ -85,10 +81,10 @@ export class CharacterSelect {
 
     getWeaponName(weaponId) {
         const names = {
-            magicStaff: '🪄 عصا الحكمة',
-            fireWand: '🔥 صولجان اللهب',
-            lightningRod: '⚡ صاعقة السماء',
-            magicalTalisman: '🧿 تمائم الحماية'
+            magicStaff: '🪄 عصا الحكمة (الخرزانة)',
+            fireWand: '🔥 صولجان اللهب (ولاعة الجان)',
+            lightningRod: '⚡ صاعقة السماء (كهربا الحارة)',
+            magicalTalisman: '🧿 تمائم الحماية (حجاب عين حورس)'
         };
         return names[weaponId] || weaponId;
     }

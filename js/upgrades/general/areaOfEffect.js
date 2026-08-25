@@ -1,13 +1,13 @@
 export const areaOfEffectUpgrade = {
     id: 'general_area_of_effect',
     category: 'general',
-    name: 'اتساع الهالة (Grand Aura)',
-    description: 'زيادة نطاق تأثير جميع الانفجارات والصواعق والتمائم بنسبة +20%.',
+    name: 'هالة وسيعة (فرتكة في المليان)',
+    description: 'زيادة حجم ونطاق تأثير الانفجارات والصواعق والتمائم بنسبة +25%.',
     icon: '💫',
     themeColor: '#ec4899',
     maxLevel: 4,
     canApply: () => true,
     apply: (player) => {
-        player.areaMultiplier += 0.20;
+        player.areaMultiplier += 0.25;
     }
 };

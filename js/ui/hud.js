@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * In-Game Mobile Touch HUD
+ * In-Game Mobile Touch HUD (Egyptian Colloquial Theme)
  */
 
 import { inputSystem } from '../systems/inputSystem.js';
@@ -15,24 +15,21 @@ export class HUD {
     render() {
         this.container.innerHTML = `
             <div class="game-hud">
-                <!-- Top Status Header -->
                 <div class="hud-top-bar">
                     <div class="hud-level-badge">
-                        <span class="level-label">المستوى</span>
+                        <span class="level-label">مستوى</span>
                         <span class="level-val" id="hud-player-level">1</span>
                     </div>
 
                     <div class="hud-bars-container">
-                        <!-- XP Bar -->
                         <div class="bar-wrapper xp-bar-wrapper">
                             <div class="bar-fill xp-fill" id="hud-xp-fill" style="width: 0%;"></div>
-                            <span class="bar-text" id="hud-xp-text">XP: 0 / 20</span>
+                            <span class="bar-text" id="hud-xp-text">إكس بي: 0 / 20</span>
                         </div>
 
-                        <!-- HP Bar -->
                         <div class="bar-wrapper hp-bar-wrapper">
                             <div class="bar-fill hp-fill" id="hud-hp-fill" style="width: 100%;"></div>
-                            <span class="bar-text" id="hud-hp-text">HP: 100 / 100</span>
+                            <span class="bar-text" id="hud-hp-text">صحتك: 180 / 180</span>
                         </div>
                     </div>
 
@@ -42,26 +39,20 @@ export class HUD {
                             <span>🪙</span>
                             <span id="hud-coins-val">0</span>
                         </div>
-                        <button class="hud-btn hud-pause-btn" id="hud-btn-pause">⏸</button>
+                        <button class="hud-btn hud-pause-btn" id="hud-btn-pause" title="إيقاف مؤقت">⏸</button>
                     </div>
                 </div>
 
-                <!-- Boss Health Bar (Hidden until boss active) -->
                 <div class="hud-boss-bar-container" id="hud-boss-container" style="display: none;">
-                    <div class="boss-title" id="hud-boss-title">👑 ملك العفاريت (Sultan El-Ghan)</div>
+                    <div class="boss-title" id="hud-boss-title">👑 سلطان الجان (ملك العفاريت)</div>
                     <div class="bar-wrapper boss-bar-wrapper">
                         <div class="bar-fill boss-fill" id="hud-boss-fill" style="width: 100%;"></div>
                     </div>
                 </div>
 
-                <!-- Bottom Action Controls -->
                 <div class="hud-bottom-bar">
-                    <!-- Active Weapons Icons -->
-                    <div class="hud-weapons-list" id="hud-weapons-list">
-                        <!-- Dynamically populated -->
-                    </div>
+                    <div class="hud-weapons-list" id="hud-weapons-list"></div>
 
-                    <!-- Touch Action Buttons (Dash) -->
                     <div class="hud-action-buttons">
                         <button class="hud-action-btn dash-btn" id="hud-btn-dash">
                             <span class="action-icon">💨</span>
@@ -104,7 +95,6 @@ export class HUD {
     update(player, xpSystem, waveSystem, boss) {
         if (!player) return;
 
-        // Update Level & XP
         const lvlElem = document.getElementById('hud-player-level');
         if (lvlElem) lvlElem.textContent = xpSystem.level;
 
@@ -113,16 +103,14 @@ export class HUD {
         const reqXp = xpSystem.getXpRequired();
         const xpPercent = Math.min(100, Math.round((xpSystem.currentXp / reqXp) * 100));
         if (xpFill) xpFill.style.width = `${xpPercent}%`;
-        if (xpText) xpText.textContent = `XP: ${xpSystem.currentXp} / ${reqXp}`;
+        if (xpText) xpText.textContent = `إكس بي: ${xpSystem.currentXp} / ${reqXp}`;
 
-        // Update HP
         const hpFill = document.getElementById('hud-hp-fill');
         const hpText = document.getElementById('hud-hp-text');
         const hpPercent = Math.max(0, Math.min(100, Math.round((player.hp / player.maxHp) * 100)));
         if (hpFill) hpFill.style.width = `${hpPercent}%`;
-        if (hpText) hpText.textContent = `HP: ${Math.round(player.hp)} / ${player.maxHp}`;
+        if (hpText) hpText.textContent = `صحتك: ${Math.round(player.hp)} / ${player.maxHp}`;
 
-        // Update Timer
         const timerElem = document.getElementById('hud-timer');
         if (timerElem) {
             const mins = Math.floor(waveSystem.runTime / 60).toString().padStart(2, '0');
@@ -130,11 +118,9 @@ export class HUD {
             timerElem.textContent = `${mins}:${secs}`;
         }
 
-        // Update Coins
         const coinsElem = document.getElementById('hud-coins-val');
         if (coinsElem) coinsElem.textContent = xpSystem.runCoins;
 
-        // Update Dash Cooldown
         const dashOverlay = document.getElementById('hud-dash-cooldown');
         if (dashOverlay) {
             if (player.dashCooldownTimer > 0) {
@@ -145,18 +131,16 @@ export class HUD {
             }
         }
 
-        // Update Weapons List Icons
         const wepList = document.getElementById('hud-weapons-list');
         if (wepList && player.weapons) {
             wepList.innerHTML = player.weapons.map(w => `
                 <div class="weapon-slot" title="${w.name}">
                     <span class="weapon-icon">${w.icon}</span>
-                    <span class="weapon-lvl">Lv.${w.level}</span>
+                    <span class="weapon-lvl">مستوى ${w.level}</span>
                 </div>
             `).join('');
         }
 
-        // Boss Health Bar
         const bossContainer = document.getElementById('hud-boss-container');
         if (bossContainer) {
             if (boss && boss.alive) {

@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Weapon: Fire Wand (صولجان اللهب)
+ * Weapon: Fire Wand (صولجان اللهب / ولاعة الجان)
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -12,51 +12,51 @@ export class FireWand extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'fireWand',
-            name: 'صولجان اللهب (Fire Wand)',
-            description: 'يطلق كرات نارية متفجرة تخترق الأعداء وتشعل الحروق.',
+            name: 'صولجان اللهب (ولاعة الجان)',
+            description: 'بتحدف كور نار متفجرة بتشوي العفاريت وبتعمل حرائق جماعية.',
             icon: '🔥',
-            damage: 28,
-            cooldown: 1.4,
-            projectileSpeed: 290,
+            damage: 36,
+            cooldown: 1.25,
+            projectileSpeed: 310,
             projectileCount: 1,
-            range: 420,
+            range: 460,
             pierce: 2,
             damageType: DAMAGE_TYPES.FIRE
         });
-        this.burnDamage = 8;
+        this.burnDamage = 12;
         this.burnDuration = 3.0;
-        this.explosionRadius = 45;
+        this.explosionRadius = 55;
     }
 
     applyLevelStats(level) {
         switch (level) {
             case 2:
-                this.damage += 10;
+                this.damage += 12;
                 break;
             case 3:
                 this.projectileCount += 1;
-                this.explosionRadius += 10;
+                this.explosionRadius += 12;
                 break;
             case 4:
-                this.burnDamage += 5;
-                this.cooldown *= 0.88;
+                this.burnDamage += 8;
+                this.cooldown *= 0.85;
                 break;
             case 5:
                 this.pierce += 2;
-                this.damage += 14;
+                this.damage += 16;
                 break;
             case 6:
                 this.projectileCount += 1;
                 this.explosionRadius += 15;
                 break;
             case 7:
-                this.cooldown *= 0.82;
-                this.burnDamage += 8;
+                this.cooldown *= 0.80;
+                this.burnDamage += 10;
                 break;
             case 8:
                 this.projectileCount += 2;
-                this.damage += 24;
-                this.explosionRadius += 20;
+                this.damage += 28;
+                this.explosionRadius += 25;
                 break;
         }
     }
@@ -65,6 +65,7 @@ export class FireWand extends BaseWeapon {
         const targets = this.findClosestEnemies(enemies, this.projectileCount, this.range);
         if (targets.length === 0) return;
 
+        this.player.triggerCastAnimation();
         audioSystem.playFireball();
 
         for (let i = 0; i < this.projectileCount; i++) {
@@ -72,7 +73,7 @@ export class FireWand extends BaseWeapon {
             const dx = target.x - this.player.x;
             const dy = target.y - this.player.y;
             const baseAngle = Math.atan2(dy, dx);
-            const spread = (this.projectileCount > 1) ? (i - (this.projectileCount - 1) / 2) * 0.25 : 0;
+            const spread = (this.projectileCount > 1) ? (i - (this.projectileCount - 1) / 2) * 0.22 : 0;
             const finalAngle = baseAngle + spread;
 
             projectiles.push(new Projectile({
@@ -81,11 +82,11 @@ export class FireWand extends BaseWeapon {
                 vx: Math.cos(finalAngle) * this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
                 vy: Math.sin(finalAngle) * this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
                 speed: this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
-                radius: 12,
+                radius: 13,
                 damage: this.damage,
                 damageType: this.damageType,
                 pierce: this.pierce,
-                duration: 2.2,
+                duration: 2.3,
                 weaponId: this.id,
                 spriteKey: 'fireWandBolt',
                 explodeOnHit: true,

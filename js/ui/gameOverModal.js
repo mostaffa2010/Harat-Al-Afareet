@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Game Over Defeat Modal
+ * Game Over Defeat Modal (Egyptian Colloquial Theme)
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -20,34 +20,34 @@ export class GameOverModal {
             <div class="modal-overlay">
                 <div class="menu-dialog game-over-dialog">
                     <div class="dialog-skull">💀</div>
-                    <h2 class="dialog-title text-red">سقطت في قبضة العفاريت!</h2>
-                    <p class="dialog-sub">لقد قاومت بشجاعة في دروب الحارة القديمة</p>
+                    <h2 class="dialog-title text-red">راحت عليك يا بطل!</h2>
+                    <p class="dialog-sub">العفاريت كتّرت عليك بس قاومت بشرف.. ادخل سوق العطارين طور بطل واطلع تاني!</p>
 
                     <div class="run-summary-card">
                         <div class="stat-row">
-                            <span>مدة الصمود:</span>
+                            <span>مدة صمودك:</span>
                             <span class="stat-val highlight">${mins}:${secs}</span>
                         </div>
                         <div class="stat-row">
-                            <span>المستوى الذي وصلت إليه:</span>
+                            <span>المستوى اللي وصلتله:</span>
                             <span class="stat-val highlight">${runSummary.level}</span>
                         </div>
                         <div class="stat-row">
-                            <span>العفاريت المهزومة:</span>
+                            <span>عفاريت فرتكتها:</span>
                             <span class="stat-val">${runSummary.enemiesDefeated}</span>
                         </div>
                         <div class="stat-row">
-                            <span>العملات المكتسبة:</span>
-                            <span class="stat-val text-gold">🪙 +${runSummary.coinsEarned}</span>
+                            <span>العملات اللي كسبتها:</span>
+                            <span class="stat-val text-gold">🪙 +${runSummary.coinsEarned} عملة</span>
                         </div>
                     </div>
 
                     <div class="dialog-buttons">
-                        <button class="btn btn-primary btn-large" id="btn-gameover-retry">
-                            <span>⚔️ حاول مرة أخرى (Retry)</span>
+                        <button class="btn btn-primary btn-large btn-glow" id="btn-gameover-retry">
+                            <span>⚔️ حاول تاني واثأر لنفسك (Retry)</span>
                         </button>
                         <button class="btn btn-secondary" id="btn-gameover-menu">
-                            <span>العودة للقائمة وسوق العطارين</span>
+                            <span>سوق العطارين والقائمة الرئيسية</span>
                         </button>
                     </div>
                 </div>

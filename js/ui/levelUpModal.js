@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Level-Up Card Selection Modal
+ * Level-Up Modal (Egyptian Colloquial Theme)
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -17,8 +17,8 @@ export class LevelUpModal {
                 <div class="level-up-dialog">
                     <div class="level-up-header">
                         <span class="radiant-star">✨</span>
-                        <h2 class="level-up-title">ارتقاء المستوى! (LEVEL UP)</h2>
-                        <p class="level-up-sub">اختر بركة أو تعويذة لتعزيز قوتك في الحارة</p>
+                        <h2 class="level-up-title">ارتقاء يا برنس! (LEVEL UP)</h2>
+                        <p class="level-up-sub">نقي تعويذة تظبط أداءك وتفرتك عفاريت الحارة</p>
                     </div>
 
                     <div class="upgrade-cards-grid">
@@ -32,7 +32,7 @@ export class LevelUpModal {
                                 <p class="card-desc">${card.description}</p>
                                 <div class="card-footer">
                                     <span class="card-type-tag">${card.type === 'NEW_WEAPON' ? 'سلاح جديد' : (card.type === 'WEAPON_UPGRADE' ? 'ترقية سلاح' : 'ميزة عامة')}</span>
-                                    <span class="card-level">Lv. ${card.level}/${card.maxLevel}</span>
+                                    <span class="card-level">مستوى ${card.level}/${card.maxLevel}</span>
                                 </div>
                             </div>
                         `).join('')}

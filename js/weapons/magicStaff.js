@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Weapon: Magic Staff (عصا الحكمة)
+ * Weapon: Magic Staff (عصا الحكمة / الخرزانة السحرية)
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -12,14 +12,14 @@ export class MagicStaff extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'magicStaff',
-            name: 'عصا الحكمة (Magic Staff)',
-            description: 'تطلق مقذوفات سحرية موجهة تبحث عن أقرب عفريت.',
+            name: 'عصا الحكمة (الخرزانة السحرية)',
+            description: 'بتحدف كور سحرية ذكية بتطارد أقرب عفريت لوحدها وتفرتكه.',
             icon: '🪄',
-            damage: 18,
-            cooldown: 0.95,
-            projectileSpeed: 380,
+            damage: 24,
+            cooldown: 0.85,
+            projectileSpeed: 420,
             projectileCount: 1,
-            range: 480,
+            range: 520,
             pierce: 1,
             damageType: DAMAGE_TYPES.ARCANE
         });
@@ -28,26 +28,26 @@ export class MagicStaff extends BaseWeapon {
     applyLevelStats(level) {
         switch (level) {
             case 2:
-                this.damage += 6;
+                this.damage += 8;
                 break;
             case 3:
                 this.projectileCount += 1;
                 break;
             case 4:
-                this.cooldown *= 0.85;
+                this.cooldown *= 0.82;
                 break;
             case 5:
-                this.damage += 10;
+                this.damage += 12;
                 this.pierce += 1;
                 break;
             case 6:
                 this.projectileCount += 1;
                 break;
             case 7:
-                this.cooldown *= 0.80;
+                this.cooldown *= 0.78;
                 break;
             case 8:
-                this.damage += 18;
+                this.damage += 22;
                 this.projectileCount += 1;
                 this.pierce += 1;
                 break;
@@ -58,13 +58,14 @@ export class MagicStaff extends BaseWeapon {
         const targets = this.findClosestEnemies(enemies, this.projectileCount, this.range);
         if (targets.length === 0) return;
 
+        this.player.triggerCastAnimation();
         audioSystem.playCast();
 
         for (let i = 0; i < this.projectileCount; i++) {
             const target = targets[i % targets.length];
             const dx = target.x - this.player.x;
             const dy = target.y - this.player.y;
-            const angle = Math.atan2(dy, dx) + (Math.random() * 0.3 - 0.15);
+            const angle = Math.atan2(dy, dx) + (Math.random() * 0.25 - 0.12);
 
             projectiles.push(new Projectile({
                 x: this.player.x,
@@ -72,7 +73,7 @@ export class MagicStaff extends BaseWeapon {
                 vx: Math.cos(angle) * this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
                 vy: Math.sin(angle) * this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
                 speed: this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
-                radius: 8,
+                radius: 9,
                 damage: this.damage,
                 damageType: this.damageType,
                 pierce: this.pierce,
@@ -81,7 +82,7 @@ export class MagicStaff extends BaseWeapon {
                 spriteKey: 'magicStaffBolt',
                 isHoming: true,
                 target: target,
-                homingStrength: 6.0,
+                homingStrength: 7.0,
                 rotation: angle
             }));
         }

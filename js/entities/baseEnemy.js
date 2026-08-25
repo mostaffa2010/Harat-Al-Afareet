@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Base Enemy Entity Class
+ * Base Enemy Entity Class (Balanced Combat & Better Drop Rates)
  */
 
 import { PICKUP_TYPES } from '../data/constants.js';
@@ -8,7 +8,6 @@ import { Pickup } from './pickup.js';
 import { particleSystem } from '../systems/particleSystem.js';
 import { audioSystem } from '../systems/audioSystem.js';
 import { damageSystem } from '../systems/damageSystem.js';
-import { cameraSystem } from '../systems/cameraSystem.js';
 
 let enemyIdCounter = 0;
 
@@ -22,12 +21,12 @@ export class BaseEnemy {
         this.enemyName = config.enemyName || 'عفريت';
 
         // Stats
-        this.maxHp = config.hp || 30;
+        this.maxHp = config.hp || 25;
         this.hp = this.maxHp;
         this.speed = config.speed || 110;
-        this.damage = config.damage || 10;
+        this.damage = config.damage || 6;
         this.xpValue = config.xpValue || 5;
-        this.coinDropChance = config.coinDropChance || 0.15;
+        this.coinDropChance = config.coinDropChance || 0.20;
         this.coinValue = config.coinValue || 10;
 
         // State & AI
@@ -58,7 +57,7 @@ export class BaseEnemy {
         if (this.burnTimer > 0) {
             this.burnTimer -= dt;
             this.burnTickTimer += dt;
-            if (this.burnTickTimer >= 0.5) { // Tick every 0.5s
+            if (this.burnTickTimer >= 0.5) {
                 this.burnTickTimer = 0;
                 this.takeDamage(this.burnDamage, null, false);
                 particleSystem.emit({
@@ -75,17 +74,15 @@ export class BaseEnemy {
         // Apply knockback decay
         this.x += this.knockbackVx * dt;
         this.y += this.knockbackVy * dt;
-        this.knockbackVx *= 0.88;
-        this.knockbackVy *= 0.88;
+        this.knockbackVx *= 0.86;
+        this.knockbackVy *= 0.86;
 
-        // AI Movement & Behavior (subclasses can override)
         this.updateAI(dt, player, projectiles);
     }
 
     updateAI(dt, player, projectiles) {
         if (!player || !player.alive) return;
 
-        // Default: Move directly toward player
         const dx = player.x - this.x;
         const dy = player.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -108,13 +105,12 @@ export class BaseEnemy {
         this.burnTimer = duration;
         this.burnTickTimer = 0;
 
-        // Fire Mage Passive: "Embers" (chance to ignite nearby enemies on burn application)
-        if (player && player.characterId === 'fireMage' && Math.random() < 0.35) {
-            particleSystem.emitFireExplosion(this.x, this.y, 25);
+        if (player && player.characterId === 'fireMage' && Math.random() < 0.40) {
+            particleSystem.emitFireExplosion(this.x, this.y, 30);
         }
     }
 
-    applyKnockback(vx, vy, force = 200) {
+    applyKnockback(vx, vy, force = 220) {
         this.knockbackVx += vx * force;
         this.knockbackVy += vy * force;
     }
@@ -137,39 +133,35 @@ export class BaseEnemy {
 
     die(player = null) {
         this.alive = false;
-
-        // Death particle burst
-        particleSystem.emitDeathExplosion(this.x, this.y, '#7e22ce', 12);
+        particleSystem.emitDeathExplosion(this.x, this.y, '#7e22ce', 14);
         audioSystem.playEnemyDeath();
 
-        // Fire Mage Passive: "Embers" on death
         if (player && player.characterId === 'fireMage') {
-            particleSystem.emitHitSparks(this.x, this.y, '#f97316', 8);
+            particleSystem.emitHitSparks(this.x, this.y, '#f97316', 10);
         }
     }
 
     createDropPickups() {
         const drops = [];
 
-        // Determine XP gem size
         let xpType = PICKUP_TYPES.XP_SMALL;
-        if (this.xpValue >= 50) xpType = PICKUP_TYPES.XP_LARGE;
+        if (this.xpValue >= 45) xpType = PICKUP_TYPES.XP_LARGE;
         else if (this.xpValue >= 15) xpType = PICKUP_TYPES.XP_MEDIUM;
 
         drops.push(new Pickup(this.x, this.y, xpType, this.xpValue));
 
-        // Chance to drop Gold Coin
+        // 20% Coin Drop
         if (Math.random() < this.coinDropChance) {
             drops.push(new Pickup(this.x + 8, this.y + 4, PICKUP_TYPES.COIN, this.coinValue));
         }
 
-        // Rare chance for Health Elixir (2.5%)
-        if (Math.random() < 0.025) {
-            drops.push(new Pickup(this.x - 8, this.y - 4, PICKUP_TYPES.HEALTH, 25));
+        // 5.5% Health Potion Drop (Generous healing in Egyptian alley)
+        if (Math.random() < 0.055) {
+            drops.push(new Pickup(this.x - 8, this.y - 4, PICKUP_TYPES.HEALTH, 35));
         }
 
-        // Extremely rare Magnet Scarab (0.8%)
-        if (Math.random() < 0.008) {
+        // 1.2% Magnet Scarab
+        if (Math.random() < 0.012) {
             drops.push(new Pickup(this.x, this.y, PICKUP_TYPES.MAGNET, 1));
         }
 

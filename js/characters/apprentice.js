@@ -1,33 +1,33 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Playable Character: The Apprentice (المبتدئ)
+ * Playable Character: The Apprentice (الواد زكي)
  */
 
 export const apprentice = {
     id: 'apprentice',
-    name: 'المبتدئ (Zaki)',
-    title: 'تلميذ السحر الأزهري القديم',
-    description: 'ساحر شاب يدرس أسرار العفاريت في دروب الحارة العتيقة. متوازن وسريع التعلم.',
+    name: 'الواد زكي (المبتدئ)',
+    title: 'طالب سحر أزهري مجتهد وسريع البديهة',
+    description: 'شاب روش وذكي، بيفهم لغة العفاريت وطاير في التلفيل واختيار التعاويذ.',
     themePrimary: '#06b6d4',
     themeSecondary: '#f59e0b',
     startingWeaponId: 'magicStaff',
     passive: {
         id: 'quick_study',
-        name: 'سرعة التعلم (Quick Study)',
-        description: 'يكتسب بطاقة ترقية إضافية (4 خيارات) في قائمة الترقية وزيادة 15% في نقاط الخبرة.'
+        name: 'فالح وسريع الفهم (Quick Study)',
+        description: 'بياخد 4 بطاقات ترقية بدل 3 مع كل تلفيل ونقاط إكس بي بزيادة 20%.'
     },
     baseStats: {
-        maxHp: 100,
-        hpRegen: 0.2,
-        movementSpeed: 215,
-        damageMultiplier: 1.0,
-        attackSpeedMultiplier: 1.0,
-        criticalChance: 0.05,
-        criticalMultiplier: 1.8,
-        pickupRadius: 95,
-        armor: 0,
-        xpMultiplier: 1.15,
-        dashCooldown: 3.2,
+        maxHp: 180,
+        hpRegen: 0.5,
+        movementSpeed: 225,
+        damageMultiplier: 1.1,
+        attackSpeedMultiplier: 1.05,
+        criticalChance: 0.08,
+        criticalMultiplier: 1.85,
+        pickupRadius: 110,
+        armor: 1,
+        xpMultiplier: 1.20,
+        dashCooldown: 2.8,
         extraChoiceChance: true
     }
 };

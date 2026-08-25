@@ -1,14 +1,14 @@
 export const criticalChanceUpgrade = {
     id: 'general_critical_chance',
     category: 'general',
-    name: 'الضربة القاصمة (Death Strike)',
-    description: 'زيادة فرصة الضربة الحرجة بنسبة +8% ومضاعف الضرر بنسبة +20%.',
+    name: 'ضربة معلم (كريتيكال حراق)',
+    description: 'زيادة فرصة الضربة الحرجة بنسبة +10% ومضاعف الضرر بنسبة +25%.',
     icon: '👁️',
     themeColor: '#fbbf24',
     maxLevel: 5,
     canApply: () => true,
     apply: (player) => {
-        player.criticalChance += 0.08;
-        player.criticalMultiplier += 0.20;
+        player.criticalChance += 0.10;
+        player.criticalMultiplier += 0.25;
     }
 };

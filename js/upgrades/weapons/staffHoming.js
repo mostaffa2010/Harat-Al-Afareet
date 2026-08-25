@@ -1,8 +1,8 @@
 export const staffHomingUpgrade = {
     id: 'weapon_staff_homing',
     category: 'weapon',
-    name: 'بصيرة العصا (Arcane Insight)',
-    description: 'زيادة سرعة توجيه مقذوفات العصا السحرية وضررها بنسبة +20%.',
+    name: 'بصيرة الخرزانة (صياد العفاريت)',
+    description: 'طلقات العصا السحرية تجري أسرع وتضرب أقوى بنسبة +25%.',
     icon: '🪄',
     themeColor: '#06b6d4',
     maxLevel: 4,
@@ -10,8 +10,8 @@ export const staffHomingUpgrade = {
     apply: (player) => {
         const staff = player.weapons.find(w => w.id === 'magicStaff');
         if (staff) {
-            staff.damage = Math.round(staff.damage * 1.20);
-            staff.projectileSpeed += 50;
+            staff.damage = Math.round(staff.damage * 1.25);
+            staff.projectileSpeed += 60;
         }
     }
 };

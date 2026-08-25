@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Central Game Orchestrator & State Machine
+ * Central Game Orchestrator & State Machine (with 3s Countdown & Safety Pulse)
  */
 
 import { GAME_STATES } from '../data/constants.js';
@@ -26,6 +26,8 @@ export class Game {
     constructor() {
         this.canvas = document.getElementById('game-canvas');
         this.overlay = document.getElementById('ui-overlay');
+        this.countdownOverlay = document.getElementById('countdown-overlay');
+        this.countdownNum = document.getElementById('countdown-num');
 
         this.renderer = new Renderer(this.canvas);
         this.uiManager = new UIManager(this.overlay);
@@ -45,42 +47,37 @@ export class Game {
         this.warnings = [];
 
         this.enemiesDefeatedCount = 0;
+
+        // Countdown State
+        this.countdownTimer = 0;
+        this.countdownSecondsLeft = 3;
     }
 
     async init() {
-        // 1. Initialize Save Data
         saveSystem.init();
 
-        // 2. Initialize Audio System
         audioSystem.init();
         audioSystem.setSoundEnabled(saveSystem.data.audio.soundEnabled);
 
-        // 3. Bake and generate procedural pixel-art assets
         await assetManager.init();
 
-        // 4. Initialize Controls
         inputSystem.init(this.canvas);
 
-        // 5. Setup Window Resize Handler
         this.handleResize();
         window.addEventListener('resize', () => this.handleResize());
         window.addEventListener('orientationchange', () => setTimeout(() => this.handleResize(), 100));
 
-        // 6. Initialize UI Callbacks
         this.uiManager.init({
             onNavigate: (targetState) => this.setState(targetState),
             onStartRun: (charConfig) => this.startRun(charConfig),
             onPause: () => this.pauseRun(),
-            onResume: () => this.resumeRun(),
+            onResume: () => this.startCountdown(),
             onRestart: () => this.restartRun(),
             onQuit: () => this.quitToMenu(),
             onSelectUpgrade: (upgradeCard) => this.applyLevelUpUpgrade(upgradeCard)
         });
 
-        // 7. Start in Main Menu
         this.setState(GAME_STATES.MAIN_MENU);
-
-        // 8. Start loop (always running for smooth menus / particles / transitions)
         this.loop.start();
     }
 
@@ -92,11 +89,13 @@ export class Game {
 
     setState(newState, extraData = {}) {
         this.state = newState;
+        if (newState !== GAME_STATES.COUNTDOWN && this.countdownOverlay) {
+            this.countdownOverlay.style.display = 'none';
+        }
         this.uiManager.setScreen(newState, extraData);
     }
 
     startRun(characterConfig) {
-        // Reset sub-systems
         xpSystem.reset();
         upgradeSystem.reset();
         waveSystem.reset();
@@ -112,16 +111,49 @@ export class Game {
         this.warnings = [];
         this.enemiesDefeatedCount = 0;
 
-        // Spawn Player with saved permanent upgrades bonuses
         this.player = new Player(characterConfig, saveSystem.data.permanentUpgrades);
 
-        // Center camera immediately
         cameraSystem.x = this.player.x;
         cameraSystem.y = this.player.y;
         cameraSystem.targetX = this.player.x;
         cameraSystem.targetY = this.player.y;
 
-        this.setState(GAME_STATES.PLAYING);
+        this.startCountdown();
+    }
+
+    startCountdown() {
+        this.state = GAME_STATES.COUNTDOWN;
+        this.countdownTimer = 3.0;
+        this.countdownSecondsLeft = 3;
+
+        if (this.countdownOverlay) {
+            this.countdownOverlay.style.display = 'flex';
+            if (this.countdownNum) this.countdownNum.textContent = '3';
+        }
+
+        // Push away nearby enemies slightly and grant grace invulnerability
+        if (this.player) {
+            this.player.grantInvulnerability(2.0);
+            this.pushAwayNearbyEnemies(140);
+        }
+
+        audioSystem.playClick();
+    }
+
+    pushAwayNearbyEnemies(radius = 140) {
+        if (!this.player) return;
+        for (let i = 0; i < this.enemies.length; i++) {
+            const e = this.enemies[i];
+            const dx = e.x - this.player.x;
+            const dy = e.y - this.player.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < radius) {
+                const angle = dist > 0 ? Math.atan2(dy, dx) : Math.random() * Math.PI * 2;
+                e.x = this.player.x + Math.cos(angle) * radius;
+                e.y = this.player.y + Math.sin(angle) * radius;
+                e.applyKnockback(Math.cos(angle), Math.sin(angle), 150);
+            }
+        }
     }
 
     pauseRun() {
@@ -131,13 +163,6 @@ export class Game {
                 xpSystem: xpSystem,
                 waveSystem: waveSystem
             });
-        }
-    }
-
-    resumeRun() {
-        if (this.state === GAME_STATES.PAUSED) {
-            inputSystem.reset();
-            this.setState(GAME_STATES.PLAYING);
         }
     }
 
@@ -155,32 +180,48 @@ export class Game {
         upgradeSystem.applyUpgrade(card);
         xpSystem.levelUpPending = false;
         inputSystem.reset();
-        this.setState(GAME_STATES.PLAYING);
+        this.startCountdown();
     }
 
     // ==========================================
     // GAME UPDATE LOOP
     // ==========================================
     update(dt) {
-        // Handle input pause key
         if (inputSystem.consumePause()) {
             if (this.state === GAME_STATES.PLAYING) {
                 this.pauseRun();
                 return;
             } else if (this.state === GAME_STATES.PAUSED) {
-                this.resumeRun();
+                this.startCountdown();
                 return;
             }
         }
 
-        // Camera & Particles always update (for screen shake & background mood)
         cameraSystem.update(dt);
         particleSystem.update(dt);
         damageSystem.update(dt);
 
+        // Process 3-Second Countdown
+        if (this.state === GAME_STATES.COUNTDOWN) {
+            this.countdownTimer -= dt;
+            const sec = Math.ceil(this.countdownTimer);
+
+            if (sec !== this.countdownSecondsLeft && sec > 0) {
+                this.countdownSecondsLeft = sec;
+                if (this.countdownNum) this.countdownNum.textContent = String(sec);
+                audioSystem.playClick();
+            }
+
+            if (this.countdownTimer <= 0) {
+                if (this.countdownOverlay) this.countdownOverlay.style.display = 'none';
+                this.setState(GAME_STATES.PLAYING);
+            }
+            return;
+        }
+
         if (this.state !== GAME_STATES.PLAYING) return;
 
-        // Check for Level-Up trigger
+        // Check for Level-Up
         if (xpSystem.levelUpPending) {
             const choices = upgradeSystem.generateChoices(this.player, 3);
             this.setState(GAME_STATES.LEVEL_UP, { cards: choices });
@@ -195,16 +236,16 @@ export class Game {
             return;
         }
 
-        // 2. Update Wave Progression & Boss Spawn Check
+        // 2. Update Waves & Boss
         const newBoss = waveSystem.update(dt, this.player, this.enemies, this.boss);
         if (newBoss) {
             this.boss = newBoss;
         }
 
-        // 3. Update Enemy Spawning
+        // 3. Spawning
         spawnSystem.update(dt, this.player, this.enemies);
 
-        // 4. Update Boss Attacks & AI
+        // 4. Boss AI
         if (this.boss && this.boss.alive) {
             this.boss.updateAI(dt, this.player, this.projectiles, this.warnings, this.enemies);
         } else if (this.boss && !this.boss.alive && !waveSystem.bossDefeated) {
@@ -215,7 +256,7 @@ export class Game {
             setTimeout(() => this.handleVictory(), 2000);
         }
 
-        // 5. Update Warning Telegraphs
+        // 5. Warning Indicators
         for (let i = this.warnings.length - 1; i >= 0; i--) {
             const w = this.warnings[i];
             w.timeLeft -= dt;
@@ -225,7 +266,7 @@ export class Game {
             }
         }
 
-        // 6. Update Projectiles
+        // 6. Projectiles
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const p = this.projectiles[i];
             p.update(dt, this.player, this.enemies);
@@ -234,7 +275,7 @@ export class Game {
             }
         }
 
-        // 7. Update Pickups
+        // 7. Pickups
         for (let i = this.pickups.length - 1; i >= 0; i--) {
             const pickup = this.pickups[i];
             pickup.update(dt, this.player);
@@ -243,25 +284,23 @@ export class Game {
             }
         }
 
-        // 8. Build Spatial Collision Grid
+        // 8. Spatial Grid
         collisionSystem.clear();
         for (let i = 0; i < this.enemies.length; i++) {
             collisionSystem.insert(this.enemies[i]);
         }
 
-        // 9. Resolve Collisions: Projectiles vs Enemies / Boss
+        // 9. Collisions: Projectiles vs Enemies
         for (let i = 0; i < this.projectiles.length; i++) {
             const p = this.projectiles[i];
             if (!p.alive) continue;
 
             if (p.isEnemy) {
-                // Enemy projectile hitting Player
                 if (this.player && this.player.alive && collisionSystem.checkCircleOverlap(p.x, p.y, p.radius, this.player.x, this.player.y, this.player.radius)) {
                     this.player.takeDamage(p.damage);
                     p.alive = false;
                 }
             } else {
-                // Player projectile hitting Boss
                 if (this.boss && this.boss.alive && p.canHit(this.boss)) {
                     if (collisionSystem.checkCircleOverlap(p.x, p.y, p.radius, this.boss.x, this.boss.y, this.boss.radius)) {
                         p.onHit(this.boss);
@@ -271,7 +310,6 @@ export class Game {
                     }
                 }
 
-                // Player projectile hitting regular enemies
                 const candidates = collisionSystem.queryRadius(p.x, p.y, p.radius + 32);
                 for (let j = 0; j < candidates.length; j++) {
                     const e = candidates[j];
@@ -284,7 +322,7 @@ export class Game {
                         const knockDir = {
                             x: (e.x - this.player.x) || 1,
                             y: (e.y - this.player.y) || 0,
-                            force: 150
+                            force: 160
                         };
                         const len = Math.sqrt(knockDir.x * knockDir.x + knockDir.y * knockDir.y);
                         knockDir.x /= len; knockDir.y /= len;
@@ -315,7 +353,7 @@ export class Game {
             }
         }
 
-        // 11. Check Player vs Pickups (Magnet Collection)
+        // 11. Magnet Collection
         for (let i = 0; i < this.pickups.length; i++) {
             const p = this.pickups[i];
             if (p.alive && collisionSystem.checkCircleOverlap(this.player.x, this.player.y, this.player.radius, p.x, p.y, p.radius)) {
@@ -346,7 +384,7 @@ export class Game {
 
     handleVictory() {
         const survivalTime = Math.floor(waveSystem.runTime);
-        const coinsEarned = xpSystem.runCoins + 250; // Victory bonus
+        const coinsEarned = xpSystem.runCoins + 300;
         const enemiesDefeated = this.enemiesDefeatedCount;
 
         saveSystem.recordRun(survivalTime, enemiesDefeated, coinsEarned);
@@ -362,9 +400,6 @@ export class Game {
         });
     }
 
-    // ==========================================
-    // RENDER DISPATCH
-    // ==========================================
     render() {
         this.renderer.render({
             player: this.player,

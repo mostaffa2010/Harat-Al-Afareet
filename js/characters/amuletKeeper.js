@@ -1,32 +1,32 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Playable Character: The Amulet Keeper (حارسة التميمة)
+ * Playable Character: The Amulet Keeper (الست ليلى)
  */
 
 export const amuletKeeper = {
     id: 'amuletKeeper',
-    name: 'حارسة التميمة (Layla)',
-    title: 'حامية أسرار عين حورس',
-    description: 'تحمل تمائم الأجداد وتتصدى لأعتى ضربات المردة بدرع سحري متجدد وصحة فولاذية.',
+    name: 'الست ليلى (حارسة التميمة)',
+    title: 'كبيرة حراس تمائم الفراعنة وعين حورس',
+    description: 'واخدة بركة الأجداد، درعها ماينكسرش وصحتها زي البمب تفرتك أي مارد.',
     themePrimary: '#2563eb',
     themeSecondary: '#f59e0b',
     startingWeaponId: 'magicalTalisman',
     passive: {
         id: 'protective_talisman',
-        name: 'التميمة الحامية (Protective Barrier)',
-        description: 'تولد درعاً سحرياً يمتص 35 نقطة ضرر ويتجدد تلقائياً كل 6 ثوانٍ، مع درع حديدي +2.'
+        name: 'حجاب حورس الحامي (Protective Shield)',
+        description: 'درع سحري أزرق بيتجدد كل 5 ثواني يصد 45 نقطة ضرر مع صحة حديدية 220 HP.'
     },
     baseStats: {
-        maxHp: 130,
-        hpRegen: 0.4,
-        movementSpeed: 195,
-        damageMultiplier: 0.95,
+        maxHp: 220,
+        hpRegen: 0.8,
+        movementSpeed: 205,
+        damageMultiplier: 1.05,
         attackSpeedMultiplier: 1.0,
-        criticalChance: 0.05,
+        criticalChance: 0.08,
         criticalMultiplier: 1.8,
-        pickupRadius: 100,
+        pickupRadius: 115,
         armor: 2,
         xpMultiplier: 1.0,
-        dashCooldown: 3.8
+        dashCooldown: 3.2
     }
 };

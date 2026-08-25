@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Enemy: Fast Afreet (عفريت الريح / Djinn Stalker)
+ * Enemy: Fast Afreet (عفريت الريح)
  */
 
 import { BaseEnemy } from '../entities/baseEnemy.js';
@@ -12,13 +12,13 @@ export class FastAfreet extends BaseEnemy {
             radius: 15,
             enemyType: 'fastAfreet',
             enemyName: 'عفريت الريح',
-            hp: Math.round(38 * difficultyMultiplier),
-            speed: 165 + Math.random() * 25,
-            damage: Math.round(12 * difficultyMultiplier),
+            hp: Math.round(30 * difficultyMultiplier),
+            speed: 155 + Math.random() * 20,
+            damage: Math.round(8 * difficultyMultiplier),
             xpValue: 12,
-            coinDropChance: 0.18,
-            coinValue: 10,
-            attackCooldown: 0.7
+            coinDropChance: 0.22,
+            coinValue: 12,
+            attackCooldown: 0.8
         });
         this.dashTimer = 0;
     }
@@ -30,12 +30,11 @@ export class FastAfreet extends BaseEnemy {
         const dy = player.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Flanking / burst speed behavior
         this.dashTimer += dt;
         let currentSpeed = this.speed;
         if (this.dashTimer > 3.0) {
-            currentSpeed *= 1.8; // Quick burst
-            if (this.dashTimer > 3.8) this.dashTimer = 0;
+            currentSpeed *= 1.6;
+            if (this.dashTimer > 3.7) this.dashTimer = 0;
         }
 
         if (dist > 1) {

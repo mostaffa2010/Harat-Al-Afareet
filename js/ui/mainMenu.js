@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Main Menu Screen
+ * Main Menu Screen (Egyptian Colloquial Theme)
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -18,23 +18,23 @@ export class MainMenu {
                     <div class="ancient-symbol">𓂀</div>
                     <h1 class="game-title">حارة العفاريت</h1>
                     <h2 class="game-subtitle">Harat El Afareet</h2>
-                    <p class="game-tagline">«سحر الفراعنة وجان الحارة في مواجهة ملحمية»</p>
+                    <p class="game-tagline">«سحر الفراعنة وجان الحارة في معركة ملحمية.. وريهم العين الحمرا!»</p>
                 </div>
 
                 <div class="gold-badge">
-                    <span>🪙 العملات الأثرية:</span>
-                    <span class="gold-amount">${saveData.coins || 0}</span>
+                    <span>🪙 جيبك فيه:</span>
+                    <span class="gold-amount">${saveData.coins || 0} عملة أثرية</span>
                 </div>
 
                 <div class="menu-buttons">
-                    <button class="btn btn-primary btn-large" id="btn-start-game">
+                    <button class="btn btn-primary btn-large btn-glow" id="btn-start-game">
                         <span class="btn-icon">⚔️</span>
-                        <span>ابدأ المعركة (PLAY)</span>
+                        <span>انزل الحارة وحارب (PLAY)</span>
                     </button>
 
                     <button class="btn btn-gold" id="btn-char-select">
                         <span class="btn-icon">🧙‍♂️</span>
-                        <span>الأبطال (Characters)</span>
+                        <span>أبطال الحارة (Characters)</span>
                     </button>
 
                     <button class="btn btn-secondary" id="btn-bazaar">
@@ -44,19 +44,19 @@ export class MainMenu {
 
                     <button class="btn btn-secondary" id="btn-collection">
                         <span class="btn-icon">📜</span>
-                        <span>موسوعة الحارة (Lore)</span>
+                        <span>موسوعة أسرار الجان (Lore)</span>
                     </button>
 
                     <button class="btn btn-muted" id="btn-sound-toggle">
                         <span class="btn-icon">🔊</span>
-                        <span>الصوت: ${saveData.audio.soundEnabled ? 'مفعل' : 'مكتوم'}</span>
+                        <span>صوت اللعبة: ${saveData.audio.soundEnabled ? 'شغال تمام' : 'مكتوم'}</span>
                     </button>
                 </div>
 
                 <div class="menu-footer">
-                    <span>أطول صمود: ${Math.floor((saveData.highScoreTime || 0) / 60)}د ${(saveData.highScoreTime || 0) % 60}ث</span>
+                    <span>أطول صمود يا بطل: ${Math.floor((saveData.highScoreTime || 0) / 60)}د ${(saveData.highScoreTime || 0) % 60}ث</span>
                     <span>|</span>
-                    <span>عفاريت مهزومة: ${saveData.totalEnemiesDefeated || 0}</span>
+                    <span>عفاريت مفرتكة: ${saveData.totalEnemiesDefeated || 0}</span>
                 </div>
             </div>
         `;

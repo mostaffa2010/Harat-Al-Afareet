@@ -1,13 +1,13 @@
 export const movementSpeedUpgrade = {
     id: 'player_movement_speed',
     category: 'player',
-    name: 'خفة الخطى (Alley Agility)',
-    description: 'زيادة سرعة حركة اللاعب بنسبة +12%.',
+    name: 'خفة ورشاقة (جري حريف)',
+    description: 'زيادة سرعة حركة بطل الحارة بنسبة +15% لتفادي الحشود بسهولة.',
     icon: '👟',
     themeColor: '#10b981',
     maxLevel: 5,
     canApply: () => true,
     apply: (player) => {
-        player.movementSpeed *= 1.12;
+        player.movementSpeed *= 1.15;
     }
 };

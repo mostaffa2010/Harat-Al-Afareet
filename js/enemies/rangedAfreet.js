@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Enemy: Ranged Afreet (عفريت القاذف / Sand Spitter)
+ * Enemy: Ranged Afreet (عفريت القاذف)
  */
 
 import { BaseEnemy } from '../entities/baseEnemy.js';
@@ -14,15 +14,15 @@ export class RangedAfreet extends BaseEnemy {
             radius: 16,
             enemyType: 'rangedAfreet',
             enemyName: 'عفريت القاذف',
-            hp: Math.round(45 * difficultyMultiplier),
-            speed: 85,
-            damage: Math.round(14 * difficultyMultiplier),
+            hp: Math.round(38 * difficultyMultiplier),
+            speed: 80,
+            damage: Math.round(10 * difficultyMultiplier),
             xpValue: 18,
-            coinDropChance: 0.22,
-            coinValue: 15,
-            attackCooldown: 2.2
+            coinDropChance: 0.28,
+            coinValue: 18,
+            attackCooldown: 2.4
         });
-        this.preferredDistance = 240;
+        this.preferredDistance = 250;
     }
 
     updateAI(dt, player, projectiles) {
@@ -32,29 +32,25 @@ export class RangedAfreet extends BaseEnemy {
         const dy = player.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Maintain distance from player
         if (dist < this.preferredDistance - 40) {
-            // Back away
             this.x -= (dx / dist) * this.speed * dt;
             this.y -= (dy / dist) * this.speed * dt;
         } else if (dist > this.preferredDistance + 40) {
-            // Approach
             this.x += (dx / dist) * this.speed * dt;
             this.y += (dy / dist) * this.speed * dt;
         }
 
         this.facingDirection = dx >= 0 ? 1 : -1;
 
-        // Shoot sand bolt projectile
         if (dist <= 380 && this.attackTimer <= 0 && projectiles) {
             this.attackTimer = this.attackCooldown;
             const angle = Math.atan2(dy, dx);
             projectiles.push(new Projectile({
                 x: this.x,
                 y: this.y,
-                vx: Math.cos(angle) * 220,
-                vy: Math.sin(angle) * 220,
-                speed: 220,
+                vx: Math.cos(angle) * 200,
+                vy: Math.sin(angle) * 200,
+                speed: 200,
                 radius: 7,
                 damage: this.damage,
                 damageType: DAMAGE_TYPES.PHYSICAL,
