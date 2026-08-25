@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Global Constants & Configurations (Egyptian Colloquial Theme)
+ * Global Constants & 20 Minutes Till Dawn-Inspired Settings
  */
 
 export const GAME_STATES = {
@@ -12,8 +12,45 @@ export const GAME_STATES = {
     LEVEL_UP: 'LEVEL_UP',
     BAZAAR: 'BAZAAR',
     COLLECTION: 'COLLECTION',
+    ACHIEVEMENTS: 'ACHIEVEMENTS',
     GAME_OVER: 'GAME_OVER',
     VICTORY: 'VICTORY'
+};
+
+export const DIFFICULTY_MODES = {
+    EASY: {
+        id: 'EASY',
+        name: 'حارة هادية (سهل)',
+        badge: '🟢 سهل',
+        description: 'مناسب للتسلية وتجربة الأبطال.. العفاريت أضعف وصحتك أعلى.',
+        enemyHpMult: 0.75,
+        enemyDmgMult: 0.70,
+        spawnIntervalMult: 1.25,
+        coinRewardMult: 1.0,
+        playerSpeedBonus: 1.10
+    },
+    NORMAL: {
+        id: 'NORMAL',
+        name: 'معركة الفتوات (متوازن)',
+        badge: '🟡 متوازن',
+        description: 'التجربة القياسية الأصلية.. حماس وتحدي وسرعة لعب ممتعة.',
+        enemyHpMult: 1.0,
+        enemyDmgMult: 1.0,
+        spawnIntervalMult: 1.0,
+        coinRewardMult: 1.2,
+        playerSpeedBonus: 1.0
+    },
+    HARD: {
+        id: 'HARD',
+        name: 'ليلة العفاريت الحمرا (صعب / كابوس)',
+        badge: '🔴 كابوس',
+        description: 'للمحترفين فقط! أمواج هائلة، عفاريت مفترسة، وجوائز مضاعفة +80%.',
+        enemyHpMult: 1.45,
+        enemyDmgMult: 1.35,
+        spawnIntervalMult: 0.75,
+        coinRewardMult: 1.8,
+        playerSpeedBonus: 0.95
+    }
 };
 
 export const WORLD_CONFIG = {
@@ -28,8 +65,8 @@ export const UPGRADE_RARITIES = {
     COMMON: {
         id: 'COMMON',
         name: 'شائع (على قد الإيد)',
-        color: '#a0aec0',
-        glow: 'rgba(160, 174, 192, 0.4)',
+        color: '#94a3b8',
+        glow: 'rgba(148, 163, 184, 0.4)',
         multiplier: 1.0,
         weight: 58
     },
@@ -37,15 +74,15 @@ export const UPGRADE_RARITIES = {
         id: 'RARE',
         name: 'نادر (لقطة يا بختك)',
         color: '#38bdf8',
-        glow: 'rgba(56, 189, 248, 0.55)',
+        glow: 'rgba(56, 189, 248, 0.6)',
         multiplier: 1.5,
         weight: 26
     },
     EPIC: {
         id: 'EPIC',
         name: 'ملحمي (حاجة فاخرة)',
-        color: '#a855f7',
-        glow: 'rgba(168, 85, 247, 0.65)',
+        color: '#c084fc',
+        glow: 'rgba(192, 132, 252, 0.7)',
         multiplier: 2.2,
         weight: 13
     },
@@ -53,7 +90,7 @@ export const UPGRADE_RARITIES = {
         id: 'LEGENDARY',
         name: 'أسطوري (شغل معلمين)',
         color: '#fbbf24',
-        glow: 'rgba(251, 191, 36, 0.85)',
+        glow: 'rgba(251, 191, 36, 0.9)',
         multiplier: 3.2,
         weight: 3
     }
@@ -77,15 +114,15 @@ export const PICKUP_TYPES = {
 };
 
 export const THEME = {
-    BACKGROUND_DARK: '#0b0f19',
-    SURFACE_DARK: '#121826',
+    BACKGROUND_DARK: '#07090e',
+    SURFACE_DARK: '#0f1422',
     EGYPT_GOLD: '#f59e0b',
     EGYPT_GOLD_LIGHT: '#fbbf24',
     EGYPT_CYAN: '#06b6d4',
     EGYPT_RED: '#ef4444',
     EGYPT_BLUE: '#2563eb',
     EGYPT_PURPLE: '#8b5cf6',
-    SAND_BG: '#1a1815',
+    NOIR_DARK: '#05070a',
     TEXT_MAIN: '#f8fafc',
     TEXT_MUTED: '#94a3b8',
     BORDER_GOLD: '#d97706'

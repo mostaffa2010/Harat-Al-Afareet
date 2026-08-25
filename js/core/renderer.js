@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Canvas 2D Renderer & Atmospheric Lighting Engine
+ * Canvas 2D Renderer (High-Contrast 20 Minutes Till Dawn Style & Crystal Clear Player)
  */
 
 import { WORLD_CONFIG } from '../data/constants.js';
@@ -30,22 +30,22 @@ export class Renderer {
     render(gameState) {
         const { player, enemies, boss, projectiles, pickups, particles, damageNumbers, warnings } = gameState;
 
-        // Clear canvas
-        this.ctx.fillStyle = '#0f172a';
+        // 1. Clear background
+        this.ctx.fillStyle = '#07090e';
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // 1. Render Environment & Ground Tiles
+        // 2. Render Environment & Ground Tiles
         this.renderEnvironment();
 
-        // 2. Render Boss Warning Indicators / Telegraphs
+        // 3. Render Boss Warning Indicators
         if (warnings && warnings.length > 0) {
             this.renderWarningTelegraphs(warnings);
         }
 
-        // 3. Render Pickups (XP gems, Coins, Elixirs)
+        // 4. Render Pickups (XP crystals, Coins, Potions)
         this.renderPickups(pickups);
 
-        // 4. Depth-Sorted Entity Rendering (Y-Sorting)
+        // 5. Y-Sorted Entity Rendering
         const renderableEntities = [];
 
         if (player && player.alive) {
@@ -55,13 +55,13 @@ export class Renderer {
         if (enemies) {
             for (let i = 0; i < enemies.length; i++) {
                 const enemy = enemies[i];
-                if (enemy.alive && cameraSystem.isVisible(enemy.x, enemy.y, enemy.radius + 32)) {
+                if (enemy.alive && cameraSystem.isVisible(enemy.x, enemy.y, enemy.radius + 36)) {
                     renderableEntities.push({ type: 'enemy', entity: enemy, y: enemy.y });
                 }
             }
         }
 
-        if (boss && boss.alive && cameraSystem.isVisible(boss.x, boss.y, boss.radius + 64)) {
+        if (boss && boss.alive && cameraSystem.isVisible(boss.x, boss.y, boss.radius + 70)) {
             renderableEntities.push({ type: 'boss', entity: boss, y: boss.y });
         }
 
@@ -78,23 +78,23 @@ export class Renderer {
             }
         }
 
-        // 5. Render Projectiles & Weapon Visuals
+        // 6. Render Projectiles
         this.renderProjectiles(projectiles);
 
-        // 6. Render Particle Effects
+        // 7. Render Particles
         if (particles) {
             this.renderParticles(particles);
         }
 
-        // 7. Render Floating Damage Numbers
+        // 8. Render Floating Damage Numbers
         if (damageNumbers) {
             this.renderDamageNumbers(damageNumbers);
         }
 
-        // 8. Render Atmospheric Night Lighting & Glows
-        this.renderAtmosphericLighting(player, enemies, boss, pickups);
+        // 9. Render Screen Edge Dark Vignette (NEVER covers player!)
+        this.renderVignette();
 
-        // 9. Render Virtual Touch Joystick (if active)
+        // 10. Render Virtual Touch Joystick
         this.renderVirtualJoystick();
     }
 
@@ -136,7 +136,7 @@ export class Renderer {
 
     renderPickups(pickups) {
         if (!pickups) return;
-        const now = performance.now() * 0.004;
+        const now = performance.now() * 0.005;
 
         for (let i = 0; i < pickups.length; i++) {
             const p = pickups[i];
@@ -146,7 +146,7 @@ export class Renderer {
             const sprite = assetManager.sprites.pickups[p.type];
             const floatOffset = Math.sin(now + p.x) * 3;
 
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
             this.ctx.beginPath();
             this.ctx.ellipse(screen.x, screen.y + 8, 8, 4, 0, 0, Math.PI * 2);
             this.ctx.fill();
@@ -164,22 +164,32 @@ export class Renderer {
     renderPlayer(player) {
         const screen = cameraSystem.worldToScreen(player.x, player.y);
 
-        // Player Drop Shadow
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+        // Vibrant Ground Aura (High Contrast 20 Minutes Till Dawn Rim)
+        this.ctx.save();
+        const auraGrad = this.ctx.createRadialGradient(screen.x, screen.y, 4, screen.x, screen.y, 38);
+        auraGrad.addColorStop(0, player.themePrimary + '55');
+        auraGrad.addColorStop(0.7, player.themePrimary + '18');
+        auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        this.ctx.fillStyle = auraGrad;
+        this.ctx.beginPath();
+        this.ctx.arc(screen.x, screen.y, 38, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+
+        // Shadow under feet
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
         this.ctx.beginPath();
         this.ctx.ellipse(screen.x, screen.y + 14, 18, 8, 0, 0, Math.PI * 2);
         this.ctx.fill();
 
-        // Casting Flare Aura on Attack
+        // Attack Casting Flare Ring
         if (player.castAnimationTimer > 0) {
             this.ctx.save();
             this.ctx.strokeStyle = player.themePrimary;
             this.ctx.lineWidth = 3;
             this.ctx.beginPath();
-            this.ctx.arc(screen.x, screen.y, 26, 0, Math.PI * 2);
+            this.ctx.arc(screen.x, screen.y, 28, 0, Math.PI * 2);
             this.ctx.stroke();
-            this.ctx.fillStyle = player.themePrimary + '22';
-            this.ctx.fill();
             this.ctx.restore();
         }
 
@@ -191,7 +201,7 @@ export class Renderer {
             this.ctx.beginPath();
             this.ctx.arc(screen.x, screen.y, 30, 0, Math.PI * 2);
             this.ctx.stroke();
-            this.ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+            this.ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
             this.ctx.fill();
             this.ctx.restore();
         }
@@ -201,26 +211,26 @@ export class Renderer {
             if (Math.floor(performance.now() * 0.02) % 2 === 0) {
                 this.ctx.save();
                 this.ctx.strokeStyle = '#fbbf24';
-                this.ctx.lineWidth = 2;
+                this.ctx.lineWidth = 2.5;
                 this.ctx.beginPath();
-                this.ctx.arc(screen.x, screen.y, 24, 0, Math.PI * 2);
+                this.ctx.arc(screen.x, screen.y, 26, 0, Math.PI * 2);
                 this.ctx.stroke();
                 this.ctx.restore();
             }
         }
 
-        // Magnet Aura indicator on dash
+        // Dash trail outline
         if (player.isDashing) {
             this.ctx.save();
             this.ctx.strokeStyle = player.themePrimary || '#06b6d4';
             this.ctx.lineWidth = 3;
             this.ctx.beginPath();
-            this.ctx.arc(screen.x, screen.y, 24, 0, Math.PI * 2);
+            this.ctx.arc(screen.x, screen.y, 25, 0, Math.PI * 2);
             this.ctx.stroke();
             this.ctx.restore();
         }
 
-        // Determine Sprite Animation Frame
+        // Sprite Frame
         let animName = 'idle';
         if (player.hurtTimer > 0) {
             animName = 'hurt';
@@ -247,14 +257,14 @@ export class Renderer {
     renderEnemy(enemy) {
         const screen = cameraSystem.worldToScreen(enemy.x, enemy.y);
 
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
         this.ctx.beginPath();
         this.ctx.ellipse(screen.x, screen.y + enemy.radius * 0.75, enemy.radius * 0.8, enemy.radius * 0.4, 0, 0, Math.PI * 2);
         this.ctx.fill();
 
         if (enemy.burnTimer > 0) {
             this.ctx.save();
-            this.ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+            this.ctx.fillStyle = 'rgba(239, 68, 68, 0.4)';
             this.ctx.beginPath();
             this.ctx.arc(screen.x, screen.y, enemy.radius + 6, 0, Math.PI * 2);
             this.ctx.fill();
@@ -286,7 +296,7 @@ export class Renderer {
             const barH = 4;
             const hpRatio = Math.max(0, enemy.hp / enemy.maxHp);
 
-            this.ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+            this.ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
             this.ctx.fillRect(screen.x - barW / 2, screen.y - enemy.radius - 8, barW, barH);
             this.ctx.fillStyle = '#ef4444';
             this.ctx.fillRect(screen.x - barW / 2, screen.y - enemy.radius - 8, barW * hpRatio, barH);
@@ -296,7 +306,7 @@ export class Renderer {
     renderBoss(boss) {
         const screen = cameraSystem.worldToScreen(boss.x, boss.y);
 
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
         this.ctx.beginPath();
         this.ctx.ellipse(screen.x, screen.y + boss.radius * 0.8, boss.radius * 1.1, boss.radius * 0.5, 0, 0, Math.PI * 2);
         this.ctx.fill();
@@ -341,7 +351,7 @@ export class Renderer {
             const progress = Math.min(1.0, (w.duration - w.timeLeft) / w.duration);
 
             this.ctx.save();
-            this.ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
+            this.ctx.strokeStyle = 'rgba(239, 68, 68, 0.9)';
             this.ctx.lineWidth = 2.5;
             this.ctx.beginPath();
             this.ctx.arc(screen.x, screen.y, w.radius, 0, Math.PI * 2);
@@ -434,27 +444,20 @@ export class Renderer {
         this.ctx.restore();
     }
 
-    renderAtmosphericLighting(player, enemies, boss, pickups) {
-        if (!player || !player.alive) return;
-        const pScreen = cameraSystem.worldToScreen(player.x, player.y);
+    /**
+     * Atmospheric Screen Edge Vignette (Dark gothic border only, clear center)
+     */
+    renderVignette() {
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+        const maxDim = Math.max(this.width, this.height);
 
-        this.ctx.save();
-        this.ctx.globalCompositeOperation = 'destination-out';
+        const vigGrad = this.ctx.createRadialGradient(cx, cy, maxDim * 0.35, cx, cy, maxDim * 0.75);
+        vigGrad.addColorStop(0, 'rgba(5, 7, 10, 0)');
+        vigGrad.addColorStop(1, 'rgba(5, 7, 10, 0.7)');
 
-        const lightGrad = this.ctx.createRadialGradient(
-            pScreen.x, pScreen.y, 50,
-            pScreen.x, pScreen.y, 300
-        );
-        lightGrad.addColorStop(0, 'rgba(0, 0, 0, 0.88)');
-        lightGrad.addColorStop(0.6, 'rgba(0, 0, 0, 0.45)');
-        lightGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-        this.ctx.fillStyle = lightGrad;
-        this.ctx.beginPath();
-        this.ctx.arc(pScreen.x, pScreen.y, 300, 0, Math.PI * 2);
-        this.ctx.fill();
-
-        this.ctx.restore();
+        this.ctx.fillStyle = vigGrad;
+        this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
     renderVirtualJoystick() {

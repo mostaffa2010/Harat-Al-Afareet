@@ -1,12 +1,15 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Enemy Registry
+ * Enemy Registry (7+ Types for High Variety)
  */
 
 import { SmallAfreet } from './smallAfreet.js';
 import { FastAfreet } from './fastAfreet.js';
 import { RangedAfreet } from './rangedAfreet.js';
 import { GiantAfreet } from './giantAfreet.js';
+import { ExplodingGhoul } from './explodingGhoul.js';
+import { DjinnShaman } from './djinnShaman.js';
+import { CryptBat } from './cryptBat.js';
 
 export class EnemyRegistry {
     constructor() {
@@ -15,6 +18,9 @@ export class EnemyRegistry {
         this.register('fastAfreet', FastAfreet);
         this.register('rangedAfreet', RangedAfreet);
         this.register('giantAfreet', GiantAfreet);
+        this.register('explodingGhoul', ExplodingGhoul);
+        this.register('djinnShaman', DjinnShaman);
+        this.register('cryptBat', CryptBat);
     }
 
     register(id, enemyClass) {
@@ -27,6 +33,10 @@ export class EnemyRegistry {
             return new EnemyClass(x, y, difficultyMultiplier);
         }
         return new SmallAfreet(x, y, difficultyMultiplier);
+    }
+
+    getAllIds() {
+        return Array.from(this.enemies.keys());
     }
 }
 

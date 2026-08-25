@@ -1,8 +1,10 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Main Menu Screen (Egyptian Colloquial Theme)
+ * Main Menu Screen (with Difficulty Mode Selector)
  */
 
+import { DIFFICULTY_MODES } from '../data/constants.js';
+import { saveSystem } from '../systems/saveSystem.js';
 import { audioSystem } from '../systems/audioSystem.js';
 
 export class MainMenu {
@@ -12,6 +14,8 @@ export class MainMenu {
     }
 
     render(saveData) {
+        const currentDiff = saveData.selectedDifficulty || 'NORMAL';
+
         this.container.innerHTML = `
             <div class="menu-screen main-menu-bg">
                 <div class="menu-header">
@@ -19,6 +23,23 @@ export class MainMenu {
                     <h1 class="game-title">حارة العفاريت</h1>
                     <h2 class="game-subtitle">Harat El Afareet</h2>
                     <p class="game-tagline">«سحر الفراعنة وجان الحارة في معركة ملحمية.. وريهم العين الحمرا!»</p>
+                </div>
+
+                <!-- Difficulty Mode Selector -->
+                <div class="difficulty-picker-card">
+                    <span class="diff-title">مستوى الصعوبة:</span>
+                    <div class="diff-buttons-group">
+                        <button class="diff-btn ${currentDiff === 'EASY' ? 'active-diff' : ''}" data-diff="EASY">
+                            🟢 سهل
+                        </button>
+                        <button class="diff-btn ${currentDiff === 'NORMAL' ? 'active-diff' : ''}" data-diff="NORMAL">
+                            🟡 متوازن
+                        </button>
+                        <button class="diff-btn ${currentDiff === 'HARD' ? 'active-diff' : ''}" data-diff="HARD">
+                            🔴 كابوس
+                        </button>
+                    </div>
+                    <p class="diff-desc">${DIFFICULTY_MODES[currentDiff].description}</p>
                 </div>
 
                 <div class="gold-badge">
@@ -42,6 +63,11 @@ export class MainMenu {
                         <span>سوق العطارين (Bazaar)</span>
                     </button>
 
+                    <button class="btn btn-secondary" id="btn-achievements">
+                        <span class="btn-icon">🏆</span>
+                        <span>إنجازات وجوائز (Trophies)</span>
+                    </button>
+
                     <button class="btn btn-secondary" id="btn-collection">
                         <span class="btn-icon">📜</span>
                         <span>موسوعة أسرار الجان (Lore)</span>
@@ -54,7 +80,7 @@ export class MainMenu {
                 </div>
 
                 <div class="menu-footer">
-                    <span>أطول صمود يا بطل: ${Math.floor((saveData.highScoreTime || 0) / 60)}د ${(saveData.highScoreTime || 0) % 60}ث</span>
+                    <span>أطول صمود: ${Math.floor((saveData.highScoreTime || 0) / 60)}د ${(saveData.highScoreTime || 0) % 60}ث</span>
                     <span>|</span>
                     <span>عفاريت مفرتكة: ${saveData.totalEnemiesDefeated || 0}</span>
                 </div>
@@ -65,6 +91,18 @@ export class MainMenu {
     }
 
     bindEvents(saveData) {
+        // Difficulty Mode Toggle
+        const diffBtns = this.container.querySelectorAll('.diff-btn');
+        diffBtns.forEach(btn => {
+            btn.onclick = () => {
+                const diffKey = btn.getAttribute('data-diff');
+                saveData.selectedDifficulty = diffKey;
+                saveSystem.saveGame();
+                audioSystem.playClick();
+                this.render(saveData);
+            };
+        });
+
         document.getElementById('btn-start-game').onclick = () => {
             audioSystem.playClick();
             this.onNavigate('CHARACTER_SELECT');
@@ -78,6 +116,11 @@ export class MainMenu {
         document.getElementById('btn-bazaar').onclick = () => {
             audioSystem.playClick();
             this.onNavigate('BAZAAR');
+        };
+
+        document.getElementById('btn-achievements').onclick = () => {
+            audioSystem.playClick();
+            this.onNavigate('ACHIEVEMENTS');
         };
 
         document.getElementById('btn-collection').onclick = () => {

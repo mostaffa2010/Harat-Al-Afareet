@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Asset Manager & Procedural 2D Top-Down Pixel-Art Sprite Engine
+ * Asset Manager & High-Contrast 20 Minutes Till Dawn Procedural Sprites
  */
 
 export class AssetManager {
@@ -53,16 +53,16 @@ export class AssetManager {
     // ==========================================
     generateEnvironmentTiles() {
         const { canvas: floorCanvas, ctx: fCtx } = this.createCanvas(64, 64);
-        fCtx.fillStyle = '#1c1714';
+        fCtx.fillStyle = '#14121a';
         fCtx.fillRect(0, 0, 64, 64);
 
         const stones = [
-            { x: 2, y: 2, w: 28, h: 18, c: '#2e2620', hi: '#3e342c', sh: '#14100e' },
-            { x: 34, y: 2, w: 28, h: 18, c: '#28211b', hi: '#383027', sh: '#120e0c' },
-            { x: 2, y: 24, w: 18, h: 16, c: '#241e19', hi: '#342c24', sh: '#100c0a' },
-            { x: 24, y: 24, w: 38, h: 16, c: '#312922', hi: '#423830', sh: '#161210' },
-            { x: 2, y: 44, w: 32, h: 18, c: '#2a221c', hi: '#3a3129', sh: '#130f0d' },
-            { x: 38, y: 44, w: 24, h: 18, c: '#221b16', hi: '#322922', sh: '#0f0c09' }
+            { x: 2, y: 2, w: 28, h: 18, c: '#231f2b', hi: '#332d3d', sh: '#0f0d14' },
+            { x: 34, y: 2, w: 28, h: 18, c: '#1f1b26', hi: '#2f293a', sh: '#0c0a12' },
+            { x: 2, y: 24, w: 18, h: 16, c: '#1c1822', hi: '#2c2636', sh: '#0a0810' },
+            { x: 24, y: 24, w: 38, h: 16, c: '#262130', hi: '#363042', sh: '#110f17' },
+            { x: 2, y: 44, w: 32, h: 18, c: '#211c2a', hi: '#312b3c', sh: '#0d0b13' },
+            { x: 38, y: 44, w: 24, h: 18, c: '#1a1622', hi: '#2a2434', sh: '#0a0810' }
         ];
 
         for (const s of stones) {
@@ -102,28 +102,25 @@ export class AssetManager {
     }
 
     // ==========================================
-    // 2. TOP-DOWN CHARACTER SPRITES (OVERHEAD VIEW)
+    // 2. TOP-DOWN HIGH-CONTRAST CHARACTERS
     // ==========================================
     generateTopDownCharacterSprites() {
         this.sprites.characters = {};
         this.illustrations.characters = {};
 
-        // ----------------------------------------------------
-        // A. APPRENTICE (Zaki) - Top-Down Turban & Shoulders
-        // ----------------------------------------------------
+        // A. APPRENTICE (Zaki)
         const apprenticePalette = {
             'K': '#0f172a',
-            'T': '#06b6d4', // Teal robe/turban
-            'L': '#67e8f9', // Teal highlight
-            'B': '#0891b2', // Teal shadow
-            'G': '#f59e0b', // Gold jewel / sash
-            'Y': '#fef08a', // Bright gold
-            'S': '#fcd34d', // Skin hands
-            'W': '#78350f', // Staff wood
-            'O': '#22d3ee'  // Arcane orb glow
+            'T': '#06b6d4',
+            'L': '#67e8f9',
+            'B': '#0891b2',
+            'G': '#f59e0b',
+            'Y': '#fef08a',
+            'S': '#fcd34d',
+            'W': '#78350f',
+            'O': '#22d3ee'
         };
 
-        // Overhead View: Turban crown center, shoulders flanking, staff pointing forward
         const apprenticeTopDownIdle = [
             "......KKKKKK......",
             "....KKTTLLTTKK....",
@@ -172,7 +169,6 @@ export class AssetManager {
             "....KK............"
         ];
 
-        // Attack Frame (Staff thrusts forward with blazing glow)
         const apprenticeTopDownAttack = [
             "......KKKKKK...KOO",
             "....KKTTLLTTKK.KOO",
@@ -189,27 +185,24 @@ export class AssetManager {
         ];
 
         this.sprites.characters['apprentice'] = {
-            idle: this.bakeSprite(apprenticeTopDownIdle, apprenticePalette, 2.2),
-            walk1: this.bakeSprite(apprenticeTopDownWalk1, apprenticePalette, 2.2),
-            walk2: this.bakeSprite(apprenticeTopDownWalk2, apprenticePalette, 2.2),
-            attack: this.bakeSprite(apprenticeTopDownAttack, apprenticePalette, 2.2),
-            hurt: this.bakeHurtSprite(apprenticeTopDownIdle, apprenticePalette, 2.2)
+            idle: this.bakeSprite(apprenticeTopDownIdle, apprenticePalette, 2.3),
+            walk1: this.bakeSprite(apprenticeTopDownWalk1, apprenticePalette, 2.3),
+            walk2: this.bakeSprite(apprenticeTopDownWalk2, apprenticePalette, 2.3),
+            attack: this.bakeSprite(apprenticeTopDownAttack, apprenticePalette, 2.3),
+            hurt: this.bakeHurtSprite(apprenticeTopDownIdle, apprenticePalette, 2.3)
         };
-
         this.illustrations.characters['apprentice'] = this.generateApprenticeIllustration();
 
-        // ----------------------------------------------------
-        // B. FIRE MAGE (Rayan) - Top-Down Fiery Red Bandana & Kaftan
-        // ----------------------------------------------------
+        // B. FIRE MAGE (Rayan)
         const fireMagePalette = {
             'K': '#0f172a',
-            'R': '#dc2626', // Crimson kaftan
-            'L': '#f87171', // Red light
-            'B': '#991b1b', // Red shadow
-            'O': '#f97316', // Orange flame / hair
-            'Y': '#fef08a', // Yellow flame spark
-            'S': '#fed7aa', // Skin
-            'W': '#fbbf24'  // Wand gold
+            'R': '#dc2626',
+            'L': '#f87171',
+            'B': '#991b1b',
+            'O': '#f97316',
+            'Y': '#fef08a',
+            'S': '#fed7aa',
+            'W': '#fbbf24'
         };
 
         const fireMageTopDownIdle = [
@@ -276,27 +269,24 @@ export class AssetManager {
         ];
 
         this.sprites.characters['fireMage'] = {
-            idle: this.bakeSprite(fireMageTopDownIdle, fireMagePalette, 2.2),
-            walk1: this.bakeSprite(fireMageTopDownWalk1, fireMagePalette, 2.2),
-            walk2: this.bakeSprite(fireMageTopDownWalk2, fireMagePalette, 2.2),
-            attack: this.bakeSprite(fireMageTopDownAttack, fireMagePalette, 2.2),
-            hurt: this.bakeHurtSprite(fireMageTopDownIdle, fireMagePalette, 2.2)
+            idle: this.bakeSprite(fireMageTopDownIdle, fireMagePalette, 2.3),
+            walk1: this.bakeSprite(fireMageTopDownWalk1, fireMagePalette, 2.3),
+            walk2: this.bakeSprite(fireMageTopDownWalk2, fireMagePalette, 2.3),
+            attack: this.bakeSprite(fireMageTopDownAttack, fireMagePalette, 2.3),
+            hurt: this.bakeHurtSprite(fireMageTopDownIdle, fireMagePalette, 2.3)
         };
-
         this.illustrations.characters['fireMage'] = this.generateFireMageIllustration();
 
-        // ----------------------------------------------------
-        // C. AMULET KEEPER (Layla) - Top-Down Golden Headdress & Lapis Robe
-        // ----------------------------------------------------
+        // C. AMULET KEEPER (Layla)
         const amuletKeeperPalette = {
             'K': '#0f172a',
-            'U': '#1e40af', // Lapis blue
-            'L': '#60a5fa', // Blue light
-            'B': '#172554', // Dark blue
-            'G': '#f59e0b', // Gold headdress
-            'Y': '#fef08a', // Bright gold
-            'S': '#fde047', // Skin
-            'A': '#38bdf8'  // Amulet eye glow
+            'U': '#1e40af',
+            'L': '#60a5fa',
+            'B': '#172554',
+            'G': '#f59e0b',
+            'Y': '#fef08a',
+            'S': '#fde047',
+            'A': '#38bdf8'
         };
 
         const amuletKeeperTopDownIdle = [
@@ -363,22 +353,17 @@ export class AssetManager {
         ];
 
         this.sprites.characters['amuletKeeper'] = {
-            idle: this.bakeSprite(amuletKeeperTopDownIdle, amuletKeeperPalette, 2.2),
-            walk1: this.bakeSprite(amuletKeeperTopDownWalk1, amuletKeeperPalette, 2.2),
-            walk2: this.bakeSprite(amuletKeeperTopDownWalk2, amuletKeeperPalette, 2.2),
-            attack: this.bakeSprite(amuletKeeperTopDownAttack, amuletKeeperPalette, 2.2),
-            hurt: this.bakeHurtSprite(amuletKeeperTopDownIdle, amuletKeeperPalette, 2.2)
+            idle: this.bakeSprite(amuletKeeperTopDownIdle, amuletKeeperPalette, 2.3),
+            walk1: this.bakeSprite(amuletKeeperTopDownWalk1, amuletKeeperPalette, 2.3),
+            walk2: this.bakeSprite(amuletKeeperTopDownWalk2, amuletKeeperPalette, 2.3),
+            attack: this.bakeSprite(amuletKeeperTopDownAttack, amuletKeeperPalette, 2.3),
+            hurt: this.bakeHurtSprite(amuletKeeperTopDownIdle, amuletKeeperPalette, 2.3)
         };
-
         this.illustrations.characters['amuletKeeper'] = this.generateAmuletKeeperIllustration();
     }
 
-    // ==========================================
-    // 3. LARGE CHARACTER ILLUSTRATIONS (For Menu)
-    // ==========================================
     generateApprenticeIllustration() {
         const { canvas, ctx } = this.createCanvas(160, 200);
-
         const grad = ctx.createRadialGradient(80, 100, 10, 80, 100, 75);
         grad.addColorStop(0, 'rgba(6, 182, 212, 0.5)');
         grad.addColorStop(0.7, 'rgba(245, 158, 11, 0.2)');
@@ -435,7 +420,6 @@ export class AssetManager {
         };
 
         this.drawPixelMatrix(ctx, illApprentice, palette, 4.5, 26, 35);
-
         ctx.fillStyle = '#67e8f9';
         ctx.beginPath();
         ctx.arc(28, 105, 12, 0, Math.PI * 2);
@@ -444,13 +428,11 @@ export class AssetManager {
         ctx.beginPath();
         ctx.arc(28, 105, 5, 0, Math.PI * 2);
         ctx.fill();
-
         return canvas;
     }
 
     generateFireMageIllustration() {
         const { canvas, ctx } = this.createCanvas(160, 200);
-
         const grad = ctx.createRadialGradient(80, 100, 10, 80, 100, 75);
         grad.addColorStop(0, 'rgba(239, 68, 68, 0.5)');
         grad.addColorStop(0.7, 'rgba(249, 115, 22, 0.2)');
@@ -507,7 +489,6 @@ export class AssetManager {
         };
 
         this.drawPixelMatrix(ctx, illFireMage, palette, 4.5, 26, 35);
-
         ctx.fillStyle = '#f97316';
         ctx.beginPath();
         ctx.arc(28, 115, 14, 0, Math.PI * 2);
@@ -518,13 +499,11 @@ export class AssetManager {
         ctx.arc(28, 115, 6, 0, Math.PI * 2);
         ctx.arc(132, 115, 6, 0, Math.PI * 2);
         ctx.fill();
-
         return canvas;
     }
 
     generateAmuletKeeperIllustration() {
         const { canvas, ctx } = this.createCanvas(160, 200);
-
         const grad = ctx.createRadialGradient(80, 100, 10, 80, 100, 75);
         grad.addColorStop(0, 'rgba(37, 99, 235, 0.45)');
         grad.addColorStop(0.7, 'rgba(245, 158, 11, 0.2)');
@@ -580,26 +559,24 @@ export class AssetManager {
         };
 
         this.drawPixelMatrix(ctx, illAmulet, palette, 4.5, 26, 35);
-
         ctx.fillStyle = '#f59e0b';
         ctx.fillRect(22, 100, 14, 18);
         ctx.fillStyle = '#38bdf8';
         ctx.fillRect(25, 104, 8, 10);
-
         ctx.fillStyle = '#f59e0b';
         ctx.fillRect(124, 100, 14, 18);
         ctx.fillStyle = '#38bdf8';
         ctx.fillRect(127, 104, 8, 10);
-
         return canvas;
     }
 
     // ==========================================
-    // 4. ENEMIES
+    // 3. 7+ DISTINCT ENEMIES
     // ==========================================
     generateEnemySprites() {
         this.sprites.enemies = {};
 
+        // 1. Small Afreet
         const smallAfreetPalette = {
             'K': '#090d16',
             'P': '#7e22ce',
@@ -620,27 +597,14 @@ export class AssetManager {
             ".....KLPLK......",
             "......KPK......."
         ];
-        const smallAfreetWalk = [
-            "......KKKK......",
-            "....KKLLLLKK....",
-            "...KLLPPPLLLK...",
-            "..KLPPPPPPLPK...",
-            "..KLPRPPPRPLK...",
-            "..KLPRPPPRPLK...",
-            "..KLPPDDDPPLK...",
-            "...KLPDDDPLK....",
-            "....KLLLLLK.....",
-            ".....KLPK.......",
-            "......KKK......."
-        ];
-
         this.sprites.enemies['smallAfreet'] = {
             idle: this.bakeSprite(smallAfreetIdle, smallAfreetPalette, 2),
             walk1: this.bakeSprite(smallAfreetIdle, smallAfreetPalette, 2),
-            walk2: this.bakeSprite(smallAfreetWalk, smallAfreetPalette, 2),
+            walk2: this.bakeSprite(smallAfreetIdle, smallAfreetPalette, 2),
             hurt: this.bakeHurtSprite(smallAfreetIdle, smallAfreetPalette, 2)
         };
 
+        // 2. Fast Afreet
         const fastAfreetPalette = {
             'K': '#090d16',
             'G': '#059669',
@@ -669,6 +633,7 @@ export class AssetManager {
             hurt: this.bakeHurtSprite(fastAfreetIdle, fastAfreetPalette, 2)
         };
 
+        // 3. Ranged Afreet
         const rangedAfreetPalette = {
             'K': '#090d16',
             'S': '#d97706',
@@ -697,6 +662,7 @@ export class AssetManager {
             hurt: this.bakeHurtSprite(rangedAfreetIdle, rangedAfreetPalette, 2)
         };
 
+        // 4. Giant Afreet
         const giantAfreetPalette = {
             'K': '#090d16',
             'O': '#334155',
@@ -727,10 +693,91 @@ export class AssetManager {
             walk2: this.bakeSprite(giantAfreetIdle, giantAfreetPalette, 3),
             hurt: this.bakeHurtSprite(giantAfreetIdle, giantAfreetPalette, 3)
         };
+
+        // 5. Exploding Ghoul (العفريت المتفجر - glowing red ticking bomb skull)
+        const explodingPalette = {
+            'K': '#090d16',
+            'R': '#ef4444',
+            'Y': '#fde047',
+            'O': '#ea580c',
+            'W': '#ffffff'
+        };
+        const explodingIdle = [
+            "......KKKK......",
+            "....KKYYYYKK....",
+            "...KYYROORYYK...",
+            "..KYYRROORRYYK..",
+            "..KYRWWWWRRRYK..",
+            "..KYRWYYWRRRYK..",
+            "..KYRWWWWRRRYK..",
+            "...KYRRRRRRYK...",
+            "....KKROORKK....",
+            ".....KROOK......",
+            "......KKK......."
+        ];
+        this.sprites.enemies['explodingGhoul'] = {
+            idle: this.bakeSprite(explodingIdle, explodingPalette, 2),
+            walk1: this.bakeSprite(explodingIdle, explodingPalette, 2),
+            walk2: this.bakeSprite(explodingIdle, explodingPalette, 2),
+            hurt: this.bakeHurtSprite(explodingIdle, explodingPalette, 2)
+        };
+
+        // 6. Djinn Shaman (ساحر الجان - purple mystic robe & horns)
+        const shamanPalette = {
+            'K': '#090d16',
+            'P': '#6b21a8',
+            'L': '#c084fc',
+            'Y': '#fde047',
+            'G': '#f59e0b',
+            'W': '#ffffff'
+        };
+        const shamanIdle = [
+            "..KK......KK....",
+            ".KLLK....KLLK...",
+            "..KLLKKKKLLK....",
+            "...KPLLLLPK.....",
+            "..KPLLYYLLPK....",
+            "..KPLYWWYLPK....",
+            "..KPLLYYLLPK....",
+            "...KPLLLLPK.....",
+            "...KPGGGGPK.....",
+            "..KPPLLLLPPK....",
+            ".KPLLK..KLLPK..."
+        ];
+        this.sprites.enemies['djinnShaman'] = {
+            idle: this.bakeSprite(shamanIdle, shamanPalette, 2.2),
+            walk1: this.bakeSprite(shamanIdle, shamanPalette, 2.2),
+            walk2: this.bakeSprite(shamanIdle, shamanPalette, 2.2),
+            hurt: this.bakeHurtSprite(shamanIdle, shamanPalette, 2.2)
+        };
+
+        // 7. Crypt Bat (خفاش المقابر - dark wings with glowing eye)
+        const batPalette = {
+            'K': '#090d16',
+            'D': '#1e1b4b',
+            'L': '#4338ca',
+            'C': '#38bdf8'
+        };
+        const batIdle = [
+            "KK............KK",
+            "KLLKK......KKLLK",
+            ".KLLDDKKKKDDLLK.",
+            "..KLLDCCDDLLK...",
+            "...KLLDCDLLK....",
+            "....KLLLLK......",
+            ".....KLLK.......",
+            "......KK........"
+        ];
+        this.sprites.enemies['cryptBat'] = {
+            idle: this.bakeSprite(batIdle, batPalette, 2),
+            walk1: this.bakeSprite(batIdle, batPalette, 2),
+            walk2: this.bakeSprite(batIdle, batPalette, 2),
+            hurt: this.bakeHurtSprite(batIdle, batPalette, 2)
+        };
     }
 
     // ==========================================
-    // 5. BOSSES (Afreet King)
+    // 4. BOSS (Afreet King)
     // ==========================================
     generateBossSprites() {
         this.sprites.bosses = {};
@@ -778,7 +825,7 @@ export class AssetManager {
     }
 
     // ==========================================
-    // 6. WEAPONS & PROJECTILES
+    // 5. PROJECTILES & PICKUPS
     // ==========================================
     generateProjectileSprites() {
         this.sprites.projectiles = {};
@@ -845,9 +892,6 @@ export class AssetManager {
         this.sprites.projectiles['sandBolt'] = darkBoltCanvas;
     }
 
-    // ==========================================
-    // 7. PICKUPS (XP Crystals, Coins, Potions)
-    // ==========================================
     generatePickupSprites() {
         this.sprites.pickups = {};
 
@@ -894,11 +938,10 @@ export class AssetManager {
         cCtx.fillRect(7, 7, 4, 4);
         this.sprites.pickups['COIN'] = coinCanvas;
 
-        // Health Elixir (قزازة صحة 20x20)
         const { canvas: hpCanvas, ctx: hCtx } = this.createCanvas(20, 20);
         hCtx.fillStyle = '#94a3b8';
         hCtx.fillRect(8, 2, 4, 3);
-        hCtx.fillStyle = '#22c55e'; // Green Egyptian tea/elixir potion
+        hCtx.fillStyle = '#22c55e';
         hCtx.beginPath();
         hCtx.arc(10, 12, 7, 0, Math.PI * 2);
         hCtx.fill();

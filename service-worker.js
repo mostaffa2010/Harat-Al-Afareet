@@ -3,7 +3,7 @@
  * PWA Service Worker for Offline Caching
  */
 
-const CACHE_NAME = 'harat-el-afareet-v1';
+const CACHE_NAME = 'harat-el-afareet-v3';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -29,6 +29,7 @@ const ASSETS_TO_CACHE = [
     './js/systems/particleSystem.js',
     './js/systems/audioSystem.js',
     './js/systems/saveSystem.js',
+    './js/systems/achievementSystem.js',
     './js/entities/player.js',
     './js/entities/projectile.js',
     './js/entities/pickup.js',
@@ -48,6 +49,9 @@ const ASSETS_TO_CACHE = [
     './js/enemies/fastAfreet.js',
     './js/enemies/rangedAfreet.js',
     './js/enemies/giantAfreet.js',
+    './js/enemies/explodingGhoul.js',
+    './js/enemies/djinnShaman.js',
+    './js/enemies/cryptBat.js',
     './js/bosses/bossRegistry.js',
     './js/bosses/afreetKing.js',
     './js/upgrades/upgradeRegistry.js',
@@ -76,13 +80,13 @@ const ASSETS_TO_CACHE = [
     './js/ui/gameOverModal.js',
     './js/ui/victoryModal.js',
     './js/ui/bazaarModal.js',
-    './js/ui/collectionModal.js'
+    './js/ui/collectionModal.js',
+    './js/ui/achievementsModal.js'
 ];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('Opened cache and caching all game assets');
             return cache.addAll(ASSETS_TO_CACHE);
         })
     );
@@ -95,7 +99,6 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
                     if (cacheName !== CACHE_NAME) {
-                        console.log('Clearing old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -108,7 +111,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
-            // Return cached asset if available, else fetch from network
             return response || fetch(event.request);
         })
     );

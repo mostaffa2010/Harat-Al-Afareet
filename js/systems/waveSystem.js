@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Wave Progression & Run Timeline
+ * Wave Progression Timeline (7+ Enemy Types)
  */
 
 import { bossRegistry } from '../bosses/bossRegistry.js';
@@ -43,34 +43,41 @@ export class WaveSystem {
     }
 
     getAvailableEnemyTypes(runTime) {
-        if (runTime < 120) {
-            return ['smallAfreet'];
-        } else if (runTime < 240) {
-            return ['smallAfreet', 'fastAfreet'];
-        } else if (runTime < 360) {
-            return ['smallAfreet', 'fastAfreet', 'rangedAfreet'];
+        if (runTime < 90) {
+            return ['smallAfreet', 'cryptBat'];
+        } else if (runTime < 180) {
+            return ['smallAfreet', 'cryptBat', 'fastAfreet'];
+        } else if (runTime < 300) {
+            return ['smallAfreet', 'fastAfreet', 'rangedAfreet', 'explodingGhoul'];
+        } else if (runTime < 450) {
+            return ['smallAfreet', 'fastAfreet', 'rangedAfreet', 'explodingGhoul', 'djinnShaman'];
         } else {
-            return ['smallAfreet', 'fastAfreet', 'rangedAfreet', 'giantAfreet'];
+            return ['smallAfreet', 'fastAfreet', 'rangedAfreet', 'explodingGhoul', 'djinnShaman', 'giantAfreet'];
         }
     }
 
     spawnEliteWave(player, enemies) {
-        damageSystem.spawnText(player.x, player.y - 40, '⚠️ موجة المردة العتاة!', false, '#ef4444');
+        damageSystem.spawnText(player.x, player.y - 40, '⚠️ هجوم مارد الحارة والكهنة!', false, '#ef4444');
         cameraSystem.triggerShake(8);
         audioSystem.playBossRoar();
 
-        // Spawn 2 Giant Afareet
         for (let i = 0; i < 2; i++) {
             const angle = (Math.PI * 2 / 2) * i;
-            const x = player.x + Math.cos(angle) * 550;
-            const y = player.y + Math.sin(angle) * 550;
-            const giant = enemyRegistry.create('giantAfreet', x, y, 1.4);
-            enemies.push(giant);
+            const x = player.x + Math.cos(angle) * 520;
+            const y = player.y + Math.sin(angle) * 520;
+            enemies.push(enemyRegistry.create('giantAfreet', x, y, 1.3));
+        }
+
+        for (let i = 0; i < 2; i++) {
+            const angle = (Math.PI * 2 / 2) * i + Math.PI / 4;
+            const x = player.x + Math.cos(angle) * 500;
+            const y = player.y + Math.sin(angle) * 500;
+            enemies.push(enemyRegistry.create('djinnShaman', x, y, 1.2));
         }
     }
 
     spawnBoss(player) {
-        damageSystem.spawnText(player.x, player.y - 60, '👑 ظهر ملك العفاريت!', false, '#dc2626');
+        damageSystem.spawnText(player.x, player.y - 60, '👑 ظهر سلطان الجان الأعظم!', false, '#dc2626');
         cameraSystem.triggerShake(16);
         audioSystem.playBossRoar();
 

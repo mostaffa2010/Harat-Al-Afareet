@@ -1,21 +1,21 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Default Data & Permanent Progression Schema (Egyptian Colloquial Theme)
+ * Default Data, Achievements & Progression (20 Minutes Till Dawn Style)
  */
 
 export const DEFAULT_PLAYER_STATS = {
-    maxHp: 180,            // Boosted base health so players survive easily
-    hp: 180,
-    hpRegen: 0.5,          // Natural passive regeneration per sec
-    movementSpeed: 220,    // Pixels per second
+    maxHp: 190,
+    hp: 190,
+    hpRegen: 0.5,
+    movementSpeed: 220,
     damageMultiplier: 1.15,
     attackSpeedMultiplier: 1.0,
-    criticalChance: 0.08,  // 8% default
+    criticalChance: 0.08,
     criticalMultiplier: 1.85,
-    pickupRadius: 105,     // Generous magnet radius in px
-    armor: 1,              // Base flat damage reduction
+    pickupRadius: 110,
+    armor: 1,
     xpMultiplier: 1.0,
-    dashCooldown: 3.0,     // Snappier dash
+    dashCooldown: 2.8,
     dashSpeed: 560,
     dashDuration: 0.25,
     areaMultiplier: 1.0,
@@ -102,12 +102,70 @@ export const PERMANENT_UPGRADES = [
     }
 ];
 
+export const ACHIEVEMENTS = [
+    {
+        id: 'first_blood',
+        name: 'أول قطرة دم (البداية)',
+        description: 'فرتك أول 50 عفريت في الحارة.',
+        icon: '🩸',
+        rewardCoins: 50,
+        target: 50,
+        statKey: 'totalEnemiesDefeated'
+    },
+    {
+        id: 'monster_slayer',
+        name: 'سفاح العفاريت',
+        description: 'اهزم 500 عفريت في المعارك.',
+        icon: '⚔️',
+        rewardCoins: 150,
+        target: 500,
+        statKey: 'totalEnemiesDefeated'
+    },
+    {
+        id: 'legendary_slayer',
+        name: 'رعب الجان الأعظم',
+        description: 'اهزم 2000 عفريت.',
+        icon: '👑',
+        rewardCoins: 400,
+        target: 2000,
+        statKey: 'totalEnemiesDefeated'
+    },
+    {
+        id: 'survivor_5min',
+        name: 'صمود الفتوات',
+        description: 'اصمد لمدة 5 دقائق كاملة في جولة واحدة.',
+        icon: '⏳',
+        rewardCoins: 100,
+        target: 300,
+        statKey: 'highScoreTime'
+    },
+    {
+        id: 'survivor_10min',
+        name: 'سيد الحارة الخالد',
+        description: 'اهزم سلطان الجان واصمد لـ 10 دقائق كاملة!',
+        icon: '🏆',
+        rewardCoins: 350,
+        target: 600,
+        statKey: 'highScoreTime'
+    },
+    {
+        id: 'rich_magician',
+        name: 'قارون الحارة',
+        description: 'اجمع أكثر من 500 عملة أثرية.',
+        icon: '🪙',
+        rewardCoins: 150,
+        target: 500,
+        statKey: 'totalCoinsEarned'
+    }
+];
+
 export const INITIAL_SAVE_DATA = {
     coins: 0,
     totalCoinsEarned: 0,
     highScoreTime: 0,
     totalEnemiesDefeated: 0,
     selectedCharacterId: 'apprentice',
+    selectedDifficulty: 'NORMAL',
     unlockedCharacterIds: ['apprentice', 'fireMage', 'amuletKeeper'],
     unlockedWeaponIds: ['magicStaff', 'fireWand', 'lightningRod', 'magicalTalisman'],
     permanentUpgrades: {
@@ -119,6 +177,7 @@ export const INITIAL_SAVE_DATA = {
         iron_will: 0,
         critical_eye: 0
     },
+    claimedAchievements: {},
     audio: {
         soundEnabled: true,
         musicEnabled: true,

@@ -1,9 +1,9 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Central Game Orchestrator & State Machine (with 3s Countdown & Safety Pulse)
+ * Central Game Orchestrator & State Machine
  */
 
-import { GAME_STATES } from '../data/constants.js';
+import { GAME_STATES, DIFFICULTY_MODES } from '../data/constants.js';
 import { assetManager } from './assetManager.js';
 import { Renderer } from './renderer.js';
 import { GameLoop } from './gameLoop.js';
@@ -18,6 +18,7 @@ import { xpSystem } from '../systems/xpSystem.js';
 import { upgradeSystem } from '../systems/upgradeSystem.js';
 import { waveSystem } from '../systems/waveSystem.js';
 import { spawnSystem } from '../systems/spawnSystem.js';
+import { difficultySystem } from '../systems/difficultySystem.js';
 import { characterRegistry } from '../characters/characterRegistry.js';
 import { UIManager } from '../ui/uiManager.js';
 import { Player } from '../entities/player.js';
@@ -96,6 +97,10 @@ export class Game {
     }
 
     startRun(characterConfig) {
+        // Set Difficulty Mode
+        const selectedDiff = saveSystem.data.selectedDifficulty || 'NORMAL';
+        difficultySystem.setMode(selectedDiff);
+
         xpSystem.reset();
         upgradeSystem.reset();
         waveSystem.reset();
@@ -112,6 +117,12 @@ export class Game {
         this.enemiesDefeatedCount = 0;
 
         this.player = new Player(characterConfig, saveSystem.data.permanentUpgrades);
+
+        // Apply difficulty speed modifier
+        const diffObj = DIFFICULTY_MODES[selectedDiff] || DIFFICULTY_MODES.NORMAL;
+        if (diffObj.playerSpeedBonus) {
+            this.player.movementSpeed *= diffObj.playerSpeedBonus;
+        }
 
         cameraSystem.x = this.player.x;
         cameraSystem.y = this.player.y;
@@ -151,7 +162,7 @@ export class Game {
                 const angle = dist > 0 ? Math.atan2(dy, dx) : Math.random() * Math.PI * 2;
                 e.x = this.player.x + Math.cos(angle) * radius;
                 e.y = this.player.y + Math.sin(angle) * radius;
-                e.applyKnockback(Math.cos(angle), Math.sin(angle), 150);
+                e.applyKnockback(Math.cos(angle), Math.sin(angle), 160);
             }
         }
     }
@@ -183,9 +194,6 @@ export class Game {
         this.startCountdown();
     }
 
-    // ==========================================
-    // GAME UPDATE LOOP
-    // ==========================================
     update(dt) {
         if (inputSystem.consumePause()) {
             if (this.state === GAME_STATES.PLAYING) {
@@ -201,7 +209,7 @@ export class Game {
         particleSystem.update(dt);
         damageSystem.update(dt);
 
-        // Process 3-Second Countdown
+        // Process Countdown
         if (this.state === GAME_STATES.COUNTDOWN) {
             this.countdownTimer -= dt;
             const sec = Math.ceil(this.countdownTimer);
@@ -221,7 +229,7 @@ export class Game {
 
         if (this.state !== GAME_STATES.PLAYING) return;
 
-        // Check for Level-Up
+        // Level-Up Check
         if (xpSystem.levelUpPending) {
             const choices = upgradeSystem.generateChoices(this.player, 3);
             this.setState(GAME_STATES.LEVEL_UP, { cards: choices });
@@ -361,13 +369,14 @@ export class Game {
             }
         }
 
-        // 12. Update In-Game HUD
+        // 12. Update HUD
         this.uiManager.updateHUD(this.player, xpSystem, waveSystem, this.boss);
     }
 
     handleGameOver() {
         const survivalTime = Math.floor(waveSystem.runTime);
-        const coinsEarned = xpSystem.runCoins;
+        const diffMult = difficultySystem.currentMode.coinRewardMult || 1.0;
+        const coinsEarned = Math.round(xpSystem.runCoins * diffMult);
         const enemiesDefeated = this.enemiesDefeatedCount;
 
         saveSystem.recordRun(survivalTime, enemiesDefeated, coinsEarned);
@@ -384,7 +393,8 @@ export class Game {
 
     handleVictory() {
         const survivalTime = Math.floor(waveSystem.runTime);
-        const coinsEarned = xpSystem.runCoins + 300;
+        const diffMult = difficultySystem.currentMode.coinRewardMult || 1.0;
+        const coinsEarned = Math.round((xpSystem.runCoins + 350) * diffMult);
         const enemiesDefeated = this.enemiesDefeatedCount;
 
         saveSystem.recordRun(survivalTime, enemiesDefeated, coinsEarned);

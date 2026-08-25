@@ -1,9 +1,10 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character Selection Screen (Egyptian Colloquial Theme)
+ * Character Selection Screen (with Mode Badge)
  */
 
 import { characterRegistry } from '../characters/characterRegistry.js';
+import { DIFFICULTY_MODES } from '../data/constants.js';
 import { assetManager } from '../core/assetManager.js';
 import { audioSystem } from '../systems/audioSystem.js';
 import { saveSystem } from '../systems/saveSystem.js';
@@ -19,13 +20,15 @@ export class CharacterSelect {
 
     render() {
         const char = this.characters[this.currentIndex];
+        const diffKey = saveSystem.data.selectedDifficulty || 'NORMAL';
+        const diffObj = DIFFICULTY_MODES[diffKey];
 
         this.container.innerHTML = `
             <div class="menu-screen char-select-screen">
                 <div class="screen-top-bar">
                     <button class="btn btn-sm btn-muted" id="btn-char-back">⬅ ارجع ورا</button>
                     <h2 class="screen-title">نقي بطل المعركة</h2>
-                    <div style="width: 50px;"></div>
+                    <span class="diff-badge-active">${diffObj.badge}</span>
                 </div>
 
                 <div class="char-display-card" style="--char-primary: ${char.themePrimary}; --char-secondary: ${char.themeSecondary};">
@@ -64,7 +67,7 @@ export class CharacterSelect {
                     </div>
 
                     <button class="btn btn-primary btn-large btn-glow" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 16px ${char.themePrimary}">
-                        <span>⚔️ انزل الحارة بده ودوس!</span>
+                        <span>⚔️ انزل الحارة بهذا البطل (${diffObj.badge})</span>
                     </button>
                 </div>
             </div>

@@ -13,6 +13,7 @@ import { GameOverModal } from './gameOverModal.js';
 import { VictoryModal } from './victoryModal.js';
 import { BazaarModal } from './bazaarModal.js';
 import { CollectionModal } from './collectionModal.js';
+import { AchievementsModal } from './achievementsModal.js';
 import { saveSystem } from '../systems/saveSystem.js';
 
 export class UIManager {
@@ -23,7 +24,6 @@ export class UIManager {
         this.callbacks = {};
         this.currentScreen = null;
 
-        // Instantiate Sub-Screens
         this.mainMenu = new MainMenu(this.container, (state) => this.callbacks.onNavigate(state));
         this.characterSelect = new CharacterSelect(
             this.container,
@@ -50,6 +50,7 @@ export class UIManager {
         );
         this.bazaarModal = new BazaarModal(this.container, () => this.callbacks.onNavigate(GAME_STATES.MAIN_MENU));
         this.collectionModal = new CollectionModal(this.container, () => this.callbacks.onNavigate(GAME_STATES.MAIN_MENU));
+        this.achievementsModal = new AchievementsModal(this.container, () => this.callbacks.onNavigate(GAME_STATES.MAIN_MENU));
     }
 
     init(callbacks) {
@@ -75,6 +76,9 @@ export class UIManager {
         } else if (state === GAME_STATES.COLLECTION) {
             this.hudContainer.style.display = 'none';
             this.collectionModal.render();
+        } else if (state === GAME_STATES.ACHIEVEMENTS) {
+            this.hudContainer.style.display = 'none';
+            this.achievementsModal.render();
         } else if (state === GAME_STATES.LEVEL_UP) {
             this.levelUpModal.render(extraData.cards || []);
         } else if (state === GAME_STATES.PAUSED) {
