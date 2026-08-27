@@ -1,7 +1,7 @@
 export const attackSpeedUpgrade = {
     id: 'general_attack_speed',
     category: 'general',
-    name: 'تعويذة السرعة (رش ورا بعضه)',
+    name: 'تعويذة الرشاش',
     description: 'تسريع وتيرة هجوم وضرب كل أسلحتك بنسبة +18%.',
     icon: '⏳',
     themeColor: '#38bdf8',

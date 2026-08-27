@@ -1,7 +1,7 @@
 export const projectileSpeedUpgrade = {
     id: 'general_projectile_speed',
     category: 'general',
-    name: 'رياح الخماسين (طيران خارق)',
+    name: 'رياح الخماسين',
     description: 'زيادة سرعة طيران المقذوفات السحرية بنسبة +30%.',
     icon: '💨',
     themeColor: '#a855f7',

@@ -1,7 +1,7 @@
 export const goldDiggerUpgrade = {
     id: 'general_gold_digger',
     category: 'general',
-    name: 'كنز الفتوات (شخللة فلوس)',
+    name: 'كنز الفتوات',
     description: 'زيادة إسقاط العملات الأثرية وقيمتها بمقدار +60%.',
     icon: '🪙',
     themeColor: '#f59e0b',

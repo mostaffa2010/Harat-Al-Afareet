@@ -1,7 +1,7 @@
 export const criticalChanceUpgrade = {
     id: 'general_critical_chance',
     category: 'general',
-    name: 'ضربة معلم (كريتيكال حراق)',
+    name: 'ضربة معلم',
     description: 'زيادة فرصة الضربة الحرجة بنسبة +10% ومضاعف الضرر بنسبة +25%.',
     icon: '👁️',
     themeColor: '#fbbf24',
