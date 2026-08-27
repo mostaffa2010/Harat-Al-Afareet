@@ -1,10 +1,11 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Master UI Manager
+ * Master UI Manager (Streamlined Flow)
  */
 
 import { GAME_STATES } from '../data/constants.js';
 import { MainMenu } from './mainMenu.js';
+import { DifficultySelect } from './difficultySelect.js';
 import { CharacterSelect } from './characterSelect.js';
 import { HUD } from './hud.js';
 import { LevelUpModal } from './levelUpModal.js';
@@ -25,10 +26,15 @@ export class UIManager {
         this.currentScreen = null;
 
         this.mainMenu = new MainMenu(this.container, (state) => this.callbacks.onNavigate(state));
+        this.difficultySelect = new DifficultySelect(
+            this.container,
+            (diff) => this.callbacks.onNavigate(GAME_STATES.CHARACTER_SELECT),
+            () => this.callbacks.onNavigate(GAME_STATES.MAIN_MENU)
+        );
         this.characterSelect = new CharacterSelect(
             this.container,
             (char) => this.callbacks.onStartRun(char),
-            () => this.callbacks.onNavigate(GAME_STATES.MAIN_MENU)
+            () => this.callbacks.onNavigate(GAME_STATES.DIFFICULTY_SELECT)
         );
         this.hud = new HUD(this.hudContainer, () => this.callbacks.onPause());
         this.levelUpModal = new LevelUpModal(this.container, (upgrade) => this.callbacks.onSelectUpgrade(upgrade));
@@ -45,7 +51,7 @@ export class UIManager {
         );
         this.victoryModal = new VictoryModal(
             this.container,
-            () => this.callbacks.onNavigate(GAME_STATES.CHARACTER_SELECT),
+            () => this.callbacks.onNavigate(GAME_STATES.DIFFICULTY_SELECT),
             () => this.callbacks.onQuit()
         );
         this.bazaarModal = new BazaarModal(this.container, () => this.callbacks.onNavigate(GAME_STATES.MAIN_MENU));
@@ -67,6 +73,9 @@ export class UIManager {
         } else if (state === GAME_STATES.MAIN_MENU) {
             this.hudContainer.style.display = 'none';
             this.mainMenu.render(saveSystem.data);
+        } else if (state === GAME_STATES.DIFFICULTY_SELECT) {
+            this.hudContainer.style.display = 'none';
+            this.difficultySelect.render();
         } else if (state === GAME_STATES.CHARACTER_SELECT) {
             this.hudContainer.style.display = 'none';
             this.characterSelect.render();

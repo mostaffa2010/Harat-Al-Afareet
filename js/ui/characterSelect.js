@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character Selection Screen (with Mode Badge)
+ * Character Selection Screen (Cleaned Up & Pure Egyptian)
  */
 
 import { characterRegistry } from '../characters/characterRegistry.js';
@@ -56,18 +56,10 @@ export class CharacterSelect {
                             <span class="detail-label">السلاح الأساسي:</span>
                             <span class="detail-val">${this.getWeaponName(char.startingWeaponId)}</span>
                         </div>
-
-                        <div class="detail-box">
-                            <span class="detail-label">ألوان المعلم:</span>
-                            <div class="theme-colors">
-                                <span class="color-swatch" style="background: ${char.themePrimary}"></span>
-                                <span class="color-swatch" style="background: ${char.themeSecondary}"></span>
-                            </div>
-                        </div>
                     </div>
 
                     <button class="btn btn-primary btn-large btn-glow" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 16px ${char.themePrimary}">
-                        <span>⚔️ انزل الحارة بهذا البطل (${diffObj.badge})</span>
+                        <span>⚔️ انزل الحارة بهذا البطل (${diffObj.name})</span>
                     </button>
                 </div>
             </div>
@@ -84,10 +76,10 @@ export class CharacterSelect {
 
     getWeaponName(weaponId) {
         const names = {
-            magicStaff: '🪄 عصا الحكمة (الخرزانة)',
-            fireWand: '🔥 صولجان اللهب (ولاعة الجان)',
-            lightningRod: '⚡ صاعقة السماء (كهربا الحارة)',
-            magicalTalisman: '🧿 تمائم الحماية (حجاب عين حورس)'
+            magicStaff: '🪄 الخرزانة السحرية',
+            fireWand: '🔥 ولاعة الجان',
+            lightningRod: '⚡ كهربا الحارة',
+            magicalTalisman: '🧿 حجاب عين حورس'
         };
         return names[weaponId] || weaponId;
     }
