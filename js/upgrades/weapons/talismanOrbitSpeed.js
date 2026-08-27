@@ -1,7 +1,7 @@
 export const talismanOrbitSpeedUpgrade = {
     id: 'weapon_talisman_orbit',
     category: 'weapon',
-    name: 'خلاط التمائم (دوران سريع)',
+    name: 'خلاط التمائم',
     description: 'زيادة سرعة ونطاق دوران تمائم عين حورس بنسبة +35% لفرم أي عفريت.',
     icon: '🧿',
     themeColor: '#2563eb',

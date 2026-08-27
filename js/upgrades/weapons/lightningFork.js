@@ -1,7 +1,7 @@
 export const lightningForkUpgrade = {
     id: 'weapon_lightning_fork',
     category: 'weapon',
-    name: 'كهربا متشعبة (رعد يفرتك)',
+    name: 'كهربا متشعبة',
     description: 'صاعقة السماء تضرب عفريت زيادة (+1) مع توسيع نطاق الصعق +25%.',
     icon: '⚡',
     themeColor: '#67e8f9',

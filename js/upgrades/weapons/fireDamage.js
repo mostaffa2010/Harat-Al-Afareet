@@ -1,7 +1,7 @@
 export const fireDamageUpgrade = {
     id: 'weapon_fire_damage',
     category: 'weapon',
-    name: 'حرايق متأججة (نار يا حبيبي نار)',
+    name: 'حرايق متأججة',
     description: 'زيادة ضرر وانفجارات النيران بنسبة +30% تشوي العفاريت شواء.',
     icon: '🔥',
     themeColor: '#ef4444',

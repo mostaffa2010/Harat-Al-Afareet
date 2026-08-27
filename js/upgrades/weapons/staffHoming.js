@@ -1,7 +1,7 @@
 export const staffHomingUpgrade = {
     id: 'weapon_staff_homing',
     category: 'weapon',
-    name: 'بصيرة الخرزانة (صياد العفاريت)',
+    name: 'بصيرة الخرزانة',
     description: 'طلقات العصا السحرية تجري أسرع وتضرب أقوى بنسبة +25%.',
     icon: '🪄',
     themeColor: '#06b6d4',
