@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Asset Manager & High-Contrast 20 Minutes Till Dawn Procedural Sprites
+ * Asset Manager & 256x256 High-Definition Pixel-Art Character Illustrations
  */
 
 export class AssetManager {
@@ -17,6 +17,7 @@ export class AssetManager {
 
         this.generateEnvironmentTiles();
         this.generateTopDownCharacterSprites();
+        this.generateHighResCharacterIllustrations();
         this.generateEnemySprites();
         this.generateBossSprites();
         this.generateProjectileSprites();
@@ -102,13 +103,12 @@ export class AssetManager {
     }
 
     // ==========================================
-    // 2. TOP-DOWN HIGH-CONTRAST CHARACTERS
+    // 2. TOP-DOWN GAMEPLAY CHARACTER SPRITES
     // ==========================================
     generateTopDownCharacterSprites() {
         this.sprites.characters = {};
-        this.illustrations.characters = {};
 
-        // A. APPRENTICE (Zaki)
+        // A. APPRENTICE (الواد زكي)
         const apprenticePalette = {
             'K': '#0f172a',
             'T': '#06b6d4',
@@ -191,9 +191,8 @@ export class AssetManager {
             attack: this.bakeSprite(apprenticeTopDownAttack, apprenticePalette, 2.3),
             hurt: this.bakeHurtSprite(apprenticeTopDownIdle, apprenticePalette, 2.3)
         };
-        this.illustrations.characters['apprentice'] = this.generateApprenticeIllustration();
 
-        // B. FIRE MAGE (Rayan)
+        // B. FIRE MAGE (الأسطى ريان)
         const fireMagePalette = {
             'K': '#0f172a',
             'R': '#dc2626',
@@ -275,9 +274,8 @@ export class AssetManager {
             attack: this.bakeSprite(fireMageTopDownAttack, fireMagePalette, 2.3),
             hurt: this.bakeHurtSprite(fireMageTopDownIdle, fireMagePalette, 2.3)
         };
-        this.illustrations.characters['fireMage'] = this.generateFireMageIllustration();
 
-        // C. AMULET KEEPER (Layla)
+        // C. AMULET KEEPER (الست ليلى)
         const amuletKeeperPalette = {
             'K': '#0f172a',
             'U': '#1e40af',
@@ -359,192 +357,191 @@ export class AssetManager {
             attack: this.bakeSprite(amuletKeeperTopDownAttack, amuletKeeperPalette, 2.3),
             hurt: this.bakeHurtSprite(amuletKeeperTopDownIdle, amuletKeeperPalette, 2.3)
         };
-        this.illustrations.characters['amuletKeeper'] = this.generateAmuletKeeperIllustration();
     }
 
-    generateApprenticeIllustration() {
-        const { canvas, ctx } = this.createCanvas(160, 200);
-        const grad = ctx.createRadialGradient(80, 100, 10, 80, 100, 75);
-        grad.addColorStop(0, 'rgba(6, 182, 212, 0.5)');
-        grad.addColorStop(0.7, 'rgba(245, 158, 11, 0.2)');
-        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 160, 200);
+    // ==========================================
+    // 3. 256x256 HIGH-RESOLUTION CHARACTER ART
+    // (NO geometric background circle!)
+    // ==========================================
+    generateHighResCharacterIllustrations() {
+        this.illustrations.characters = {};
 
-        ctx.strokeStyle = '#06b6d4';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(80, 100, 68, 0, Math.PI * 2);
-        ctx.stroke();
+        // 1. الواد زكي (المبتدئ) — 256x256 High Definition Pixel Illustration
+        const { canvas: c1, ctx: ctx1 } = this.createCanvas(256, 256);
+        // Soft atmospheric radial mist only (NO hard geometric circle)
+        const g1 = ctx1.createRadialGradient(128, 128, 10, 128, 128, 110);
+        g1.addColorStop(0, 'rgba(6, 182, 212, 0.28)');
+        g1.addColorStop(0.6, 'rgba(245, 158, 11, 0.08)');
+        g1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx1.fillStyle = g1;
+        ctx1.fillRect(0, 0, 256, 256);
 
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(80, 100, 62, 0, Math.PI * 2);
-        ctx.stroke();
-
-        const illApprentice = [
-            "........KKKKKKKK........",
-            "......KKTTTTTTTTKK......",
-            "....KKTTLYYYYYYLTKK.....",
-            "...KTTLLYYYYYYYYLLTTK...",
-            "...KTSSSSSSSSSSSSSTK....",
-            "..KTSSSWWESSSSWWESSTK...",
-            "..KTSSSWWESSSSWWESSTK...",
-            "..KTSSSDDDSSSSDDDDSSTK..",
-            "...KSSSSSSSSSSSSSSSK....",
-            "....KGGGGGGGGGGGGGK.....",
-            "....KGGYYYYYYYGGGGK.....",
-            "...KTTTTTTTTTTTTTTTK....",
-            "..KTLLTTTTTTTTTTLLTTK...",
-            ".KTTLLTTTTGGTTTTLLTTTK..",
-            ".KTLLTTTTGGGGTTTTLLTTK..",
-            ".KFLLTTTTGGGGTTTTLLTTK..",
-            "KFFLLTTTTTTTTTTTTLLTFKK.",
-            "KFFLLKKTTTTTTTTKKLLTFKK.",
-            "KYYLKK.KKTTTTKK.KKLYYKK.",
-            ".KKK.....KKKK.....KKK..."
+        // Detailed 32x32 matrix drawn at 6x scale
+        const zakiMatrix = [
+            "..........KKKKKKKKKK..........",
+            "........KKTTTTTTTTTTKK........",
+            ".......KTTTTLLLLTTTTTK........",
+            "......KTTLLYGGGGYLLTTTK.......",
+            ".....KTTLLYGGYYYYGGYLLTK......",
+            ".....KTTLYYYYYYYYYYLLTK.......",
+            "....KTTSSSSSSSSSSSSSTTK.......",
+            "...KTTSSWESSSSSSSSWESSTTK.....",
+            "...KTTSSWESSSSSSSSWESSTTK.....",
+            "...KTTSSSWWSSSSSSSSWWSSTK.....",
+            "....KTSSSSDDSSSSDDSSSSTK......",
+            "....KTSSSSSDDDDDDSSSSSTK......",
+            ".....KTSSSSSSSSSSSSSSTK.......",
+            ".....KTGGGGGGGGGGGGGGTTK......",
+            "....KTTGGYYYYYYYYYYGGTTK......",
+            "...KTTTTTTTTTTTTTTTTTTTTK.....",
+            "..KTTLLTTTTTTTTTTTTTTLLTTK....",
+            ".KTTLLTTTTTTGGGGTTTTTTLLTTK...",
+            ".KTLLTTTTTTGGGGGGTTTTTTLLTK...",
+            ".KTLLTTTTTGGYYYYGGTTTTTLLTK...",
+            ".KWLLTTTTTGGYYYYGGTTTTTLLWKK..",
+            "KWWLLTTTTTTGGGGGGTTTTTTLLWWKK.",
+            "KWWLLTTTTTTTTTTTTTTTTTTLLWWKK.",
+            "KYYLLKKTTTTTTTTTTTTTTKKLLYYKK.",
+            ".KKKK..KKTTTTTTTTTTKK..KKKK...",
+            ".........KKBBBBBBKK...........",
+            ".........KKBBBBBBKK...........",
+            ".........KKSSKKSSKK..........."
         ];
 
-        const palette = {
+        const zakiPal = {
             'K': '#090d16',
             'S': '#fde047',
             'D': '#d97706',
             'T': '#0891b2',
             'L': '#22d3ee',
             'G': '#d97706',
-            'Y': '#fde047',
+            'Y': '#fef08a',
             'W': '#ffffff',
             'E': '#06b6d4',
-            'F': '#78350f'
+            'B': '#155e75'
         };
+        this.drawPixelMatrix(ctx1, zakiMatrix, zakiPal, 6.8, 24, 25);
 
-        this.drawPixelMatrix(ctx, illApprentice, palette, 4.5, 26, 35);
-        ctx.fillStyle = '#67e8f9';
-        ctx.beginPath();
-        ctx.arc(28, 105, 12, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(28, 105, 5, 0, Math.PI * 2);
-        ctx.fill();
-        return canvas;
-    }
+        // Glowing arcane staff crystal orb
+        const orbGrad1 = ctx1.createRadialGradient(38, 165, 2, 38, 165, 18);
+        orbGrad1.addColorStop(0, '#ffffff');
+        orbGrad1.addColorStop(0.4, '#22d3ee');
+        orbGrad1.addColorStop(1, 'rgba(6, 182, 212, 0)');
+        ctx1.fillStyle = orbGrad1;
+        ctx1.beginPath();
+        ctx1.arc(38, 165, 18, 0, Math.PI * 2);
+        ctx1.fill();
 
-    generateFireMageIllustration() {
-        const { canvas, ctx } = this.createCanvas(160, 200);
-        const grad = ctx.createRadialGradient(80, 100, 10, 80, 100, 75);
-        grad.addColorStop(0, 'rgba(239, 68, 68, 0.5)');
-        grad.addColorStop(0.7, 'rgba(249, 115, 22, 0.2)');
-        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 160, 200);
+        this.illustrations.characters['apprentice'] = c1;
 
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(80, 100, 68, 0, Math.PI * 2);
-        ctx.stroke();
+        // 2. الأسطى ريان (ساحر النار) — 256x256 High Definition Pixel Illustration
+        const { canvas: c2, ctx: ctx2 } = this.createCanvas(256, 256);
+        const g2 = ctx2.createRadialGradient(128, 128, 10, 128, 128, 110);
+        g2.addColorStop(0, 'rgba(239, 68, 68, 0.32)');
+        g2.addColorStop(0.6, 'rgba(249, 115, 22, 0.08)');
+        g2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx2.fillStyle = g2;
+        ctx2.fillRect(0, 0, 256, 256);
 
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(80, 100, 62, 0, Math.PI * 2);
-        ctx.stroke();
-
-        const illFireMage = [
-            "........KKHHHHHH........",
-            "......KKHHHHHHHHHH......",
-            "....KKHHHHHHHHHHHHHH....",
-            "...KHHSSSSSSSSSSSSSHK...",
-            "..KHHSSSWWESSSSWWESSSTK.",
-            "..KHHSSSWWESSSSWWESSSTK.",
-            "..KHHSSSDDDSSSSDDDDSSTK.",
-            "...KSSSSSSSSSSSSSSSK....",
-            "....KOOOOOOOOOOOOOOK....",
-            "....KOOYYYYYYYOOOOK.....",
-            "...KRRRRRRRRRRRRRRRK....",
-            "..KRLLRRRRRRRRRRLLRRK...",
-            ".KRRLLRRRROORRRRLLRRRK..",
-            ".KRLLRRRROOOORRRRLLRRK..",
-            ".KFLLRRRROOOORRRRLLRRK..",
-            "KFFLLRRRRRRRRRRRRLLRFKK.",
-            "KFFLLKKRRRRRRRRKKLLRFKK.",
-            "KYYLKK.KKRRRRKK.KKLYYKK.",
-            ".KKK.....KKKK.....KKK..."
+        const rayanMatrix = [
+            "..........KKHHHHHHHH..........",
+            "........KKHHHHHHHHHHHH........",
+            ".......KHHHHHLLLLHHHHHK.......",
+            "......KHHLLOOOOOOLLHHHK.......",
+            ".....KHHLLOOOOOOOOLLHHHK......",
+            ".....KHHLOOYYYYYYOOLHHHK......",
+            "....KHHSSSSSSSSSSSSSHHK.......",
+            "...KHHSSWESSSSSSSSWESSHHK.....",
+            "...KHHSSWESSSSSSSSWESSHHK.....",
+            "...KHHSSSWWSSSSSSSSWWSSHK.....",
+            "....KHSSSSDDSSSSDDSSSSHHK.....",
+            "....KHSSSSSDDDDDDSSSSSHK......",
+            ".....KHSSSSSSSSSSSSSSSHK......",
+            ".....KHOOOOOOOOOOOOOOOHK......",
+            "....KRRROOYYYYYYYYYYOORRRK....",
+            "...KRRRRRRRRRRRRRRRRRRRRRK....",
+            "..KRRLLRRRRRRRRRRRRRRLLRRK....",
+            ".KRRLLRRRRRROOOORRRRRRLLRRK...",
+            ".KRLLRRRRRROOOOOORRRRRRLLRK...",
+            ".KRLLRRRRROOYYYYOORRRRRLLRK...",
+            ".KWLLRRRRROOYYYYOORRRRRLLWKK..",
+            "KWWLLRRRRRROOOOOORRRRRRLLWWKK.",
+            "KWWLLRRRRRRRRRRRRRRRRRRLLWWKK.",
+            "KYYLLKKRRRRRRRRRRRRRRKKLLYYKK.",
+            ".KKKK..KKRRRRRRRRRRKK..KKKK...",
+            ".........KKBBBBBBKK...........",
+            ".........KKBBBBBBKK...........",
+            ".........KKSSKKSSKK..........."
         ];
 
-        const palette = {
+        const rayanPal = {
             'K': '#090d16',
             'S': '#fed7aa',
             'D': '#ea580c',
             'R': '#b91c1c',
             'L': '#f87171',
             'O': '#ea580c',
-            'Y': '#fde047',
+            'Y': '#fef08a',
             'W': '#ffffff',
             'E': '#ef4444',
             'H': '#dc2626',
-            'F': '#fbbf24'
+            'B': '#7f1d1d'
         };
+        this.drawPixelMatrix(ctx2, rayanMatrix, rayanPal, 6.8, 24, 25);
 
-        this.drawPixelMatrix(ctx, illFireMage, palette, 4.5, 26, 35);
-        ctx.fillStyle = '#f97316';
-        ctx.beginPath();
-        ctx.arc(28, 115, 14, 0, Math.PI * 2);
-        ctx.arc(132, 115, 14, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#fef08a';
-        ctx.beginPath();
-        ctx.arc(28, 115, 6, 0, Math.PI * 2);
-        ctx.arc(132, 115, 6, 0, Math.PI * 2);
-        ctx.fill();
-        return canvas;
-    }
+        // Blazing hand flames
+        const flameGrad1 = ctx2.createRadialGradient(38, 175, 2, 38, 175, 18);
+        flameGrad1.addColorStop(0, '#fef08a');
+        flameGrad1.addColorStop(0.5, '#f97316');
+        flameGrad1.addColorStop(1, 'rgba(239, 68, 68, 0)');
+        ctx2.fillStyle = flameGrad1;
+        ctx2.beginPath();
+        ctx2.arc(38, 175, 18, 0, Math.PI * 2);
+        ctx2.arc(218, 175, 18, 0, Math.PI * 2);
+        ctx2.fill();
 
-    generateAmuletKeeperIllustration() {
-        const { canvas, ctx } = this.createCanvas(160, 200);
-        const grad = ctx.createRadialGradient(80, 100, 10, 80, 100, 75);
-        grad.addColorStop(0, 'rgba(37, 99, 235, 0.45)');
-        grad.addColorStop(0.7, 'rgba(245, 158, 11, 0.2)');
-        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 160, 200);
+        this.illustrations.characters['fireMage'] = c2;
 
-        ctx.strokeStyle = '#2563eb';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(80, 100, 68, 0, Math.PI * 2);
-        ctx.stroke();
+        // 3. الست ليلى (حارسة التميمة) — 256x256 High Definition Pixel Illustration
+        const { canvas: c3, ctx: ctx3 } = this.createCanvas(256, 256);
+        const g3 = ctx3.createRadialGradient(128, 128, 10, 128, 128, 110);
+        g3.addColorStop(0, 'rgba(37, 99, 235, 0.32)');
+        g3.addColorStop(0.6, 'rgba(245, 158, 11, 0.08)');
+        g3.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx3.fillStyle = g3;
+        ctx3.fillRect(0, 0, 256, 256);
 
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(80, 100, 62, 0, Math.PI * 2);
-        ctx.stroke();
-
-        const illAmulet = [
-            "......KKGGGGGGGGKK......",
-            "....KKGGGGGGGGGGGGKK....",
-            "...KGGHSSSSSSSSSSSHGK...",
-            "..KGGHSSWWESSSSWWESHGK..",
-            "..KGGHSSWWESSSSWWESHGK..",
-            "..KGGHSSDDDSSSSDDDDSGK..",
-            "...KSSSSSSSSSSSSSSSK....",
-            "....KGGGGAAAAAGGGGK.....",
-            "....KGGGYAAAAAYGGGK.....",
-            "...KUUUUUUUUUUUUUUUK....",
-            "..KULLUUUUUUUUUULLUUK...",
-            ".KUULLUUUUGGUUUULLUUUK..",
-            ".KULLUUUUGGGGUUUULLUUK..",
-            ".KALLUUUUGGGGUUUULLAAK..",
-            "KAALLUUUUUUUUUUUULLAAYK.",
-            "KAALLKKUUUUUUUUKKLLAAYK.",
-            "KYYLKK.KKUUUUKK.KKLYYKK.",
-            ".KKK.....KKKK.....KKK..."
+        const laylaMatrix = [
+            "..........KKGGGGGGGG..........",
+            "........KKGGGGGGGGGGKK........",
+            ".......KGGGGYYYYYYYYGGK.......",
+            "......KGGLLYYYYYYYYLLGGK......",
+            ".....KGGLLYYYYYYYYYYLLGGK.....",
+            ".....KGGHSSSSSSSSSSSHGGK......",
+            "....KGGHSSWESSSSSSWESHGGK.....",
+            "...KGGHSSWESSSSSSWESHGGK......",
+            "...KGGHSSSWWSSSSSWWSHGGK......",
+            "....KGHSSSSDDSSDDSSSSHGK......",
+            "....KGHSSSSSDDDDSSSSSHGK......",
+            ".....KHSSSSSSSSSSSSSSHK.......",
+            ".....KAAAAAGGGGGAAAAAAK.......",
+            "....KUAAAYYYYYYYYAAAUUUK......",
+            "...KUUUUUUUUUUUUUUUUUUUUK.....",
+            "..KUULLUUUUUUUUUUUUUULLUUK....",
+            ".KUULLUUUUUUGGGGUUUUUULLUUK...",
+            ".KULLUUUUUUGGGGGGUUUUUULLUK...",
+            ".KALLUUUUUGGYYYYGGUUUUULLAK...",
+            ".KALLUUUUUGGYYYYGGUUUUULLAK...",
+            "KAALLUUUUUUGGGGGGUUUUUULLAAK..",
+            "KAALLUUUUUUUUUUUUUUUUUULLAAK..",
+            "KYYLLKKUUUUUUUUUUUUUUKKLLYYKK.",
+            ".KKKK..KKUUUUUUUUUUKK..KKKK...",
+            ".........KKBBBBBBKK...........",
+            ".........KKBBBBBBKK...........",
+            ".........KKSSKKSSKK..........."
         ];
 
-        const palette = {
+        const laylaPal = {
             'K': '#090d16',
             'S': '#fde047',
             'D': '#ca8a04',
@@ -555,28 +552,31 @@ export class AssetManager {
             'W': '#ffffff',
             'E': '#38bdf8',
             'H': '#09090b',
-            'A': '#38bdf8'
+            'A': '#38bdf8',
+            'B': '#172554'
         };
+        this.drawPixelMatrix(ctx3, laylaMatrix, laylaPal, 6.8, 24, 25);
 
-        this.drawPixelMatrix(ctx, illAmulet, palette, 4.5, 26, 35);
-        ctx.fillStyle = '#f59e0b';
-        ctx.fillRect(22, 100, 14, 18);
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(25, 104, 8, 10);
-        ctx.fillStyle = '#f59e0b';
-        ctx.fillRect(124, 100, 14, 18);
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(127, 104, 8, 10);
-        return canvas;
+        // Orbiting glowing Eye of Horus Talisman
+        ctx3.fillStyle = '#f59e0b';
+        ctx3.fillRect(32, 140, 20, 26);
+        ctx3.fillStyle = '#38bdf8';
+        ctx3.fillRect(36, 146, 12, 14);
+
+        ctx3.fillStyle = '#f59e0b';
+        ctx3.fillRect(204, 140, 20, 26);
+        ctx3.fillStyle = '#38bdf8';
+        ctx3.fillRect(208, 146, 12, 14);
+
+        this.illustrations.characters['amuletKeeper'] = c3;
     }
 
     // ==========================================
-    // 3. 7+ DISTINCT ENEMIES
+    // 4. ENEMIES
     // ==========================================
     generateEnemySprites() {
         this.sprites.enemies = {};
 
-        // 1. Small Afreet
         const smallAfreetPalette = {
             'K': '#090d16',
             'P': '#7e22ce',
@@ -604,7 +604,6 @@ export class AssetManager {
             hurt: this.bakeHurtSprite(smallAfreetIdle, smallAfreetPalette, 2)
         };
 
-        // 2. Fast Afreet
         const fastAfreetPalette = {
             'K': '#090d16',
             'G': '#059669',
@@ -633,7 +632,6 @@ export class AssetManager {
             hurt: this.bakeHurtSprite(fastAfreetIdle, fastAfreetPalette, 2)
         };
 
-        // 3. Ranged Afreet
         const rangedAfreetPalette = {
             'K': '#090d16',
             'S': '#d97706',
@@ -662,7 +660,6 @@ export class AssetManager {
             hurt: this.bakeHurtSprite(rangedAfreetIdle, rangedAfreetPalette, 2)
         };
 
-        // 4. Giant Afreet
         const giantAfreetPalette = {
             'K': '#090d16',
             'O': '#334155',
@@ -694,7 +691,6 @@ export class AssetManager {
             hurt: this.bakeHurtSprite(giantAfreetIdle, giantAfreetPalette, 3)
         };
 
-        // 5. Exploding Ghoul (العفريت المتفجر - glowing red ticking bomb skull)
         const explodingPalette = {
             'K': '#090d16',
             'R': '#ef4444',
@@ -722,7 +718,6 @@ export class AssetManager {
             hurt: this.bakeHurtSprite(explodingIdle, explodingPalette, 2)
         };
 
-        // 6. Djinn Shaman (ساحر الجان - purple mystic robe & horns)
         const shamanPalette = {
             'K': '#090d16',
             'P': '#6b21a8',
@@ -751,7 +746,6 @@ export class AssetManager {
             hurt: this.bakeHurtSprite(shamanIdle, shamanPalette, 2.2)
         };
 
-        // 7. Crypt Bat (خفاش المقابر - dark wings with glowing eye)
         const batPalette = {
             'K': '#090d16',
             'D': '#1e1b4b',
@@ -777,7 +771,7 @@ export class AssetManager {
     }
 
     // ==========================================
-    // 4. BOSS (Afreet King)
+    // 5. BOSS (Afreet King)
     // ==========================================
     generateBossSprites() {
         this.sprites.bosses = {};
@@ -825,7 +819,7 @@ export class AssetManager {
     }
 
     // ==========================================
-    // 5. PROJECTILES & PICKUPS
+    // 6. PROJECTILES & PICKUPS
     // ==========================================
     generateProjectileSprites() {
         this.sprites.projectiles = {};
@@ -983,10 +977,11 @@ export class AssetManager {
         return canvas;
     }
 
+    // Red Hurt Flash Sprite for instant clear hit feedback!
     bakeHurtSprite(matrix, palette, scale = 2) {
         const hurtPalette = {};
         for (const k in palette) {
-            hurtPalette[k] = '#ffffff';
+            hurtPalette[k] = '#ef4444'; // Vivid Red Flash
         }
         return this.bakeSprite(matrix, hurtPalette, scale);
     }
