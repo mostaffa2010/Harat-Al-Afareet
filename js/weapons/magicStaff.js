@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Weapon: Magic Staff (عصا الحكمة / الخرزانة السحرية)
+ * Weapon: الخرزانة السحرية
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -12,7 +12,7 @@ export class MagicStaff extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'magicStaff',
-            name: 'عصا الحكمة (الخرزانة السحرية)',
+            name: 'الخرزانة السحرية',
             description: 'بتحدف كور سحرية ذكية بتطارد أقرب عفريت لوحدها وتفرتكه.',
             icon: '🪄',
             damage: 24,

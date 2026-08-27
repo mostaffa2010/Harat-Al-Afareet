@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Weapon: Fire Wand (صولجان اللهب / ولاعة الجان)
+ * Weapon: ولاعة الجان
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -12,7 +12,7 @@ export class FireWand extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'fireWand',
-            name: 'صولجان اللهب (ولاعة الجان)',
+            name: 'ولاعة الجان',
             description: 'بتحدف كور نار متفجرة بتشوي العفاريت وبتعمل حرائق جماعية.',
             icon: '🔥',
             damage: 36,

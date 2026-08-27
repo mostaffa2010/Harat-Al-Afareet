@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Weapon: Magical Talisman (تمائم الحماية / حجاب عين حورس)
+ * Weapon: حجاب عين حورس
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -11,7 +11,7 @@ export class MagicalTalisman extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'magicalTalisman',
-            name: 'تمائم الحماية (حجاب عين حورس)',
+            name: 'حجاب عين حورس',
             description: 'تمائم بتلف وتدور حواليك زي الخلاط تفرم أي عفريت يقرب منك.',
             icon: '🧿',
             damage: 22,
