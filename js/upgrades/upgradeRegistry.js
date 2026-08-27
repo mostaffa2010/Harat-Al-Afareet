@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Upgrade Registry
+ * Upgrade Registry (Pure Egyptian Colloquial)
  */
 
 import { fireDamageUpgrade } from './weapons/fireDamage.js';
@@ -52,7 +52,7 @@ export class UpgradeRegistry {
     getEligibleUpgrades(player, playerUpgradeLevels = {}) {
         const eligible = [];
 
-        // 1. Check Passive & Stat Upgrades
+        // 1. Passive & Stat Upgrades
         for (let i = 0; i < this.upgrades.length; i++) {
             const up = this.upgrades[i];
             const currentLvl = playerUpgradeLevels[up.id] || 0;
@@ -74,7 +74,7 @@ export class UpgradeRegistry {
             }
         }
 
-        // 2. Check Existing Weapon Level-Ups
+        // 2. Existing Weapon Level-Ups
         for (let i = 0; i < player.weapons.length; i++) {
             const wep = player.weapons[i];
             if (wep.level < wep.maxLevel) {
@@ -82,7 +82,7 @@ export class UpgradeRegistry {
                     type: 'WEAPON_UPGRADE',
                     id: `weapon_${wep.id}`,
                     name: `ترقية ${wep.name}`,
-                    description: `رفع مستوى السلاح إلى مستوى ${wep.level + 1} لزيادة القوة وسرعة الضرب.`,
+                    description: `رفع مستوى السلاح لمستوى ${wep.level + 1} لزيادة الضرر وسرعة الضرب.`,
                     icon: wep.icon,
                     themeColor: '#f59e0b',
                     level: wep.level + 1,
@@ -94,16 +94,16 @@ export class UpgradeRegistry {
             }
         }
 
-        // 3. Check New Weapon Unlocks (if player has fewer than 4 weapons)
+        // 3. New Weapon Unlocks
         const allWeaponIds = ['magicStaff', 'fireWand', 'lightningRod', 'magicalTalisman'];
         const currentWeaponIds = player.weapons.map(w => w.id);
         const availableNewWeapons = allWeaponIds.filter(id => !currentWeaponIds.includes(id));
 
         const weaponMeta = {
-            magicStaff: { name: 'عصا الحكمة', desc: 'سلاح موجه يطلق قذائف سحرية ذكية.', icon: '🪄' },
-            fireWand: { name: 'صولجان اللهب', desc: 'كرات نارية متفجرة وحرائق متسلسلة.', icon: '🔥' },
-            lightningRod: { name: 'صاعقة السماء', desc: 'صواعق كهربائية مدمرة من السماء.', icon: '⚡' },
-            magicalTalisman: { name: 'تمائم الحماية', desc: 'تمائم سحرية تدور حولك وتصد العفاريت.', icon: '🧿' }
+            magicStaff: { name: 'الخرزانة السحرية', desc: 'سلاح موجه يطلق قذائف ذكية تطارد العفاريت.', icon: '🪄' },
+            fireWand: { name: 'ولاعة الجان', desc: 'كرات نارية متفجرة وحرائق متسلسلة في الحارة.', icon: '🔥' },
+            lightningRod: { name: 'كهربا الحارة', desc: 'صواعق ورعود تكهرب وتفرتك العفاريت من السماء.', icon: '⚡' },
+            magicalTalisman: { name: 'حجاب عين حورس', desc: 'تمائم سحرية تدور حولك وتصد العفاريت كفرامة.', icon: '🧿' }
         };
 
         for (let i = 0; i < availableNewWeapons.length; i++) {
