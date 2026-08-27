@@ -1,7 +1,7 @@
 export const maxHealthUpgrade = {
     id: 'player_max_health',
     category: 'player',
-    name: 'شاي بحليب بلدي (صحة إضافية)',
+    name: 'شاي بلدي بالنعناع',
     description: 'زيادة الحد الأقصى للصحة +35 واستعادة 35 نقطة صحة في الحال.',
     icon: '❤️',
     themeColor: '#ef4444',

@@ -1,7 +1,7 @@
 export const healthRegenUpgrade = {
     id: 'player_health_regen',
     category: 'player',
-    name: 'إكسير المعلم (علاج مستمر)',
+    name: 'إكسير المعلم',
     description: 'تجديد +0.5 نقطة صحة كل ثانية تلقائياً طول المعركة.',
     icon: '🧪',
     themeColor: '#22c55e',
