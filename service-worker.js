@@ -3,7 +3,7 @@
  * PWA Service Worker for Offline Caching
  */
 
-const CACHE_NAME = 'harat-el-afareet-v3';
+const CACHE_NAME = 'harat-el-afareet-v4';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -73,6 +73,7 @@ const ASSETS_TO_CACHE = [
     './js/upgrades/general/goldDigger.js',
     './js/ui/uiManager.js',
     './js/ui/mainMenu.js',
+    './js/ui/difficultySelect.js',
     './js/ui/characterSelect.js',
     './js/ui/hud.js',
     './js/ui/levelUpModal.js',
