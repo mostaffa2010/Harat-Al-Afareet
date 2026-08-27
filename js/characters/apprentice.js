@@ -1,11 +1,11 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Playable Character: The Apprentice (الواد زكي)
+ * Playable Character: الواد زكي
  */
 
 export const apprentice = {
     id: 'apprentice',
-    name: 'الواد زكي (المبتدئ)',
+    name: 'الواد زكي',
     title: 'طالب سحر أزهري مجتهد وسريع البديهة',
     description: 'شاب روش وذكي، بيفهم لغة العفاريت وطاير في التلفيل واختيار التعاويذ.',
     themePrimary: '#06b6d4',
@@ -13,7 +13,7 @@ export const apprentice = {
     startingWeaponId: 'magicStaff',
     passive: {
         id: 'quick_study',
-        name: 'فالح وسريع الفهم (Quick Study)',
+        name: 'فالح وسريع الفهم',
         description: 'بياخد 4 بطاقات ترقية بدل 3 مع كل تلفيل ونقاط إكس بي بزيادة 20%.'
     },
     baseStats: {

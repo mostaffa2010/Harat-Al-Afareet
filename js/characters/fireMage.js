@@ -1,11 +1,11 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Playable Character: The Fire Mage (الأسطى ريان)
+ * Playable Character: الأسطى ريان
  */
 
 export const fireMage = {
     id: 'fireMage',
-    name: 'الأسطى ريان (ساحر النار)',
+    name: 'الأسطى ريان',
     title: 'معلم ألسنة اللهب وحرايق الجان',
     description: 'مابيتفاهمش، بيولع في الحارة كلها والعفاريت بتشوي وتسوي بعضها.',
     themePrimary: '#ef4444',
@@ -13,7 +13,7 @@ export const fireMage = {
     startingWeaponId: 'fireWand',
     passive: {
         id: 'embers',
-        name: 'جمر وشظايا (Embers)',
+        name: 'جمر وشظايا',
         description: 'أي عفريت يولع بيولع في اللي جنبه، مع ضربات نارية أقوى بنسبة 30%.'
     },
     baseStats: {
