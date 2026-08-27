@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Player Character Entity (Enhanced Balancing & Top-Down Animation)
+ * Player Character Entity (Red Hurt Flash & No Screen Shake on Hit)
  */
 
 import { WORLD_CONFIG } from '../data/constants.js';
@@ -45,7 +45,7 @@ export class Player {
         this.isInvulnerable = false;
         this.invulnerableTimer = 0;
 
-        // Hit flash
+        // Red Hit flash timer (0.25 seconds)
         this.hurtTimer = 0;
 
         // Shield (Amulet Keeper passive or upgrade)
@@ -61,7 +61,6 @@ export class Player {
     initStats(characterConfig, permanentUpgrades) {
         const charStats = characterConfig.baseStats || {};
 
-        // Permanent Upgrades bonuses from save data
         const hpBonus = 1 + (permanentUpgrades.vitality || 0) * 0.15;
         const dmgBonus = 1 + (permanentUpgrades.vigor || 0) * 0.10;
         const spdBonus = 1 + (permanentUpgrades.swiftness || 0) * 0.08;
@@ -70,7 +69,7 @@ export class Player {
         const armorBonus = (permanentUpgrades.iron_will || 0) * 1.0;
         const critBonus = (permanentUpgrades.critical_eye || 0) * 0.04;
 
-        this.maxHp = Math.round((charStats.maxHp || DEFAULT_PLAYER_STATS.maxHp || 180) * hpBonus);
+        this.maxHp = Math.round((charStats.maxHp || DEFAULT_PLAYER_STATS.maxHp || 190) * hpBonus);
         this.hp = this.maxHp;
         this.hpRegen = charStats.hpRegen || DEFAULT_PLAYER_STATS.hpRegen || 0.5;
         this.movementSpeed = (charStats.movementSpeed || DEFAULT_PLAYER_STATS.movementSpeed || 220) * spdBonus;
@@ -78,10 +77,10 @@ export class Player {
         this.attackSpeedMultiplier = charStats.attackSpeedMultiplier || 1.0;
         this.criticalChance = (charStats.criticalChance || DEFAULT_PLAYER_STATS.criticalChance || 0.08) + critBonus;
         this.criticalMultiplier = charStats.criticalMultiplier || DEFAULT_PLAYER_STATS.criticalMultiplier || 1.85;
-        this.pickupRadius = (charStats.pickupRadius || DEFAULT_PLAYER_STATS.pickupRadius || 105) * pickupBonus;
+        this.pickupRadius = (charStats.pickupRadius || DEFAULT_PLAYER_STATS.pickupRadius || 110) * pickupBonus;
         this.armor = (charStats.armor || 1) + armorBonus;
         this.xpMultiplier = (charStats.xpMultiplier || 1.0) * xpBonus;
-        this.dashCooldown = charStats.dashCooldown || DEFAULT_PLAYER_STATS.dashCooldown || 3.0;
+        this.dashCooldown = charStats.dashCooldown || DEFAULT_PLAYER_STATS.dashCooldown || 2.8;
         this.dashSpeed = charStats.dashSpeed || DEFAULT_PLAYER_STATS.dashSpeed || 560;
         this.dashDuration = charStats.dashDuration || DEFAULT_PLAYER_STATS.dashDuration || 0.25;
         this.areaMultiplier = 1.0;
@@ -113,8 +112,7 @@ export class Player {
     }
 
     triggerCastAnimation() {
-        this.castAnimationTimer = 0.22;
-        // Small magical spark at hands
+        this.castAnimationTimer = 0.20;
         particleSystem.emit({
             x: this.x + this.facingDirection * 14,
             y: this.y - 6,
@@ -128,15 +126,15 @@ export class Player {
     update(dt, enemies, projectiles) {
         if (!this.alive) return;
 
-        // 1. Passive Health Regeneration
+        // Passive Health Regeneration
         if (this.hpRegen > 0 && this.hp < this.maxHp) {
             this.heal(this.hpRegen * dt, false);
         }
 
-        // 2. Amulet Keeper Passive Shield Regeneration
+        // Amulet Keeper Shield
         if (this.characterId === 'amuletKeeper') {
             this.shieldRegenTimer += dt;
-            if (this.shieldRegenTimer >= 5.0) { // Every 5s restores shield
+            if (this.shieldRegenTimer >= 5.0) {
                 this.shieldRegenTimer = 0;
                 if (this.shieldHp < this.maxShieldHp) {
                     this.shieldHp = Math.min(this.maxShieldHp, this.shieldHp + 20);
@@ -145,7 +143,7 @@ export class Player {
             }
         }
 
-        // 3. Timers & i-frames
+        // Red Hit flash timer & i-frames
         if (this.hurtTimer > 0) this.hurtTimer -= dt;
         if (this.castAnimationTimer > 0) this.castAnimationTimer -= dt;
         if (this.dashCooldownTimer > 0) this.dashCooldownTimer -= dt;
@@ -157,7 +155,7 @@ export class Player {
             }
         }
 
-        // 4. Dash Handling
+        // Dash Handling
         if (inputSystem.consumeDash() && this.dashCooldownTimer <= 0 && !this.isDashing) {
             this.startDash();
         }
@@ -173,7 +171,7 @@ export class Player {
             }
         }
 
-        // 5. Movement Update
+        // Movement Update
         const move = inputSystem.getMovement();
         const currentSpeed = this.isDashing ? this.dashSpeed : this.movementSpeed;
 
@@ -193,14 +191,12 @@ export class Player {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
 
-        // Clamp to map bounds
         this.x = Math.max(32, Math.min(WORLD_CONFIG.MAP_WIDTH - 32, this.x));
         this.y = Math.max(32, Math.min(WORLD_CONFIG.MAP_HEIGHT - 32, this.y));
 
-        // Smooth Camera Follow
         cameraSystem.follow(this.x, this.y);
 
-        // 6. Update Weapons & Auto-Fire
+        // Update Weapons
         for (let i = 0; i < this.weapons.length; i++) {
             this.weapons[i].update(dt, enemies, projectiles);
         }
@@ -211,7 +207,6 @@ export class Player {
         this.isInvulnerable = true;
         this.dashTimer = this.dashDuration;
         audioSystem.playDash();
-        cameraSystem.triggerShake(4);
     }
 
     takeDamage(rawDamage) {
@@ -219,7 +214,6 @@ export class Player {
 
         let dmgToTake = Math.max(1, rawDamage - this.armor);
 
-        // Absorb with shield if present
         if (this.shieldHp > 0) {
             if (this.shieldHp >= dmgToTake) {
                 this.shieldHp -= dmgToTake;
@@ -236,13 +230,15 @@ export class Player {
         }
 
         this.hp -= dmgToTake;
+        // Turn RED for 0.25 seconds instead of camera shake
         this.hurtTimer = 0.25;
-        this.grantInvulnerability(0.45); // Grace period (i-frames) so monster swarms don't multi-hit instant kill
+        this.grantInvulnerability(0.45);
 
         damageSystem.spawnText(this.x, this.y, `-${dmgToTake}`, false, '#ef4444');
-        particleSystem.emitHitSparks(this.x, this.y, '#ef4444', 10);
+        particleSystem.emitHitSparks(this.x, this.y, '#ef4444', 8);
         audioSystem.playHit();
-        cameraSystem.triggerShake(6);
+
+        // NO CAMERA SHAKE when player is hit!
 
         if (this.hp <= 0) {
             this.hp = 0;
@@ -267,6 +263,5 @@ export class Player {
     die() {
         this.alive = false;
         particleSystem.emitDeathExplosion(this.x, this.y, this.themePrimary, 30);
-        cameraSystem.triggerShake(18);
     }
 }
