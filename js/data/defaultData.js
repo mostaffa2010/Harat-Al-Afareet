@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Default Data, Achievements & Progression (20 Minutes Till Dawn Style)
+ * Default Data & Pure Egyptian Progression
  */
 
 export const DEFAULT_PLAYER_STATS = {
@@ -25,7 +25,7 @@ export const DEFAULT_PLAYER_STATS = {
 export const PERMANENT_UPGRADES = [
     {
         id: 'vitality',
-        name: 'صحة حديد (عفية)',
+        name: 'صحة حديد',
         description: 'زيادة شريط الصحة 15% عشان تستحمل خبطات العفاريت.',
         icon: '❤️',
         maxLevel: 5,
@@ -36,7 +36,7 @@ export const PERMANENT_UPGRADES = [
     },
     {
         id: 'vigor',
-        name: 'عزم وشقاوة (ضرر أعلى)',
+        name: 'عزم وشقاوة',
         description: 'تقوية كل الضربات والتعاويذ بنسبة 10% لكل مستوى.',
         icon: '⚔️',
         maxLevel: 5,
@@ -47,7 +47,7 @@ export const PERMANENT_UPGRADES = [
     },
     {
         id: 'swiftness',
-        name: 'جري الوحوش (سرعة رجل)',
+        name: 'جري الوحوش',
         description: 'خفة وسرعة حركة في الحارة بنسبة 8% لكل مستوى.',
         icon: '👟',
         maxLevel: 5,
@@ -58,7 +58,7 @@ export const PERMANENT_UPGRADES = [
     },
     {
         id: 'talisman_magnet',
-        name: 'شفاط الجواهر (مغناطيس)',
+        name: 'شفاط الجواهر',
         description: 'توسيع نطاق شفط الجواهر والفلوس 25% لكل مستوى.',
         icon: '🧲',
         maxLevel: 5,
@@ -69,7 +69,7 @@ export const PERMANENT_UPGRADES = [
     },
     {
         id: 'ancient_wisdom',
-        name: 'دماغ أستاذ (خبرة سريعة)',
+        name: 'دماغ أستاذ',
         description: 'تجميع إكس بي أسرع 15% وتلفيل طاير في المعركة.',
         icon: '📜',
         maxLevel: 5,
@@ -80,7 +80,7 @@ export const PERMANENT_UPGRADES = [
     },
     {
         id: 'iron_will',
-        name: 'قلب ميت (درع بلدي)',
+        name: 'قلب ميت',
         description: 'تقليل أي ضربة تاخدها بمقدار 1 نقطة إضافية.',
         icon: '🛡️',
         maxLevel: 5,
@@ -91,7 +91,7 @@ export const PERMANENT_UPGRADES = [
     },
     {
         id: 'critical_eye',
-        name: 'ضربة في مقتل (كريتيكال)',
+        name: 'ضربة في مقتل',
         description: 'فرصة تفرتك العفريت بضربة حظ مضاعفة بنسبة +4%.',
         icon: '👁️',
         maxLevel: 5,
@@ -105,7 +105,7 @@ export const PERMANENT_UPGRADES = [
 export const ACHIEVEMENTS = [
     {
         id: 'first_blood',
-        name: 'أول قطرة دم (البداية)',
+        name: 'أول قطرة دم',
         description: 'فرتك أول 50 عفريت في الحارة.',
         icon: '🩸',
         rewardCoins: 50,
@@ -185,7 +185,7 @@ export const INITIAL_SAVE_DATA = {
         sfxVolume: 0.9
     },
     settings: {
-        screenShake: true,
+        screenShake: false,
         damageNumbers: true,
         joystickDynamic: true
     }

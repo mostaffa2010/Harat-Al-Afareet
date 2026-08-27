@@ -1,10 +1,11 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Global Constants & 20 Minutes Till Dawn-Inspired Settings
+ * Global Constants & Configurations (Pure Egyptian Colloquial)
  */
 
 export const GAME_STATES = {
     MAIN_MENU: 'MAIN_MENU',
+    DIFFICULTY_SELECT: 'DIFFICULTY_SELECT',
     CHARACTER_SELECT: 'CHARACTER_SELECT',
     PLAYING: 'PLAYING',
     COUNTDOWN: 'COUNTDOWN',
@@ -20,9 +21,9 @@ export const GAME_STATES = {
 export const DIFFICULTY_MODES = {
     EASY: {
         id: 'EASY',
-        name: 'حارة هادية (سهل)',
-        badge: '🟢 سهل',
-        description: 'مناسب للتسلية وتجربة الأبطال.. العفاريت أضعف وصحتك أعلى.',
+        name: 'مستوى عبيط',
+        badge: '🟢 مستوى عبيط',
+        description: 'مناسب للي عايز يتمشى في الحارة براحته.. العفاريت على قد حالها وصحتك عالية.',
         enemyHpMult: 0.75,
         enemyDmgMult: 0.70,
         spawnIntervalMult: 1.25,
@@ -31,9 +32,9 @@ export const DIFFICULTY_MODES = {
     },
     NORMAL: {
         id: 'NORMAL',
-        name: 'معركة الفتوات (متوازن)',
-        badge: '🟡 متوازن',
-        description: 'التجربة القياسية الأصلية.. حماس وتحدي وسرعة لعب ممتعة.',
+        name: 'عادي',
+        badge: '🟡 عادي',
+        description: 'المعركة المظبوطة للجدعان.. حماس وتحدي وسرعة لعب ممتعة.',
         enemyHpMult: 1.0,
         enemyDmgMult: 1.0,
         spawnIntervalMult: 1.0,
@@ -42,9 +43,9 @@ export const DIFFICULTY_MODES = {
     },
     HARD: {
         id: 'HARD',
-        name: 'ليلة العفاريت الحمرا (صعب / كابوس)',
+        name: 'كابوس',
         badge: '🔴 كابوس',
-        description: 'للمحترفين فقط! أمواج هائلة، عفاريت مفترسة، وجوائز مضاعفة +80%.',
+        description: 'للمعلمين والوحوش بس! أمواج عفاريت هائلة وجوائز فلوس مضاعفة.',
         enemyHpMult: 1.45,
         enemyDmgMult: 1.35,
         spawnIntervalMult: 0.75,
@@ -58,13 +59,13 @@ export const WORLD_CONFIG = {
     MAP_HEIGHT: 2600,
     TILE_SIZE: 64,
     SAFE_ZONE_RADIUS: 140,
-    TOTAL_RUN_DURATION: 600, // 10 minutes in seconds (600s)
+    TOTAL_RUN_DURATION: 600, // 10 minutes (600s)
 };
 
 export const UPGRADE_RARITIES = {
     COMMON: {
         id: 'COMMON',
-        name: 'شائع (على قد الإيد)',
+        name: 'على قد الإيد',
         color: '#94a3b8',
         glow: 'rgba(148, 163, 184, 0.4)',
         multiplier: 1.0,
@@ -72,7 +73,7 @@ export const UPGRADE_RARITIES = {
     },
     RARE: {
         id: 'RARE',
-        name: 'نادر (لقطة يا بختك)',
+        name: 'لقطة يا بختك',
         color: '#38bdf8',
         glow: 'rgba(56, 189, 248, 0.6)',
         multiplier: 1.5,
@@ -80,7 +81,7 @@ export const UPGRADE_RARITIES = {
     },
     EPIC: {
         id: 'EPIC',
-        name: 'ملحمي (حاجة فاخرة)',
+        name: 'حاجة فاخرة',
         color: '#c084fc',
         glow: 'rgba(192, 132, 252, 0.7)',
         multiplier: 2.2,
@@ -88,7 +89,7 @@ export const UPGRADE_RARITIES = {
     },
     LEGENDARY: {
         id: 'LEGENDARY',
-        name: 'أسطوري (شغل معلمين)',
+        name: 'شغل معلمين',
         color: '#fbbf24',
         glow: 'rgba(251, 191, 36, 0.9)',
         multiplier: 3.2,
