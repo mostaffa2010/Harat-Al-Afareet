@@ -1,8 +1,9 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Main Menu Screen (Pure Egyptian Arabic)
+ * Main Menu Screen (v5.0 — Pure Egyptian Arabic)
  */
 
+import { GAME_VERSION } from '../data/constants.js';
 import { audioSystem } from '../systems/audioSystem.js';
 
 export class MainMenu {
@@ -17,7 +18,6 @@ export class MainMenu {
                 <div class="menu-header">
                     <div class="ancient-symbol">𓂀</div>
                     <h1 class="game-title">حارة العفاريت</h1>
-                    <h2 class="game-subtitle">Harat El Afareet</h2>
                     <p class="game-tagline">«سحر الفراعنة وجان الحارة في معركة ملحمية.. وريهم العين الحمرا!»</p>
                 </div>
 
@@ -54,9 +54,12 @@ export class MainMenu {
                 </div>
 
                 <div class="menu-footer">
-                    <span>أطول صمود يا بطل: ${Math.floor((saveData.highScoreTime || 0) / 60)}د ${(saveData.highScoreTime || 0) % 60}ث</span>
-                    <span>|</span>
-                    <span>عفاريت مفرتكة: ${saveData.totalEnemiesDefeated || 0}</span>
+                    <div class="footer-stats">
+                        <span>أطول صمود يا بطل: ${Math.floor((saveData.highScoreTime || 0) / 60)}د ${(saveData.highScoreTime || 0) % 60}ث</span>
+                        <span>|</span>
+                        <span>عفاريت مفرتكة: ${saveData.totalEnemiesDefeated || 0}</span>
+                    </div>
+                    <div class="game-version-badge">${GAME_VERSION} (حارة العفاريت — الإصدار الخامس)</div>
                 </div>
             </div>
         `;

@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * In-Game HUD (No Dash Button, Clean Single-Line Alignment)
+ * In-Game HUD with Responsive Pause Button & Stage Tracking
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -17,15 +17,15 @@ export class HUD {
                 <div class="hud-top-bar">
                     <!-- Clean Upward Level Badge -->
                     <div class="hud-level-badge">
-                        <span class="level-icon">⭐</span>
-                        <span class="level-val" id="hud-player-level">رتبة 1</span>
+                        <span class="level-icon">⚡</span>
+                        <span class="level-val" id="hud-player-level">ليفل 1</span>
                     </div>
 
                     <!-- Clean Single-Line HP & XP Bars -->
                     <div class="hud-bars-container">
                         <div class="bar-wrapper hp-bar-wrapper">
                             <div class="bar-fill hp-fill" id="hud-hp-fill" style="width: 100%;"></div>
-                            <span class="bar-text" id="hud-hp-text">❤️ 190 / 190</span>
+                            <span class="bar-text" id="hud-hp-text">❤️ 180 / 180</span>
                         </div>
 
                         <div class="bar-wrapper xp-bar-wrapper">
@@ -34,15 +34,20 @@ export class HUD {
                         </div>
                     </div>
 
-                    <!-- Meta Group -->
+                    <!-- Meta Group & Pause Button -->
                     <div class="hud-meta-group">
                         <div class="hud-timer" id="hud-timer">00:00</div>
                         <div class="hud-coins">
                             <span>🪙</span>
                             <span id="hud-coins-val">0</span>
                         </div>
-                        <button class="hud-btn hud-pause-btn" id="hud-btn-pause" title="إيقاف مؤقت">⏸</button>
+                        <button class="hud-btn hud-pause-btn" id="hud-btn-pause" aria-label="إيقاف مؤقت">⏸</button>
                     </div>
+                </div>
+
+                <!-- Stage Announcement / Subtitle Bar -->
+                <div class="hud-stage-banner" id="hud-stage-banner">
+                    <span class="stage-name-text" id="hud-stage-name">المرحلة 1: حارة السيدة</span>
                 </div>
 
                 <!-- Boss Health Bar -->
@@ -53,7 +58,7 @@ export class HUD {
                     </div>
                 </div>
 
-                <!-- Bottom Bar: Active Weapons Only (Dash Button Removed) -->
+                <!-- Bottom Bar: Active Weapons Only -->
                 <div class="hud-bottom-bar">
                     <div class="hud-weapons-list" id="hud-weapons-list"></div>
                     <div></div>
@@ -67,11 +72,17 @@ export class HUD {
     bindEvents() {
         const pauseBtn = document.getElementById('hud-btn-pause');
         if (pauseBtn) {
-            pauseBtn.onclick = (e) => {
-                e.stopPropagation();
+            const triggerPause = (e) => {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
                 audioSystem.playClick();
                 this.onPauseClick();
             };
+
+            pauseBtn.addEventListener('touchstart', triggerPause, { passive: false });
+            pauseBtn.addEventListener('click', triggerPause);
         }
     }
 
@@ -79,7 +90,7 @@ export class HUD {
         if (!player) return;
 
         const lvlElem = document.getElementById('hud-player-level');
-        if (lvlElem) lvlElem.textContent = `رتبة ${xpSystem.level}`;
+        if (lvlElem) lvlElem.textContent = `ليفل ${xpSystem.level}`;
 
         const xpFill = document.getElementById('hud-xp-fill');
         const xpText = document.getElementById('hud-xp-text');
@@ -101,23 +112,35 @@ export class HUD {
             timerElem.textContent = `${mins}:${secs}`;
         }
 
+        const stageElem = document.getElementById('hud-stage-name');
+        if (stageElem && waveSystem.getCurrentStageName) {
+            stageElem.textContent = waveSystem.getCurrentStageName();
+        }
+
         const coinsElem = document.getElementById('hud-coins-val');
         if (coinsElem) coinsElem.textContent = xpSystem.runCoins;
 
         const wepList = document.getElementById('hud-weapons-list');
         if (wepList && player.weapons) {
-            wepList.innerHTML = player.weapons.map(w => `
-                <div class="weapon-slot" title="${w.name}">
-                    <span class="weapon-icon">${w.icon}</span>
-                    <span class="weapon-lvl">مستوى ${w.level}</span>
-                </div>
-            `).join('');
+            wepList.innerHTML = player.weapons.map(w => {
+                const isMax = w.level >= w.maxLevel;
+                return `
+                    <div class="weapon-slot ${isMax ? 'weapon-slot-evolved' : ''}" title="${w.name}">
+                        <span class="weapon-icon">${w.icon}</span>
+                        <span class="weapon-lvl">${isMax ? '⭐ أقصى قوة' : `مستوى ${w.level}`}</span>
+                    </div>
+                `;
+            }).join('');
         }
 
         const bossContainer = document.getElementById('hud-boss-container');
         if (bossContainer) {
             if (boss && boss.alive) {
                 bossContainer.style.display = 'block';
+                const bossTitle = document.getElementById('hud-boss-title');
+                if (bossTitle && boss.enemyName) {
+                    bossTitle.textContent = boss.enemyName;
+                }
                 const bossFill = document.getElementById('hud-boss-fill');
                 if (bossFill) {
                     const bossHpPercent = Math.max(0, Math.min(100, (boss.hp / boss.maxHp) * 100));

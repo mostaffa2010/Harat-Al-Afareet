@@ -1,112 +1,87 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Weapon: كهربا الحارة (Zero Screen Shake + Sky Lightning Beam Visual)
+ * Secondary Weapon 1: كهربا الحارة (Lightning Rod)
+ * Level 8 Evolution: رعد السماء الأعظم (Cataclysmic Thunder)
+ * (Zero Screen Shake — Clean Vertical Lightning Beam)
  */
 
 import { BaseWeapon } from './baseWeapon.js';
 import { DAMAGE_TYPES } from '../data/constants.js';
 import { audioSystem } from '../systems/audioSystem.js';
-import { particleSystem } from '../systems/particleSystem.js';
 import { damageSystem } from '../systems/damageSystem.js';
+import { particleSystem } from '../systems/particleSystem.js';
 
 export class LightningRod extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'lightningRod',
             name: 'كهربا الحارة',
-            description: 'بتنزل برق ورعد من السما يكهرب كذا عفريت في نفس اللحظة.',
+            description: 'صواعق ورعود كهربائية تسقط من السماء على العفاريت مباشرة.',
             icon: '⚡',
             damage: 48,
-            cooldown: 1.6,
-            projectileCount: 2,
-            range: 560,
-            critChance: 0.18,
+            cooldown: 1.8,
+            range: 480,
+            projectileCount: 1,
+            critChance: 0.15,
             damageType: DAMAGE_TYPES.LIGHTNING
         });
-        this.strikeRadius = 45;
+        this.isPrimary = false;
+        this.isSecondary = true;
+        this.isEvolved = false;
+        this.strikeTargets = 1;
     }
 
     applyLevelStats(level) {
-        switch (level) {
-            case 2:
-                this.projectileCount += 1;
-                break;
-            case 3:
-                this.damage += 18;
-                break;
-            case 4:
-                this.cooldown *= 0.82;
-                break;
-            case 5:
-                this.projectileCount += 1;
-                this.strikeRadius += 12;
-                break;
-            case 6:
-                this.damage += 25;
-                this.critChance += 0.12;
-                break;
-            case 7:
-                this.cooldown *= 0.78;
-                break;
-            case 8:
-                this.projectileCount += 2;
-                this.damage += 35;
-                this.strikeRadius += 20;
-                break;
+        if (level === 2) {
+            this.damage = 65;
+            this.cooldown = 1.6;
+        } else if (level === 3) {
+            this.damage = 85;
+            this.strikeTargets = 2;
+        } else if (level === 4) {
+            this.damage = 110;
+            this.cooldown = 1.4;
+            this.critChance = 0.22;
+        } else if (level === 5) {
+            this.damage = 140;
+            this.strikeTargets = 3;
+        } else if (level === 6) {
+            this.damage = 180;
+            this.cooldown = 1.2;
+        } else if (level === 7) {
+            this.damage = 230;
+            this.strikeTargets = 4;
+            this.critChance = 0.30;
+        } else if (level >= 8) {
+            // Level 8 Evolution: رعد السماء الأعظم
+            this.isEvolved = true;
+            this.name = 'رعد السماء الأعظم (تطور أسطوري)';
+            this.icon = '⛈️⚡';
+            this.damage = 360;
+            this.strikeTargets = 6;
+            this.cooldown = 0.85;
+            this.critChance = 0.45;
         }
     }
 
     fire(enemies, projectiles) {
-        const targets = this.findRandomEnemies(enemies, this.projectileCount, this.range);
+        const targets = this.findRandomEnemies(enemies, this.strikeTargets, this.range);
         if (targets.length === 0) return;
 
-        this.player.triggerCastAnimation();
         audioSystem.playLightning();
-        // NO SCREEN SHAKE
 
         for (let i = 0; i < targets.length; i++) {
-            const target = targets[i];
-            if (!target.alive) continue;
+            const enemy = targets[i];
+            if (!enemy || !enemy.alive) continue;
 
-            const result = damageSystem.calculateDamage(this.damage, this.player, target, this.damageType);
-            target.takeDamage(result.damage, this.player, true);
-            damageSystem.spawnText(target.x, target.y, result.damage, result.isCrit, '#67e8f9');
+            const isCrit = Math.random() < this.critChance;
+            let finalDmg = Math.round(this.damage * (this.player.damageMultiplier || 1.0));
+            if (isCrit) finalDmg = Math.round(finalDmg * 2.2);
 
-            // Sky-to-Ground Lightning Bolt Visual Particle Trail
-            for (let yOff = -300; yOff <= 0; yOff += 20) {
-                particleSystem.emit({
-                    x: target.x + (Math.random() * 12 - 6),
-                    y: target.y + yOff,
-                    color: '#67e8f9',
-                    size: 3.5,
-                    life: 0.18,
-                    drag: 0.8
-                });
-            }
+            enemy.takeDamage(finalDmg, this.damageType);
 
-            particleSystem.emit({
-                x: target.x,
-                y: target.y,
-                color: '#67e8f9',
-                size: this.strikeRadius * (this.player.areaMultiplier || 1.0),
-                life: 0.22,
-                shape: 'ring',
-                lineWidth: 4
-            });
-            particleSystem.emitHitSparks(target.x, target.y, '#ffffff', 12);
-
-            const splashRadius = this.strikeRadius * (this.player.areaMultiplier || 1.0);
-            for (let j = 0; j < enemies.length; j++) {
-                const other = enemies[j];
-                if (other === target || !other.alive) continue;
-                const dx = other.x - target.x;
-                const dy = other.y - target.y;
-                if (Math.sqrt(dx * dx + dy * dy) <= splashRadius) {
-                    const splashDmg = Math.round(result.damage * 0.55);
-                    other.takeDamage(splashDmg, this.player, true);
-                    damageSystem.spawnText(other.x, other.y, splashDmg, false, '#67e8f9');
-                }
-            }
+            // Clean vertical lightning beam & spark particles (NO screen shake)
+            particleSystem.emitLightningStrike(enemy.x, enemy.y, this.isEvolved ? '#38bdf8' : '#a855f7');
         }
     }
 }

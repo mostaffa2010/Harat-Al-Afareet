@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Central Game Orchestrator & State Machine
+ * Central Game Orchestrator & State Machine (v5.0)
  */
 
 import { GAME_STATES, DIFFICULTY_MODES } from '../data/constants.js';
@@ -27,8 +27,6 @@ export class Game {
     constructor() {
         this.canvas = document.getElementById('game-canvas');
         this.overlay = document.getElementById('ui-overlay');
-        this.countdownOverlay = document.getElementById('countdown-overlay');
-        this.countdownNum = document.getElementById('countdown-num');
 
         this.renderer = new Renderer(this.canvas);
         this.uiManager = new UIManager(this.overlay);
@@ -39,387 +37,345 @@ export class Game {
 
         this.state = GAME_STATES.MAIN_MENU;
 
-        // Active Run Entities & Arrays
+        // Active Game Entities
         this.player = null;
         this.enemies = [];
-        this.boss = null;
         this.projectiles = [];
         this.pickups = [];
-        this.warnings = [];
+        this.activeBoss = null;
+        this.activeMiniBosses = [];
+        this.telegraphedWarnings = [];
 
-        this.enemiesDefeatedCount = 0;
+        // 20 Minutes Till Dawn Style Grace Period after Level-Up / Unpause
+        this.graceTimer = 0;
 
-        // Countdown State
-        this.countdownTimer = 0;
-        this.countdownSecondsLeft = 3;
+        // Statistics for current run
+        this.runStats = {
+            enemiesDefeated: 0,
+            coinsCollected: 0,
+            damageDealt: 0,
+            timeSurvived: 0
+        };
     }
 
     async init() {
-        saveSystem.init();
-
-        audioSystem.init();
-        audioSystem.setSoundEnabled(saveSystem.data.audio.soundEnabled);
-
         await assetManager.init();
-
+        saveSystem.loadGame();
         inputSystem.init(this.canvas);
-
-        this.handleResize();
-        window.addEventListener('resize', () => this.handleResize());
-        window.addEventListener('orientationchange', () => setTimeout(() => this.handleResize(), 100));
+        audioSystem.init();
 
         this.uiManager.init({
-            onNavigate: (targetState) => this.setState(targetState),
-            onStartRun: (charConfig) => this.startRun(charConfig),
-            onPause: () => this.pauseRun(),
-            onResume: () => this.startCountdown(),
-            onRestart: () => this.restartRun(),
-            onQuit: () => this.quitToMenu(),
-            onSelectUpgrade: (upgradeCard) => this.applyLevelUpUpgrade(upgradeCard)
+            onStartGame: (difficultyKey) => this.handleDifficultySelect(difficultyKey),
+            onSelectCharacterAndPlay: (charConfig) => this.startRun(charConfig),
+            onSelectUpgrade: (upgradeCard) => this.handleUpgradeChosen(upgradeCard),
+            onResumeGame: () => this.resumeGame(),
+            onRestartGame: () => this.restartRun(),
+            onReturnToMenu: () => this.returnToMenu(),
+            onOpenBazaar: () => this.openBazaar(),
+            onOpenAchievements: () => this.openAchievements(),
+            onOpenCollection: () => this.openCollection()
         });
 
         this.setState(GAME_STATES.MAIN_MENU);
         this.loop.start();
     }
 
-    handleResize() {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        this.renderer.resize(width, height);
+    setState(newState) {
+        this.state = newState;
+        this.uiManager.showState(newState, this);
     }
 
-    setState(newState, extraData = {}) {
-        this.state = newState;
-        if (newState !== GAME_STATES.COUNTDOWN && this.countdownOverlay) {
-            this.countdownOverlay.style.display = 'none';
-        }
-        this.uiManager.setScreen(newState, extraData);
+    handleDifficultySelect(difficultyKey) {
+        difficultySystem.setDifficulty(difficultyKey);
+        saveSystem.data.selectedDifficulty = difficultyKey;
+        saveSystem.saveGame();
+        this.setState(GAME_STATES.CHARACTER_SELECT);
     }
 
     startRun(characterConfig) {
-        // Set Difficulty Mode
-        const selectedDiff = saveSystem.data.selectedDifficulty || 'NORMAL';
-        difficultySystem.setMode(selectedDiff);
+        const charData = characterConfig || characterRegistry.get(saveSystem.data.selectedCharacter || 'apprentice');
+        const diffConfig = difficultySystem.currentDifficulty;
 
-        xpSystem.reset();
-        upgradeSystem.reset();
-        waveSystem.reset();
-        spawnSystem.reset();
-        particleSystem.clear();
-        damageSystem.clear();
-        inputSystem.reset();
+        this.player = new Player(charData);
 
+        // Apply Permanent Bazaar Upgrades from Save
+        this.applyPermanentProgression(this.player);
+
+        // Clear active entities
         this.enemies = [];
-        this.boss = null;
         this.projectiles = [];
         this.pickups = [];
-        this.warnings = [];
-        this.enemiesDefeatedCount = 0;
+        this.activeBoss = null;
+        this.activeMiniBosses = [];
+        this.telegraphedWarnings = [];
+        this.graceTimer = 0;
 
-        this.player = new Player(characterConfig, saveSystem.data.permanentUpgrades);
+        // Reset systems
+        waveSystem.reset();
+        spawnSystem.reset();
+        xpSystem.reset();
+        upgradeSystem.reset();
+        damageSystem.reset();
+        particleSystem.reset();
+        cameraSystem.reset(this.player.x, this.player.y);
 
-        // Apply difficulty speed modifier
-        const diffObj = DIFFICULTY_MODES[selectedDiff] || DIFFICULTY_MODES.NORMAL;
-        if (diffObj.playerSpeedBonus) {
-            this.player.movementSpeed *= diffObj.playerSpeedBonus;
-        }
+        this.runStats = {
+            enemiesDefeated: 0,
+            coinsCollected: 0,
+            damageDealt: 0,
+            timeSurvived: 0
+        };
 
-        cameraSystem.x = this.player.x;
-        cameraSystem.y = this.player.y;
-        cameraSystem.targetX = this.player.x;
-        cameraSystem.targetY = this.player.y;
-
-        this.startCountdown();
+        this.setState(GAME_STATES.PLAYING);
+        audioSystem.playLevelUp();
     }
 
-    startCountdown() {
-        this.state = GAME_STATES.COUNTDOWN;
-        this.countdownTimer = 3.0;
-        this.countdownSecondsLeft = 3;
+    applyPermanentProgression(player) {
+        const p = saveSystem.data.permanentUpgrades || {};
+        if (p.maxHealth) player.maxHp += p.maxHealth * 15;
+        player.hp = player.maxHp;
+        if (p.damage) player.damageMultiplier += p.damage * 0.05;
+        if (p.speed) player.movementSpeed += p.speed * 10;
+        if (p.pickupRange) player.pickupRadius += p.pickupRange * 15;
+        if (p.armor) player.armor += p.armor * 1;
+        if (p.xpBoost) player.xpMultiplier += p.xpBoost * 0.05;
+        if (p.critChance) player.criticalChance += p.critChance * 0.02;
+    }
 
-        if (this.countdownOverlay) {
-            this.countdownOverlay.style.display = 'flex';
-            if (this.countdownNum) this.countdownNum.textContent = '3';
-        }
+    handleUpgradeChosen(card) {
+        upgradeSystem.applyUpgrade(card);
+        this.setState(GAME_STATES.PLAYING);
 
-        // Push away nearby enemies slightly and grant grace invulnerability
+        // 20 Minutes Till Dawn style 0.35s grace buffer & 1.2s invulnerability
+        this.graceTimer = 0.35;
         if (this.player) {
-            this.player.grantInvulnerability(2.0);
-            this.pushAwayNearbyEnemies(140);
-        }
-
-        audioSystem.playClick();
-    }
-
-    pushAwayNearbyEnemies(radius = 140) {
-        if (!this.player) return;
-        for (let i = 0; i < this.enemies.length; i++) {
-            const e = this.enemies[i];
-            const dx = e.x - this.player.x;
-            const dy = e.y - this.player.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < radius) {
-                const angle = dist > 0 ? Math.atan2(dy, dx) : Math.random() * Math.PI * 2;
-                e.x = this.player.x + Math.cos(angle) * radius;
-                e.y = this.player.y + Math.sin(angle) * radius;
-                e.applyKnockback(Math.cos(angle), Math.sin(angle), 160);
-            }
+            this.player.invulnerableTimer = 1.2;
+            particleSystem.emitLevelUpPulse(this.player.x, this.player.y);
         }
     }
 
-    pauseRun() {
-        if (this.state === GAME_STATES.PLAYING) {
-            this.setState(GAME_STATES.PAUSED, {
-                player: this.player,
-                xpSystem: xpSystem,
-                waveSystem: waveSystem
-            });
-        }
+    resumeGame() {
+        this.setState(GAME_STATES.PLAYING);
+        this.graceTimer = 0.35;
     }
 
     restartRun() {
-        const charId = saveSystem.data.selectedCharacterId || 'apprentice';
-        const charConfig = characterRegistry.get(charId);
-        this.startRun(charConfig);
+        const charData = characterRegistry.get(saveSystem.data.selectedCharacter || 'apprentice');
+        this.startRun(charData);
     }
 
-    quitToMenu() {
+    returnToMenu() {
         this.setState(GAME_STATES.MAIN_MENU);
     }
 
-    applyLevelUpUpgrade(card) {
-        upgradeSystem.applyUpgrade(card);
-        xpSystem.levelUpPending = false;
-        inputSystem.reset();
-        this.startCountdown();
+    openBazaar() {
+        this.setState(GAME_STATES.BAZAAR);
+    }
+
+    openAchievements() {
+        this.setState(GAME_STATES.ACHIEVEMENTS);
+    }
+
+    openCollection() {
+        this.setState(GAME_STATES.COLLECTION);
+    }
+
+    pauseGame() {
+        if (this.state === GAME_STATES.PLAYING) {
+            this.setState(GAME_STATES.PAUSED);
+        }
+    }
+
+    triggerLevelUp() {
+        audioSystem.playLevelUp();
+        if (this.player) {
+            particleSystem.emitLevelUpPulse(this.player.x, this.player.y);
+        }
+        const choices = upgradeSystem.generateChoices(this.player, 3);
+        this.setState(GAME_STATES.LEVEL_UP);
+        this.uiManager.showLevelUpModal(choices);
+    }
+
+    onPlayerDied() {
+        this.runStats.timeSurvived = Math.floor(waveSystem.runTime);
+        this.runStats.coinsCollected = xpSystem.runCoins;
+
+        saveSystem.recordRunStats(
+            this.runStats.timeSurvived,
+            this.runStats.enemiesDefeated,
+            this.runStats.coinsCollected,
+            this.player.characterId
+        );
+
+        this.setState(GAME_STATES.GAME_OVER);
+    }
+
+    onBossDefeated(boss) {
+        audioSystem.playBossRoar();
+        particleSystem.emitDeathExplosion(boss.x, boss.y, '#fbbf24', 50);
+
+        if (boss.bossId === 'afreetKing') {
+            this.runStats.timeSurvived = Math.floor(waveSystem.runTime);
+            this.runStats.coinsCollected = xpSystem.runCoins + 250;
+
+            saveSystem.recordRunStats(
+                this.runStats.timeSurvived,
+                this.runStats.enemiesDefeated,
+                this.runStats.coinsCollected,
+                this.player.characterId
+            );
+
+            setTimeout(() => {
+                this.setState(GAME_STATES.VICTORY);
+            }, 1200);
+        }
     }
 
     update(dt) {
-        if (inputSystem.consumePause()) {
-            if (this.state === GAME_STATES.PLAYING) {
-                this.pauseRun();
-                return;
-            } else if (this.state === GAME_STATES.PAUSED) {
-                this.startCountdown();
+        if (this.state === GAME_STATES.PLAYING) {
+            // Check Pause key
+            if (inputSystem.consumePause()) {
+                this.pauseGame();
                 return;
             }
-        }
 
-        cameraSystem.update(dt);
-        particleSystem.update(dt);
-        damageSystem.update(dt);
+            // Always update camera & HUD
+            cameraSystem.update(this.player.x, this.player.y, dt);
+            this.uiManager.updateHUD(this.player, xpSystem, waveSystem, this.activeBoss || (this.activeMiniBosses.length > 0 ? this.activeMiniBosses[0] : null));
 
-        // Process Countdown
-        if (this.state === GAME_STATES.COUNTDOWN) {
-            this.countdownTimer -= dt;
-            const sec = Math.ceil(this.countdownTimer);
-
-            if (sec !== this.countdownSecondsLeft && sec > 0) {
-                this.countdownSecondsLeft = sec;
-                if (this.countdownNum) this.countdownNum.textContent = String(sec);
-                audioSystem.playClick();
+            // Grace period: allow camera/visuals, but freeze game simulation briefly
+            if (this.graceTimer > 0) {
+                this.graceTimer -= dt;
+                damageSystem.update(dt);
+                particleSystem.update(dt);
+                return;
             }
 
-            if (this.countdownTimer <= 0) {
-                if (this.countdownOverlay) this.countdownOverlay.style.display = 'none';
-                this.setState(GAME_STATES.PLAYING);
+            // 1. Update Player
+            const movement = inputSystem.getMovement();
+            this.player.update(dt, movement, inputSystem.consumeDash());
+
+            if (!this.player.alive) {
+                this.onPlayerDied();
+                return;
             }
-            return;
-        }
 
-        if (this.state !== GAME_STATES.PLAYING) return;
-
-        // Level-Up Check
-        if (xpSystem.levelUpPending) {
-            const choices = upgradeSystem.generateChoices(this.player, 3);
-            this.setState(GAME_STATES.LEVEL_UP, { cards: choices });
-            return;
-        }
-
-        // 1. Update Player
-        if (this.player && this.player.alive) {
-            this.player.update(dt, this.enemies, this.projectiles);
-        } else if (this.player && !this.player.alive) {
-            this.handleGameOver();
-            return;
-        }
-
-        // 2. Update Waves & Boss
-        const newBoss = waveSystem.update(dt, this.player, this.enemies, this.boss);
-        if (newBoss) {
-            this.boss = newBoss;
-        }
-
-        // 3. Spawning
-        spawnSystem.update(dt, this.player, this.enemies);
-
-        // 4. Boss AI
-        if (this.boss && this.boss.alive) {
-            this.boss.updateAI(dt, this.player, this.projectiles, this.warnings, this.enemies);
-        } else if (this.boss && !this.boss.alive && !waveSystem.bossDefeated) {
-            waveSystem.bossDefeated = true;
-            const drops = this.boss.createDropPickups();
-            this.pickups.push(...drops);
-            this.enemiesDefeatedCount += 1;
-            setTimeout(() => this.handleVictory(), 2000);
-        }
-
-        // 5. Warning Indicators
-        for (let i = this.warnings.length - 1; i >= 0; i--) {
-            const w = this.warnings[i];
-            w.timeLeft -= dt;
-            if (w.timeLeft <= 0) {
-                w.onTrigger(this.player);
-                this.warnings.splice(i, 1);
-            }
-        }
-
-        // 6. Projectiles
-        for (let i = this.projectiles.length - 1; i >= 0; i--) {
-            const p = this.projectiles[i];
-            p.update(dt, this.player, this.enemies);
-            if (!p.alive) {
-                this.projectiles.splice(i, 1);
-            }
-        }
-
-        // 7. Pickups
-        for (let i = this.pickups.length - 1; i >= 0; i--) {
-            const pickup = this.pickups[i];
-            pickup.update(dt, this.player);
-            if (!pickup.alive) {
-                this.pickups.splice(i, 1);
-            }
-        }
-
-        // 8. Spatial Grid
-        collisionSystem.clear();
-        for (let i = 0; i < this.enemies.length; i++) {
-            collisionSystem.insert(this.enemies[i]);
-        }
-
-        // 9. Collisions: Projectiles vs Enemies
-        for (let i = 0; i < this.projectiles.length; i++) {
-            const p = this.projectiles[i];
-            if (!p.alive) continue;
-
-            if (p.isEnemy) {
-                if (this.player && this.player.alive && collisionSystem.checkCircleOverlap(p.x, p.y, p.radius, this.player.x, this.player.y, this.player.radius)) {
-                    this.player.takeDamage(p.damage);
-                    p.alive = false;
+            // 2. Update Weapons
+            if (this.player.weapons) {
+                for (const wep of this.player.weapons) {
+                    wep.update(dt, this.enemies, this.projectiles);
                 }
-            } else {
-                if (this.boss && this.boss.alive && p.canHit(this.boss)) {
-                    if (collisionSystem.checkCircleOverlap(p.x, p.y, p.radius, this.boss.x, this.boss.y, this.boss.radius)) {
-                        p.onHit(this.boss);
-                        const result = damageSystem.calculateDamage(p.damage, this.player, this.boss, p.damageType);
-                        this.boss.takeDamage(result.damage, this.player, true);
-                        damageSystem.spawnText(this.boss.x, this.boss.y, result.damage, result.isCrit, p.color);
+            }
+
+            // 3. Update Wave System & Bosses
+            const newlySpawnedBoss = waveSystem.update(dt, this.player, this.enemies, this.activeBoss);
+            if (newlySpawnedBoss) {
+                if (newlySpawnedBoss.isMiniBoss) {
+                    this.activeMiniBosses.push(newlySpawnedBoss);
+                } else {
+                    this.activeBoss = newlySpawnedBoss;
+                }
+            }
+
+            // 4. Update Spawner
+            const availableTypes = waveSystem.getAvailableEnemyTypes(waveSystem.runTime);
+            spawnSystem.update(dt, this.player, this.enemies, availableTypes, difficultySystem.currentDifficulty);
+
+            // 5. Update Enemies
+            for (let i = this.enemies.length - 1; i >= 0; i--) {
+                const enemy = this.enemies[i];
+                enemy.update(dt, this.player, this.projectiles);
+
+                if (!enemy.alive) {
+                    this.runStats.enemiesDefeated += 1;
+                    const drops = enemy.createDropPickups();
+                    for (const d of drops) this.pickups.push(d);
+                    this.enemies.splice(i, 1);
+                }
+            }
+
+            // 6. Update Mini-Bosses
+            for (let i = this.activeMiniBosses.length - 1; i >= 0; i--) {
+                const miniBoss = this.activeMiniBosses[i];
+                miniBoss.update(dt, this.player, this.projectiles, this.telegraphedWarnings, this.enemies);
+                if (!miniBoss.alive) {
+                    this.runStats.enemiesDefeated += 1;
+                    const drops = miniBoss.createDropPickups();
+                    for (const d of drops) this.pickups.push(d);
+                    this.activeMiniBosses.splice(i, 1);
+                }
+            }
+
+            // 7. Update Big Boss
+            if (this.activeBoss) {
+                this.activeBoss.update(dt, this.player, this.projectiles, this.telegraphedWarnings, this.enemies);
+                if (!this.activeBoss.alive) {
+                    this.onBossDefeated(this.activeBoss);
+                    this.activeBoss = null;
+                }
+            }
+
+            // 8. Update Projectiles
+            for (let i = this.projectiles.length - 1; i >= 0; i--) {
+                const proj = this.projectiles[i];
+                proj.update(dt, this.player, this.enemies);
+                if (!proj.alive) {
+                    this.projectiles.splice(i, 1);
+                }
+            }
+
+            // 9. Update Pickups
+            for (let i = this.pickups.length - 1; i >= 0; i--) {
+                const pickup = this.pickups[i];
+                pickup.update(dt, this.player);
+                if (!pickup.alive) {
+                    this.pickups.splice(i, 1);
+                }
+            }
+
+            // 10. Update Warnings & Traps
+            for (let i = this.telegraphedWarnings.length - 1; i >= 0; i--) {
+                const w = this.telegraphedWarnings[i];
+                w.timeLeft -= dt;
+                if (w.timeLeft <= 0) {
+                    if (typeof w.onTrigger === 'function') {
+                        w.onTrigger(this.player);
                     }
-                }
-
-                const candidates = collisionSystem.queryRadius(p.x, p.y, p.radius + 32);
-                for (let j = 0; j < candidates.length; j++) {
-                    const e = candidates[j];
-                    if (!e.alive || !p.canHit(e)) continue;
-
-                    if (collisionSystem.checkCircleOverlap(p.x, p.y, p.radius, e.x, e.y, e.radius)) {
-                        p.onHit(e);
-
-                        const result = damageSystem.calculateDamage(p.damage, this.player, e, p.damageType);
-                        const knockDir = {
-                            x: (e.x - this.player.x) || 1,
-                            y: (e.y - this.player.y) || 0,
-                            force: 160
-                        };
-                        const len = Math.sqrt(knockDir.x * knockDir.x + knockDir.y * knockDir.y);
-                        knockDir.x /= len; knockDir.y /= len;
-
-                        e.takeDamage(result.damage, this.player, true, knockDir);
-                        damageSystem.spawnText(e.x, e.y, result.damage, result.isCrit, p.color);
-
-                        if (p.appliesBurn) {
-                            e.applyBurn(p.burnDamage, p.burnDuration, this.player);
-                        }
-
-                        if (!p.alive) break;
-                    }
+                    this.telegraphedWarnings.splice(i, 1);
                 }
             }
+
+            // 11. Collisions
+            const allHostiles = [...this.enemies, ...this.activeMiniBosses];
+            if (this.activeBoss) allHostiles.push(this.activeBoss);
+
+            collisionSystem.checkAll(this.player, allHostiles, this.projectiles, this.pickups);
+
+            // 12. Check Level Up
+            if (xpSystem.checkLevelUp()) {
+                this.triggerLevelUp();
+            }
+
+            // 13. Update VFX & Floating Damage Numbers
+            damageSystem.update(dt);
+            particleSystem.update(dt);
         }
-
-        // 10. Update & Prune Enemies
-        for (let i = this.enemies.length - 1; i >= 0; i--) {
-            const e = this.enemies[i];
-            e.update(dt, this.player, this.projectiles);
-
-            if (!e.alive) {
-                this.enemiesDefeatedCount += 1;
-                const drops = e.createDropPickups();
-                this.pickups.push(...drops);
-                this.enemies.splice(i, 1);
-            }
-        }
-
-        // 11. Magnet Collection
-        for (let i = 0; i < this.pickups.length; i++) {
-            const p = this.pickups[i];
-            if (p.alive && collisionSystem.checkCircleOverlap(this.player.x, this.player.y, this.player.radius, p.x, p.y, p.radius)) {
-                xpSystem.handlePickupCollection(p, this.player, this.pickups);
-            }
-        }
-
-        // 12. Update HUD
-        this.uiManager.updateHUD(this.player, xpSystem, waveSystem, this.boss);
-    }
-
-    handleGameOver() {
-        const survivalTime = Math.floor(waveSystem.runTime);
-        const diffMult = difficultySystem.currentMode.coinRewardMult || 1.0;
-        const coinsEarned = Math.round(xpSystem.runCoins * diffMult);
-        const enemiesDefeated = this.enemiesDefeatedCount;
-
-        saveSystem.recordRun(survivalTime, enemiesDefeated, coinsEarned);
-
-        this.setState(GAME_STATES.GAME_OVER, {
-            summary: {
-                survivalTime,
-                level: xpSystem.level,
-                enemiesDefeated,
-                coinsEarned
-            }
-        });
-    }
-
-    handleVictory() {
-        const survivalTime = Math.floor(waveSystem.runTime);
-        const diffMult = difficultySystem.currentMode.coinRewardMult || 1.0;
-        const coinsEarned = Math.round((xpSystem.runCoins + 350) * diffMult);
-        const enemiesDefeated = this.enemiesDefeatedCount;
-
-        saveSystem.recordRun(survivalTime, enemiesDefeated, coinsEarned);
-        audioSystem.playLevelUp();
-
-        this.setState(GAME_STATES.VICTORY, {
-            summary: {
-                characterName: this.player.characterName,
-                survivalTime,
-                enemiesDefeated,
-                coinsEarned
-            }
-        });
     }
 
     render() {
+        const allHostiles = [...this.enemies, ...this.activeMiniBosses];
+        if (this.activeBoss) allHostiles.push(this.activeBoss);
+
         this.renderer.render({
+            state: this.state,
             player: this.player,
-            enemies: this.enemies,
-            boss: this.boss,
+            enemies: allHostiles,
             projectiles: this.projectiles,
             pickups: this.pickups,
             particles: particleSystem.particles,
-            damageNumbers: damageSystem.damageNumbers,
-            warnings: this.warnings
+            floatingTexts: damageSystem.floatingTexts,
+            telegraphedWarnings: this.telegraphedWarnings,
+            camera: cameraSystem
         });
     }
 }

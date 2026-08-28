@@ -20,7 +20,7 @@ export class PauseMenu {
         this.container.innerHTML = `
             <div class="modal-overlay">
                 <div class="menu-dialog">
-                    <h2 class="dialog-title">⏸ مريح شوية (Pause)</h2>
+                    <h2 class="dialog-title">⏸ مريح شوية</h2>
                     <p class="dialog-sub">خد نفسك.. العفاريت مستنياك ترجع تدوس!</p>
 
                     <div class="pause-stats-card">
@@ -44,13 +44,13 @@ export class PauseMenu {
 
                     <div class="dialog-buttons">
                         <button class="btn btn-primary btn-large" id="btn-pause-resume">
-                            <span>كمل المعركة (Resume)</span>
+                            <span>كمل المعركة</span>
                         </button>
                         <button class="btn btn-secondary" id="btn-pause-restart">
-                            <span>ابدأ الجولة من الأول (Restart)</span>
+                            <span>ابدأ الجولة من الأول</span>
                         </button>
                         <button class="btn btn-muted" id="btn-pause-quit">
-                            <span>ارجع للقائمة وسوق العطارين (Menu)</span>
+                            <span>ارجع للقائمة وسوق العطارين</span>
                         </button>
                     </div>
                 </div>

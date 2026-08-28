@@ -50,7 +50,7 @@ export class BazaarModal {
 
                                 <div class="bazaar-card-footer">
                                     ${isMax ? `
-                                        <span class="badge-max">متقفل ع الآخر (MAX) ✨</span>
+                                        <span class="badge-max">متقفل ع الآخر ✨</span>
                                     ` : `
                                         <button class="btn btn-sm ${canAfford ? 'btn-gold' : 'btn-disabled'} btn-buy-upgrade" data-id="${item.id}" data-cost="${cost}" ${!canAfford ? 'disabled' : ''}>
                                             <span>اشترِ البركة (🪙 ${cost})</span>

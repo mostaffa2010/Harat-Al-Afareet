@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Level-Up Modal (Clear 3-Category Distinct Badges & Framing)
+ * Level-Up Modal (Authentic Slang, 6-Tier Rarity Colors, Distinct Category Tags)
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -23,10 +23,10 @@ export class LevelUpModal {
 
                     <div class="upgrade-cards-grid">
                         ${cards.map((card, index) => `
-                            <div class="upgrade-card interactive card-type-${card.type}" data-index="${index}" style="--card-glow: ${card.rarity.glow}; --card-color: ${card.categoryColor || card.rarity.color};">
+                            <div class="upgrade-card interactive card-type-${card.type}" data-index="${index}" style="--card-rarity-color: ${card.rarity.color}; --card-rarity-glow: ${card.rarity.glow};">
                                 <div class="card-top-badges">
-                                    <span class="card-category-badge" style="background: ${card.categoryColor}; color: #fff;">
-                                        ${card.categoryBadge || '🛡️ ميزة للبطل'}
+                                    <span class="card-category-badge" style="background: ${card.categoryColor || '#475569'};">
+                                        ${card.categoryTag || '[ميزة بطل]'} ${card.categoryBadge || ''}
                                     </span>
                                     <span class="card-rarity-badge" style="background: ${card.rarity.color}; color: #0f172a;">
                                         ${card.rarity.name}
@@ -34,17 +34,17 @@ export class LevelUpModal {
                                 </div>
 
                                 <div class="card-main-content">
-                                    <div class="card-icon-frame" style="border-color: ${card.categoryColor}">
+                                    <div class="card-icon-frame" style="border-color: ${card.rarity.color};">
                                         <span class="card-icon">${card.icon}</span>
                                     </div>
                                     <div class="card-text-group">
-                                        <h3 class="card-title">${card.name}</h3>
+                                        <h3 class="card-title" style="color: ${card.rarity.color};">${card.name}</h3>
                                         <p class="card-desc">${card.description}</p>
                                     </div>
                                 </div>
 
                                 <div class="card-footer">
-                                    <span class="card-category-sub">${card.categoryName || 'ميزة للبطل'}</span>
+                                    <span class="card-category-sub">${card.categoryTag || '[ميزة بطل]'}</span>
                                     <span class="card-level">مستوى ${card.level}/${card.maxLevel}</span>
                                 </div>
                             </div>

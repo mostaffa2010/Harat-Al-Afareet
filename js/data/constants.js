@@ -1,14 +1,15 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Global Constants (Pure Egyptian Arabic)
+ * Global Constants (Pure Egyptian Arabic & Authentic Slang)
  */
+
+export const GAME_VERSION = 'v5.0';
 
 export const GAME_STATES = {
     MAIN_MENU: 'MAIN_MENU',
     DIFFICULTY_SELECT: 'DIFFICULTY_SELECT',
     CHARACTER_SELECT: 'CHARACTER_SELECT',
     PLAYING: 'PLAYING',
-    COUNTDOWN: 'COUNTDOWN',
     PAUSED: 'PAUSED',
     LEVEL_UP: 'LEVEL_UP',
     BAZAAR: 'BAZAAR',
@@ -67,33 +68,49 @@ export const UPGRADE_RARITIES = {
         id: 'COMMON',
         name: 'على قد الإيد',
         color: '#94a3b8',
-        glow: 'rgba(148, 163, 184, 0.4)',
+        glow: 'rgba(148, 163, 184, 0.45)',
         multiplier: 1.0,
-        weight: 58
+        weight: 42
+    },
+    UNCOMMON: {
+        id: 'UNCOMMON',
+        name: 'يا بختك',
+        color: '#22c55e',
+        glow: 'rgba(34, 197, 94, 0.55)',
+        multiplier: 1.3,
+        weight: 28
     },
     RARE: {
         id: 'RARE',
-        name: 'لقطة يا بختك',
-        color: '#38bdf8',
-        glow: 'rgba(56, 189, 248, 0.6)',
-        multiplier: 1.5,
-        weight: 26
+        name: 'لقطة ده نادر',
+        color: '#3b82f6',
+        glow: 'rgba(59, 130, 246, 0.65)',
+        multiplier: 1.7,
+        weight: 16
     },
     EPIC: {
         id: 'EPIC',
-        name: 'حاجة فاخرة',
-        color: '#c084fc',
-        glow: 'rgba(192, 132, 252, 0.7)',
-        multiplier: 2.2,
-        weight: 13
+        name: 'شغل معلمين',
+        color: '#a855f7',
+        glow: 'rgba(168, 85, 247, 0.75)',
+        multiplier: 2.3,
+        weight: 9
     },
     LEGENDARY: {
         id: 'LEGENDARY',
-        name: 'شغل معلمين',
-        color: '#fbbf24',
-        glow: 'rgba(251, 191, 36, 0.9)',
+        name: 'سر الفراعنة',
+        color: '#ef4444',
+        glow: 'rgba(239, 68, 68, 0.85)',
         multiplier: 3.2,
-        weight: 3
+        weight: 5
+    },
+    EVOLVED: {
+        id: 'EVOLVED',
+        name: 'عظمة على عظمة (المستوى الأقصى)',
+        color: '#fbbf24',
+        glow: 'rgba(251, 191, 36, 0.95)',
+        multiplier: 4.5,
+        weight: 0
     }
 };
 
@@ -101,7 +118,8 @@ export const DAMAGE_TYPES = {
     PHYSICAL: 'PHYSICAL',
     FIRE: 'FIRE',
     LIGHTNING: 'LIGHTNING',
-    ARCANE: 'ARCANE'
+    ARCANE: 'ARCANE',
+    POISON: 'POISON'
 };
 
 export const PICKUP_TYPES = {

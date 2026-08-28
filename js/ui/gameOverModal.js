@@ -44,7 +44,7 @@ export class GameOverModal {
 
                     <div class="dialog-buttons">
                         <button class="btn btn-primary btn-large btn-glow" id="btn-gameover-retry">
-                            <span>⚔️ حاول تاني واثأر لنفسك (Retry)</span>
+                            <span>⚔️ حاول تاني واثأر لنفسك</span>
                         </button>
                         <button class="btn btn-secondary" id="btn-gameover-menu">
                             <span>سوق العطارين والقائمة الرئيسية</span>

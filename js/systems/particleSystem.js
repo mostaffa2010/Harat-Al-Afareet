@@ -1,12 +1,16 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * High-Performance Particle Engine
+ * High-Performance Particle Engine (Vertical Lightning, Radial Grace Pulses & Spells)
  */
 
 export class ParticleSystem {
     constructor() {
         this.particles = [];
         this.maxParticles = 600;
+    }
+
+    reset() {
+        this.particles = [];
     }
 
     emit(config) {
@@ -30,9 +34,6 @@ export class ParticleSystem {
         });
     }
 
-    /**
-     * Preset Particle Emitters
-     */
     emitHitSparks(x, y, color = '#f59e0b', count = 8) {
         for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
@@ -50,7 +51,6 @@ export class ParticleSystem {
     }
 
     emitDeathExplosion(x, y, color = '#7e22ce', count = 18) {
-        // Shockwave ring
         this.emit({
             x, y,
             vx: 0, vy: 0,
@@ -61,7 +61,6 @@ export class ParticleSystem {
             lineWidth: 3
         });
 
-        // Scatter particles
         for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
             const speed = 80 + Math.random() * 200;
@@ -78,7 +77,6 @@ export class ParticleSystem {
     }
 
     emitFireExplosion(x, y, radius = 40) {
-        // Shockwave ring
         this.emit({
             x, y,
             vx: 0, vy: 0,
@@ -105,33 +103,66 @@ export class ParticleSystem {
         }
     }
 
-    emitLevelUp(x, y) {
-        // Grand radiant golden ring
+    emitLightningStrike(x, y, color = '#38bdf8') {
+        // Vertical lightning beam straight down from sky with zero screen shake
+        for (let i = 0; i < 12; i++) {
+            const py = y - 450 + (i * 38);
+            this.emit({
+                x: x + (Math.random() * 6 - 3),
+                y: py,
+                vx: (Math.random() * 2 - 1) * 8,
+                vy: 25,
+                color: (i % 2 === 0) ? '#ffffff' : color,
+                size: 4 + Math.random() * 4,
+                life: 0.18,
+                drag: 0.95
+            });
+        }
+
+        // Ground electrical impact
         this.emit({
             x, y,
             vx: 0, vy: 0,
-            color: '#f59e0b',
-            size: 20,
-            life: 0.6,
+            color,
+            size: 18,
+            life: 0.25,
+            shape: 'ring',
+            lineWidth: 4
+        });
+        this.emitHitSparks(x, y, color, 14);
+    }
+
+    emitLevelUpPulse(x, y) {
+        this.emit({
+            x, y,
+            vx: 0, vy: 0,
+            color: '#fbbf24',
+            size: 25,
+            life: 0.5,
             shape: 'ring',
             lineWidth: 6
         });
+        this.emit({
+            x, y,
+            vx: 0, vy: 0,
+            color: '#38bdf8',
+            size: 15,
+            life: 0.4,
+            shape: 'ring',
+            lineWidth: 4
+        });
+    }
 
-        // Ascending celestial stars
-        const colors = ['#06b6d4', '#f59e0b', '#fef08a', '#ffffff'];
-        for (let i = 0; i < 35; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const speed = 50 + Math.random() * 180;
-            this.emit({
-                x, y,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed - 60, // upward bias
-                color: colors[Math.floor(Math.random() * colors.length)],
-                size: 3 + Math.random() * 4,
-                life: 0.5 + Math.random() * 0.4,
-                drag: 0.94
-            });
-        }
+    emitShockwave(x, y, radius = 60, color = '#f59e0b') {
+        this.emit({
+            x, y,
+            vx: 0, vy: 0,
+            color,
+            size: radius * 0.4,
+            life: 0.35,
+            shape: 'ring',
+            lineWidth: 4
+        });
     }
 
     emitDashTrail(x, y, color = '#06b6d4') {
@@ -164,7 +195,7 @@ export class ParticleSystem {
             p.vy *= p.drag;
 
             if (p.shape === 'ring') {
-                p.size += 70 * dt; // Expanding ring
+                p.size += 75 * dt; // Expanding ring
             }
         }
     }

@@ -7,7 +7,7 @@
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0b0f19">
+    <meta name="theme-color" content="#07090e">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,21 +22,9 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="app-container">
+    <div id="game-container">
         <!-- Main Game Canvas -->
         <canvas id="game-canvas"></canvas>
-
-        <!-- In-Game HUD -->
-        <div id="hud-container"></div>
-
-        <!-- 3-Second Resume / Start Countdown Overlay -->
-        <div id="countdown-overlay" style="display: none;">
-            <div class="countdown-card">
-                <div class="countdown-title">استعد يا بطل!</div>
-                <div class="countdown-number" id="countdown-num">3</div>
-                <div class="countdown-sub">هجمة العفاريت جاية في ثواني...</div>
-            </div>
-        </div>
 
         <!-- UI & Menu Overlay -->
         <div id="ui-overlay"></div>

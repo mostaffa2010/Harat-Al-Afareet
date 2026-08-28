@@ -1,6 +1,7 @@
 /**
  * حارة العفاريت — Harat El Afareet
  * Touch Virtual Joystick & Keyboard Input System
+ * (Fixed: Zero interference with HUD Buttons / Top Pause Area)
  */
 
 export class InputSystem {
@@ -15,7 +16,7 @@ export class InputSystem {
         this.touchId = null;
         this.touchOrigin = { x: 0, y: 0 };
         this.touchCurrent = { x: 0, y: 0 };
-        this.maxRadius = 60; // Max joystick radius in px
+        this.maxRadius = 65; // Max joystick radius in px
 
         // Keyboard state
         this.keys = {
@@ -55,6 +56,10 @@ export class InputSystem {
         let mouseDown = false;
         this.canvas.addEventListener('mousedown', (e) => {
             if (e.button === 0) {
+                // If top UI area, ignore
+                if (e.clientY < 75 || e.target.closest('#hud-btn-pause, .hud-btn, button, .interactive')) {
+                    return;
+                }
                 mouseDown = true;
                 this.touchActive = true;
                 this.touchOrigin = { x: e.clientX, y: e.clientY };
@@ -136,13 +141,19 @@ export class InputSystem {
     }
 
     handleTouchStart(e) {
-        // Ignore if touching an interactive UI button
-        if (e.target.closest('button, .interactive, .hud-btn, .upgrade-card, .menu-card')) {
+        // Strictly ignore if touching interactive UI elements or the top HUD area (< 75px from top)
+        if (e.target.closest('button, .hud-btn, #hud-btn-pause, .interactive, .upgrade-card, .menu-card, .modal-overlay')) {
             return;
         }
 
         for (let i = 0; i < e.changedTouches.length; i++) {
             const touch = e.changedTouches[i];
+
+            // If touch is in top bar area, do not start joystick
+            if (touch.clientY < 75) {
+                continue;
+            }
+
             // Primary touch for movement joystick
             if (!this.touchActive) {
                 this.touchActive = true;
@@ -189,7 +200,7 @@ export class InputSystem {
         const dy = this.touchCurrent.y - this.touchOrigin.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 5) {
+        if (dist < 6) {
             this.movementVector = { x: 0, y: 0 };
             return;
         }
@@ -207,9 +218,6 @@ export class InputSystem {
         this.dashTriggered = true;
     }
 
-    /**
-     * Poll current movement direction (keyboard + virtual joystick)
-     */
     getMovement() {
         let x = 0;
         let y = 0;
