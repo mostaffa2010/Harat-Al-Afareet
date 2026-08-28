@@ -98,6 +98,17 @@ export class Renderer {
         this.renderVirtualJoystick();
     }
 
+    drawShadow(x, y, rx, ry, alpha = 0.5) {
+        this.ctx.save();
+        this.ctx.fillStyle = 'rgba(0, 0, 0, ' + alpha + ')';
+        this.ctx.translate(x, y);
+        this.ctx.scale(1, ry / rx);
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, rx, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+    }
+
     renderEnvironment() {
         const cobbleTile = assetManager.tiles['ground_cobble'];
         if (!cobbleTile) return;
@@ -146,10 +157,7 @@ export class Renderer {
             const sprite = assetManager.sprites.pickups[p.type];
             const floatOffset = Math.sin(now + p.x) * 3;
 
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-            this.ctx.beginPath();
-            this.ctx.ellipse(screen.x, screen.y + 8, 8, 4, 0, 0, Math.PI * 2);
-            this.ctx.fill();
+            this.drawShadow(screen.x, screen.y + 8, 8, 4, 0.45);
 
             if (sprite) {
                 this.ctx.drawImage(
@@ -177,10 +185,7 @@ export class Renderer {
         this.ctx.restore();
 
         // Shadow under feet
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        this.ctx.beginPath();
-        this.ctx.ellipse(screen.x, screen.y + 14, 18, 8, 0, 0, Math.PI * 2);
-        this.ctx.fill();
+        this.drawShadow(screen.x, screen.y + 14, 18, 8, 0.6);
 
         // Attack Casting Flare Ring
         if (player.castAnimationTimer > 0) {
@@ -257,10 +262,7 @@ export class Renderer {
     renderEnemy(enemy) {
         const screen = cameraSystem.worldToScreen(enemy.x, enemy.y);
 
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-        this.ctx.beginPath();
-        this.ctx.ellipse(screen.x, screen.y + enemy.radius * 0.75, enemy.radius * 0.8, enemy.radius * 0.4, 0, 0, Math.PI * 2);
-        this.ctx.fill();
+        this.drawShadow(screen.x, screen.y + enemy.radius * 0.75, Math.max(8, enemy.radius * 0.8), Math.max(4, enemy.radius * 0.4), 0.45);
 
         if (enemy.burnTimer > 0) {
             this.ctx.save();
@@ -306,10 +308,7 @@ export class Renderer {
     renderBoss(boss) {
         const screen = cameraSystem.worldToScreen(boss.x, boss.y);
 
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
-        this.ctx.beginPath();
-        this.ctx.ellipse(screen.x, screen.y + boss.radius * 0.8, boss.radius * 1.1, boss.radius * 0.5, 0, 0, Math.PI * 2);
-        this.ctx.fill();
+        this.drawShadow(screen.x, screen.y + boss.radius * 0.8, boss.radius * 1.1, boss.radius * 0.5, 0.65);
 
         if (boss.isEnraged) {
             this.ctx.save();

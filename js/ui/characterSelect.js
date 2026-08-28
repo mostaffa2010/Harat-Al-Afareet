@@ -26,7 +26,7 @@ export class CharacterSelect {
         this.container.innerHTML = `
             <div class="menu-screen char-select-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted" id="btn-char-back">⬅ ارجع ورا</button>
+                    <button class="btn btn-sm btn-muted btn-back" id="btn-char-back">⬅ ارجع ورا</button>
                     <h2 class="screen-title">نقي بطل المعركة</h2>
                     <span class="diff-badge-active">${diffObj.badge}</span>
                 </div>
@@ -59,7 +59,7 @@ export class CharacterSelect {
                         </div>
                     </div>
 
-                    <button class="btn btn-primary btn-large btn-glow" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 16px ${char.themePrimary}">
+                    <button class="btn btn-primary btn-large btn-glow btn-confirm-wide" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 16px ${char.themePrimary}">
                         <span>⚔️ انزل الحارة بهذا البطل (${diffObj.badge})</span>
                     </button>
                 </div>
@@ -68,7 +68,7 @@ export class CharacterSelect {
 
         const artSlot = document.getElementById('char-art-slot');
         const illCanvas = assetManager.getIllustration(char.id);
-        if (illCanvas) {
+        if (artSlot && illCanvas) {
             artSlot.appendChild(illCanvas);
         }
 

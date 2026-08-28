@@ -23,39 +23,39 @@ export class PauseMenu {
         const charColor = (player && player.themePrimary) ? player.themePrimary : '#fbbf24';
 
         this.container.innerHTML = `
-            <div class=\"modal-overlay\">
-                <div class=\"menu-dialog\">
-                    <h2 class=\"dialog-title\">⏸ مريح شوية</h2>
-                    <p class=\"dialog-sub\">خد نفسك.. العفاريت مستنياك ترجع تدوس!</p>
+            <div class="modal-overlay">
+                <div class="modal-dialog pause-dialog">
+                    <h2 class="dialog-title">⏸ مريح شوية</h2>
+                    <p class="dialog-sub">خد نفسك.. العفاريت مستنياك ترجع تدوس!</p>
 
-                    <div class=\"pause-stats-card\">
-                        <div class=\"stat-row\">
+                    <div class="pause-stats-card">
+                        <div class="stat-row">
                             <span>البطل اللي نازل بيه:</span>
-                            <span class=\"stat-val\" style=\"color: ${charColor}\">${charName}</span>
+                            <span class="stat-val" style="color: ${charColor}">${charName}</span>
                         </div>
-                        <div class=\"stat-row\">
+                        <div class="stat-row">
                             <span>وقت الصمود في الحارة:</span>
-                            <span class=\"stat-val\">${mins}:${secs}</span>
+                            <span class="stat-val highlight">${mins}:${secs}</span>
                         </div>
-                        <div class=\"stat-row\">
+                        <div class="stat-row">
                             <span>المستوى الحالي:</span>
-                            <span class=\"stat-val\">${lvl}</span>
+                            <span class="stat-val highlight">${lvl}</span>
                         </div>
-                        <div class=\"stat-row\">
+                        <div class="stat-row">
                             <span>الفلوس اللي جمعتها:</span>
-                            <span class=\"stat-val\">🪙 ${coins}</span>
+                            <span class="stat-val text-gold">🪙 +${coins}</span>
                         </div>
                     </div>
 
-                    <div class=\"dialog-buttons\">
-                        <button class=\"btn btn-primary btn-large\" id=\"btn-pause-resume\">
-                            <span>كمل المعركة</span>
+                    <div class="dialog-buttons">
+                        <button class="btn btn-primary btn-large btn-glow" id="btn-pause-resume">
+                            <span>⚔️ كمل المعركة</span>
                         </button>
-                        <button class=\"btn btn-secondary\" id=\"btn-pause-restart\">
+                        <button class="btn btn-secondary" id="btn-pause-restart">
                             <span>ابدأ الجولة من الأول</span>
                         </button>
-                        <button class=\"btn btn-muted\" id=\"btn-pause-quit\">
-                            <span>ارجع للقائمة وسوق العطارين</span>
+                        <button class="btn btn-muted" id="btn-pause-quit">
+                            <span>سوق العطارين والقائمة الرئيسية</span>
                         </button>
                     </div>
                 </div>

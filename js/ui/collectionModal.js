@@ -16,9 +16,9 @@ export class CollectionModal {
         this.container.innerHTML = `
             <div class="menu-screen collection-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted" id="btn-col-back">⬅ ارجع ورا</button>
-                    <h2 class="screen-title">موسوعة أسرار الحارة والجان</h2>
-                    <div style="width: 50px;"></div>
+                    <button class="btn btn-sm btn-muted btn-back" id="btn-col-back">⬅ ارجع ورا</button>
+                    <h2 class="screen-title">موسوعة الحارة</h2>
+                    <div class="top-bar-spacer"></div>
                 </div>
 
                 <div class="collection-sections">

@@ -1,9 +1,9 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * PWA Service Worker (v5.0 Offline Cache)
+ * PWA Service Worker (v5.2 Offline Cache)
  */
 
-const CACHE_NAME = 'harat-el-afareet-v5.1';
+const CACHE_NAME = 'harat-el-afareet-v5.2';
 
 const ASSETS_TO_CACHE = [
     './',

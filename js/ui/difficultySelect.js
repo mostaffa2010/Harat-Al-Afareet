@@ -20,12 +20,12 @@ export class DifficultySelect {
         this.container.innerHTML = `
             <div class="menu-screen difficulty-select-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted" id="btn-diff-back">⬅ ارجع ورا</button>
-                    <h2 class="screen-title">اختر مستوى الصعوبة</h2>
-                    <div style="width: 50px;"></div>
+                    <button class="btn btn-sm btn-muted btn-back" id="btn-diff-back">⬅ ارجع ورا</button>
+                    <h2 class="screen-title">مستوى الصعوبة</h2>
+                    <div class="top-bar-spacer"></div>
                 </div>
 
-                <p class="bazaar-intro">«حدد قوة وجبروت العفاريت اللي هتنزل تواجههم في الحارة»</p>
+                <p class="screen-subtitle">«حدد قوة وجبروت العفاريت اللي هتنزل تواجههم في الحارة»</p>
 
                 <div class="difficulty-cards-container">
                     <!-- 1. Easy Mode -->
@@ -77,8 +77,8 @@ export class DifficultySelect {
                     </div>
                 </div>
 
-                <button class="btn btn-primary btn-large btn-glow" id="btn-confirm-diff">
-                    <span>التالي: اختيار البطل ⬅</span>
+                <button class="btn btn-primary btn-large btn-glow btn-confirm-wide" id="btn-confirm-diff">
+                    <span>التالي: نقي البطل ⬅</span>
                 </button>
             </div>
         `;
