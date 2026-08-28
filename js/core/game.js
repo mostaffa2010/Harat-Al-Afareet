@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Central Game Orchestrator & State Machine (v5.0)
+ * Central Game Orchestrator & State Machine (v5.5 - Rock-Solid Responsiveness)
  */
 
 import { GAME_STATES, DIFFICULTY_MODES } from '../data/constants.js';
@@ -56,9 +56,24 @@ export class Game {
             damageDealt: 0,
             timeSurvived: 0
         };
+
+        // Window resize binding
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.resize(), 100);
+        });
+    }
+
+    resize() {
+        if (!this.canvas) return;
+        const width = window.innerWidth || document.documentElement.clientWidth || 360;
+        const height = window.innerHeight || document.documentElement.clientHeight || 640;
+        this.renderer.resize(width, height);
     }
 
     async init() {
+        this.resize();
         await assetManager.init();
         saveSystem.loadGame();
         inputSystem.init(this.canvas);
@@ -93,6 +108,7 @@ export class Game {
     }
 
     startRun(characterConfig) {
+        this.resize();
         const charData = characterConfig || characterRegistry.get(saveSystem.data.selectedCharacter || 'apprentice');
         this.player = new Player(charData);
 

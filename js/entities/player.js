@@ -115,7 +115,7 @@ export class Player {
         });
     }
 
-    update(dt, enemies, projectiles) {
+    update(dt) {
         if (!this.alive) return;
 
         if (this.hpRegen > 0 && this.hp < this.maxHp) {
@@ -182,10 +182,6 @@ export class Player {
         this.y = Math.max(32, Math.min(WORLD_CONFIG.MAP_HEIGHT - 32, this.y));
 
         cameraSystem.follow(this.x, this.y);
-
-        for (let i = 0; i < this.weapons.length; i++) {
-            this.weapons[i].update(dt, enemies, projectiles);
-        }
     }
 
     startDash() {

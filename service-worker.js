@@ -3,7 +3,7 @@
  * PWA Service Worker (v5.2 Offline Cache)
  */
 
-const CACHE_NAME = 'harat-el-afareet-v5.2';
+const CACHE_NAME = 'harat-el-afareet-v5.6';
 
 const ASSETS_TO_CACHE = [
     './',

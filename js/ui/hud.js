@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * In-Game HUD with Responsive Pause Button & Stage Tracking
+ * In-Game HUD with Responsive Top Bar & Non-Intrusive Stage Pill
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -9,52 +9,56 @@ export class HUD {
     constructor(container, onPauseClick) {
         this.container = container;
         this.onPauseClick = onPauseClick;
+        this.lastStageName = '';
+        this.stageBannerTimer = 0;
     }
 
     render() {
         this.container.innerHTML = `
             <div class="game-hud">
-                <div class="hud-top-bar">
-                    <!-- Clean Upward Level Badge -->
-                    <div class="hud-level-badge">
-                        <span class="level-icon">⚡</span>
-                        <span class="level-val" id="hud-player-level">ليفل 1</span>
-                    </div>
-
-                    <!-- Clean Single-Line HP & XP Bars -->
-                    <div class="hud-bars-container">
-                        <div class="bar-wrapper hp-bar-wrapper">
-                            <div class="bar-fill hp-fill" id="hud-hp-fill" style="width: 100%;"></div>
-                            <span class="bar-text" id="hud-hp-text">❤️ 180 / 180</span>
+                <div class="hud-top-section">
+                    <div class="hud-top-bar">
+                        <!-- Clean Upward Level Badge -->
+                        <div class="hud-level-badge">
+                            <span class="level-icon">⚡</span>
+                            <span class="level-val" id="hud-player-level">ليفل 1</span>
                         </div>
 
-                        <div class="bar-wrapper xp-bar-wrapper">
-                            <div class="bar-fill xp-fill" id="hud-xp-fill" style="width: 0%;"></div>
-                            <span class="bar-text" id="hud-xp-text">الخبرة: 0 / 20</span>
+                        <!-- Clean Single-Line HP & XP Bars -->
+                        <div class="hud-bars-container">
+                            <div class="bar-wrapper hp-bar-wrapper">
+                                <div class="bar-fill hp-fill" id="hud-hp-fill" style="width: 100%;"></div>
+                                <span class="bar-text" id="hud-hp-text">❤️ 180 / 180</span>
+                            </div>
+
+                            <div class="bar-wrapper xp-bar-wrapper">
+                                <div class="bar-fill xp-fill" id="hud-xp-fill" style="width: 0%;"></div>
+                                <span class="bar-text" id="hud-xp-text">الخبرة: 0 / 20</span>
+                            </div>
+                        </div>
+
+                        <!-- Meta Group & Pause Button -->
+                        <div class="hud-meta-group">
+                            <div class="hud-timer" id="hud-timer">00:00</div>
+                            <div class="hud-coins">
+                                <span>🪙</span>
+                                <span id="hud-coins-val">0</span>
+                            </div>
+                            <button class="hud-btn hud-pause-btn" id="hud-btn-pause" aria-label="إيقاف مؤقت">⏸</button>
                         </div>
                     </div>
 
-                    <!-- Meta Group & Pause Button -->
-                    <div class="hud-meta-group">
-                        <div class="hud-timer" id="hud-timer">00:00</div>
-                        <div class="hud-coins">
-                            <span>🪙</span>
-                            <span id="hud-coins-val">0</span>
-                        </div>
-                        <button class="hud-btn hud-pause-btn" id="hud-btn-pause" aria-label="إيقاف مؤقت">⏸</button>
+                    <!-- Stage Announcement Pill (Positioned right below top bar, animated) -->
+                    <div class="hud-stage-banner" id="hud-stage-banner">
+                        <span class="stage-name-text" id="hud-stage-name">المرحلة 1: حارة السيدة</span>
                     </div>
-                </div>
 
-                <!-- Stage Announcement / Subtitle Bar -->
-                <div class="hud-stage-banner" id="hud-stage-banner">
-                    <span class="stage-name-text" id="hud-stage-name">المرحلة 1: حارة السيدة</span>
-                </div>
-
-                <!-- Boss Health Bar -->
-                <div class="hud-boss-bar-container" id="hud-boss-container" style="display: none;">
-                    <div class="boss-title" id="hud-boss-title">👑 سلطان الجان (ملك العفاريت)</div>
-                    <div class="bar-wrapper boss-bar-wrapper">
-                        <div class="bar-fill boss-fill" id="hud-boss-fill" style="width: 100%;"></div>
+                    <!-- Boss Health Bar -->
+                    <div class="hud-boss-bar-container" id="hud-boss-container" style="display: none;">
+                        <div class="boss-title" id="hud-boss-title">👑 سلطان الجان (ملك العفاريت)</div>
+                        <div class="bar-wrapper boss-bar-wrapper">
+                            <div class="bar-fill boss-fill" id="hud-boss-fill" style="width: 100%;"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -113,8 +117,24 @@ export class HUD {
         }
 
         const stageElem = document.getElementById('hud-stage-name');
+        const stageBanner = document.getElementById('hud-stage-banner');
         if (stageElem && waveSystem.getCurrentStageName) {
-            stageElem.textContent = waveSystem.getCurrentStageName();
+            const curStage = waveSystem.getCurrentStageName();
+            if (curStage !== this.lastStageName) {
+                this.lastStageName = curStage;
+                stageElem.textContent = curStage;
+                if (stageBanner) {
+                    stageBanner.style.opacity = '1';
+                    stageBanner.style.transform = 'translateY(0) scale(1)';
+                    // Fade out after 4 seconds
+                    setTimeout(() => {
+                        if (stageBanner) {
+                            stageBanner.style.opacity = '0';
+                            stageBanner.style.transform = 'translateY(-6px) scale(0.95)';
+                        }
+                    }, 4000);
+                }
+            }
         }
 
         const coinsElem = document.getElementById('hud-coins-val');

@@ -1,6 +1,6 @@
 /* =========================================
    حارة العفاريت — Harat El Afareet
-   Egyptian Urban Fantasy Survivors PWA (v5.2)
+   Egyptian Urban Fantasy Survivors PWA (v5.6)
    ========================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@500;700;800;900&display=swap');
@@ -56,6 +56,7 @@ html, body {
     align-items: center;
     justify-content: center;
     background-color: var(--bg-dark);
+    overflow: hidden;
 }
 
 #game-canvas {
@@ -224,7 +225,7 @@ html, body {
 }
 
 /* =========================================
-   SCREEN TOP BAR (NO OVERLAPPING HEADERS)
+   SCREEN TOP BAR
    ========================================= */
 .screen-top-bar {
     width: 100%;
@@ -930,7 +931,7 @@ html, body {
 }
 
 /* =========================================
-   HUD (SINGLE-LINE FLEX & RESPONSIVE PAUSE)
+   HUD (SINGLE-LINE FLEX & TOP-ALIGNED PILL)
    ========================================= */
 .game-hud {
     position: relative;
@@ -939,11 +940,20 @@ html, body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 10px 12px;
+    padding: 8px 10px;
     pointer-events: none;
 }
 
+.hud-top-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
 .hud-top-bar {
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1075,19 +1085,19 @@ html, body {
     background: #334155;
 }
 
-/* Stage Announcement Banner */
+/* Stage Announcement Banner (Non-intrusive Top Pill) */
 .hud-stage-banner {
-    align-self: center;
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(15, 23, 42, 0.9);
     border: 1px solid var(--border-gold);
     border-radius: 20px;
-    padding: 4px 16px;
-    margin-top: 4px;
+    padding: 3px 14px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .stage-name-text {
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 800;
     color: var(--egypt-gold-light);
 }
@@ -1096,7 +1106,7 @@ html, body {
 .hud-boss-bar-container {
     width: 85%;
     max-width: 420px;
-    margin: 4px auto 0 auto;
+    margin: 2px auto 0 auto;
     text-align: center;
     pointer-events: auto;
 }
