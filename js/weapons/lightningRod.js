@@ -74,11 +74,15 @@ export class LightningRod extends BaseWeapon {
             const enemy = targets[i];
             if (!enemy || !enemy.alive) continue;
 
-            const isCrit = Math.random() < this.critChance;
-            let finalDmg = Math.round(this.damage * (this.player.damageMultiplier || 1.0));
-            if (isCrit) finalDmg = Math.round(finalDmg * 2.2);
-
-            enemy.takeDamage(finalDmg, this.damageType);
+            const dmgResult = damageSystem.calculateDamage(this.damage, this.player, enemy, this.damageType);
+            enemy.takeDamage(dmgResult.damage, this.player, true);
+            damageSystem.spawnText(
+                enemy.x,
+                enemy.y,
+                dmgResult.damage,
+                dmgResult.isCrit,
+                dmgResult.isCrit ? '#fde047' : (this.isEvolved ? '#38bdf8' : '#a855f7')
+            );
 
             // Clean vertical lightning beam & spark particles (NO screen shake)
             particleSystem.emitLightningStrike(enemy.x, enemy.y, this.isEvolved ? '#38bdf8' : '#a855f7');

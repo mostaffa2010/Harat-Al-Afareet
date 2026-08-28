@@ -7,6 +7,7 @@
 import { BaseWeapon } from './baseWeapon.js';
 import { DAMAGE_TYPES } from '../data/constants.js';
 import { particleSystem } from '../systems/particleSystem.js';
+import { damageSystem } from '../systems/damageSystem.js';
 
 export class SpiritSmoke extends BaseWeapon {
     constructor(player) {
@@ -80,8 +81,9 @@ export class SpiritSmoke extends BaseWeapon {
             const dx = e.x - this.player.x;
             const dy = e.y - this.player.y;
             if (dx * dx + dy * dy <= radiusSq) {
-                const finalDmg = Math.round(this.damage * (this.player.damageMultiplier || 1.0));
-                e.takeDamage(finalDmg, this.damageType);
+                const dmgResult = damageSystem.calculateDamage(this.damage, this.player, e, this.damageType);
+                e.takeDamage(dmgResult.damage, this.player, true);
+                damageSystem.spawnText(e.x, e.y, dmgResult.damage, dmgResult.isCrit, this.isEvolved ? '#a855f7' : '#10b981');
                 // Apply slow
                 if (e.speed) {
                     e.speed = Math.max(25, e.speed * (this.isEvolved ? 0.55 : 0.75));

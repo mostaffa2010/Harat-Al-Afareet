@@ -70,9 +70,9 @@ export class UIManager {
         );
 
         this.hud = new HUD(this.hudContainer, () => {
-            if (this.callbacks.onPause) {
+            if (typeof this.callbacks.onPause === 'function') {
                 this.callbacks.onPause();
-            } else if (this.callbacks.onPauseClick) {
+            } else if (typeof this.callbacks.onPauseClick === 'function') {
                 this.callbacks.onPauseClick();
             }
         });
@@ -146,6 +146,7 @@ export class UIManager {
     init(callbacks) {
         this.callbacks = callbacks || {};
         if (this.hudContainer) {
+            this.hud.container = this.hudContainer;
             this.hud.render();
         }
     }
@@ -168,15 +169,16 @@ export class UIManager {
 
         if (!this.hudContainer) {
             this.hudContainer = document.getElementById('hud-container');
-            if (this.hudContainer && !this.hudContainer.innerHTML.trim()) {
-                this.hud.container = this.hudContainer;
-                this.hud.render();
-            }
         }
 
         if (state === GAME_STATES.PLAYING) {
             this.container.innerHTML = '';
-            if (this.hudContainer) this.hudContainer.style.display = 'block';
+            if (this.hudContainer) {
+                this.hudContainer.style.display = 'block';
+                if (!document.getElementById('hud-btn-pause')) {
+                    this.hud.render();
+                }
+            }
         } else if (state === GAME_STATES.MAIN_MENU) {
             if (this.hudContainer) this.hudContainer.style.display = 'none';
             this.mainMenu.render(saveSystem.data);

@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Central Game Orchestrator & State Machine (v5.5 - Rock-Solid Responsiveness)
+ * Central Game Orchestrator & State Machine (v6.0 - Full Combat & Menu Fixes)
  */
 
 import { GAME_STATES, DIFFICULTY_MODES } from '../data/constants.js';
@@ -83,6 +83,8 @@ export class Game {
             onStartGame: (difficultyKey) => this.handleDifficultySelect(difficultyKey),
             onSelectCharacterAndPlay: (charConfig) => this.startRun(charConfig),
             onSelectUpgrade: (upgradeCard) => this.handleUpgradeChosen(upgradeCard),
+            onPause: () => this.pauseGame(),
+            onPauseClick: () => this.pauseGame(),
             onResumeGame: () => this.resumeGame(),
             onRestartGame: () => this.restartRun(),
             onReturnToMenu: () => this.returnToMenu(),
@@ -274,10 +276,14 @@ export class Game {
                 return;
             }
 
-            // 2. Update Weapons
+            // Hostiles Aggregation (Enemies + Mini-bosses + Boss)
+            const allHostiles = [...this.enemies, ...this.activeMiniBosses];
+            if (this.activeBoss) allHostiles.push(this.activeBoss);
+
+            // 2. Update Weapons against all hostiles
             if (this.player.weapons) {
                 for (const wep of this.player.weapons) {
-                    wep.update(dt, this.enemies, this.projectiles);
+                    wep.update(dt, allHostiles, this.projectiles);
                 }
             }
 
@@ -332,7 +338,7 @@ export class Game {
             // 8. Update Projectiles
             for (let i = this.projectiles.length - 1; i >= 0; i--) {
                 const proj = this.projectiles[i];
-                proj.update(dt, this.player, this.enemies);
+                proj.update(dt, this.player, allHostiles);
                 if (!proj.alive) {
                     this.projectiles.splice(i, 1);
                 }
@@ -359,10 +365,7 @@ export class Game {
                 }
             }
 
-            // 11. Collisions
-            const allHostiles = [...this.enemies, ...this.activeMiniBosses];
-            if (this.activeBoss) allHostiles.push(this.activeBoss);
-
+            // 11. Collisions (Player, All Hostiles, Projectiles, Pickups)
             collisionSystem.checkAll(this.player, allHostiles, this.projectiles, this.pickups);
 
             // 12. Check Level Up

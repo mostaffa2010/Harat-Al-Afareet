@@ -14,6 +14,8 @@ export class HUD {
     }
 
     render() {
+        if (!this.container) return;
+
         this.container.innerHTML = `
             <div class="game-hud">
                 <div class="hud-top-section">
@@ -24,16 +26,22 @@ export class HUD {
                             <span class="level-val" id="hud-player-level">ليفل 1</span>
                         </div>
 
-                        <!-- Clean Single-Line HP & XP Bars -->
+                        <!-- Clean Single-Line HP & XP Bars (Bidi Protected) -->
                         <div class="hud-bars-container">
                             <div class="bar-wrapper hp-bar-wrapper">
                                 <div class="bar-fill hp-fill" id="hud-hp-fill" style="width: 100%;"></div>
-                                <span class="bar-text" id="hud-hp-text">❤️ 180 / 180</span>
+                                <span class="bar-text hp-bar-text" id="hud-hp-text">
+                                    <span class="bidi-val" id="hud-hp-num">180 / 180</span>
+                                    <span>❤️</span>
+                                </span>
                             </div>
 
                             <div class="bar-wrapper xp-bar-wrapper">
                                 <div class="bar-fill xp-fill" id="hud-xp-fill" style="width: 0%;"></div>
-                                <span class="bar-text" id="hud-xp-text">الخبرة: 0 / 20</span>
+                                <span class="bar-text xp-bar-text" id="hud-xp-text">
+                                    <span>الخبرة:</span>
+                                    <span class="bidi-val" id="hud-xp-num">0 / 20 (0%)</span>
+                                </span>
                             </div>
                         </div>
 
@@ -44,7 +52,7 @@ export class HUD {
                                 <span>🪙</span>
                                 <span id="hud-coins-val">0</span>
                             </div>
-                            <button class="hud-btn hud-pause-btn" id="hud-btn-pause" aria-label="إيقاف مؤقت">⏸</button>
+                            <button class="hud-btn hud-pause-btn" id="hud-btn-pause" type="button" aria-label="إيقاف مؤقت">⏸</button>
                         </div>
                     </div>
 
@@ -76,17 +84,19 @@ export class HUD {
     bindEvents() {
         const pauseBtn = document.getElementById('hud-btn-pause');
         if (pauseBtn) {
-            const triggerPause = (e) => {
+            const handlePause = (e) => {
                 if (e) {
                     e.preventDefault();
                     e.stopPropagation();
                 }
                 audioSystem.playClick();
-                this.onPauseClick();
+                if (typeof this.onPauseClick === 'function') {
+                    this.onPauseClick();
+                }
             };
 
-            pauseBtn.addEventListener('touchstart', triggerPause, { passive: false });
-            pauseBtn.addEventListener('click', triggerPause);
+            pauseBtn.onclick = handlePause;
+            pauseBtn.ontouchstart = handlePause;
         }
     }
 
@@ -97,17 +107,19 @@ export class HUD {
         if (lvlElem) lvlElem.textContent = `ليفل ${xpSystem.level}`;
 
         const xpFill = document.getElementById('hud-xp-fill');
-        const xpText = document.getElementById('hud-xp-text');
+        const xpNum = document.getElementById('hud-xp-num');
         const reqXp = xpSystem.getXpRequired();
         const xpPercent = Math.min(100, Math.round((xpSystem.currentXp / reqXp) * 100));
         if (xpFill) xpFill.style.width = `${xpPercent}%`;
-        if (xpText) xpText.textContent = `الخبرة: ${xpSystem.currentXp}/${reqXp} (${xpPercent}%)`;
+        if (xpNum) xpNum.textContent = `${xpSystem.currentXp} / ${reqXp} (${xpPercent}%)`;
 
         const hpFill = document.getElementById('hud-hp-fill');
-        const hpText = document.getElementById('hud-hp-text');
-        const hpPercent = Math.max(0, Math.min(100, Math.round((player.hp / player.maxHp) * 100)));
+        const hpNum = document.getElementById('hud-hp-num');
+        const currentHp = Math.max(0, Math.round(player.hp));
+        const maxHp = Math.round(player.maxHp);
+        const hpPercent = Math.max(0, Math.min(100, Math.round((currentHp / maxHp) * 100)));
         if (hpFill) hpFill.style.width = `${hpPercent}%`;
-        if (hpText) hpText.textContent = `❤️ ${Math.round(player.hp)} / ${player.maxHp}`;
+        if (hpNum) hpNum.textContent = `${currentHp} / ${maxHp}`;
 
         const timerElem = document.getElementById('hud-timer');
         if (timerElem) {
