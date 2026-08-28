@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character: الأسطى ريان
+ * Playable Character: الأسطى ريان
  */
 
 export const fireMage = {

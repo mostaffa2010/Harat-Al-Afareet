@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character: الواد زكي
+ * Playable Character: الواد زكي
  */
 
 export const apprentice = {
@@ -14,7 +14,7 @@ export const apprentice = {
     passive: {
         id: 'quick_study',
         name: 'فالح وسريع الفهم',
-        description: 'بياخد خبرة زيادة بنسبة 25% مع كل جوهرة يلمها من العفاريت.'
+        description: 'بياخد 4 بطاقات ترقية بدل 3 مع كل تلفيل ونقاط إكس بي بزيادة 20%.'
     },
     baseStats: {
         maxHp: 180,
@@ -26,7 +26,8 @@ export const apprentice = {
         criticalMultiplier: 1.85,
         pickupRadius: 110,
         armor: 1,
-        xpMultiplier: 1.25,
-        dashCooldown: 2.8
+        xpMultiplier: 1.20,
+        dashCooldown: 2.8,
+        extraChoiceChance: true
     }
 };

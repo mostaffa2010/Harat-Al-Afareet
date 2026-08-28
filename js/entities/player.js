@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Player Character Entity (Zero Screen Shake & Red Hurt Flash)
+ * Player Character Entity (Red Hurt Flash & No Screen Shake on Hit)
  */
 
 import { WORLD_CONFIG } from '../data/constants.js';
@@ -19,33 +19,41 @@ export class Player {
         this.radius = 18;
         this.alive = true;
 
+        // Character Identity
         this.characterId = characterConfig.id || 'apprentice';
         this.characterName = characterConfig.name || 'الواد زكي';
         this.themePrimary = characterConfig.themePrimary || '#06b6d4';
         this.themeSecondary = characterConfig.themeSecondary || '#f59e0b';
         this.passive = characterConfig.passive || null;
 
+        // Base Stats initialized
         this.initStats(characterConfig, permanentUpgrades);
 
+        // Movement & Animation
         this.vx = 0;
         this.vy = 0;
         this.isMoving = false;
-        this.facingDirection = 1;
+        this.facingDirection = 1; // 1 = right, -1 = left
 
+        // Attack & Casting Animation
         this.castAnimationTimer = 0;
 
+        // Dash Ability
         this.dashTimer = 0;
         this.dashCooldownTimer = 0;
         this.isDashing = false;
         this.isInvulnerable = false;
         this.invulnerableTimer = 0;
 
+        // Red Hit flash timer (0.25 seconds)
         this.hurtTimer = 0;
 
+        // Shield (Amulet Keeper passive or upgrade)
         this.shieldHp = 0;
         this.maxShieldHp = (this.characterId === 'amuletKeeper') ? 45 : 0;
         this.shieldRegenTimer = 0;
 
+        // Weapons Arsenal
         this.weapons = [];
         this.initStartingWeapon(characterConfig.startingWeaponId);
     }
@@ -104,7 +112,7 @@ export class Player {
     }
 
     triggerCastAnimation() {
-        this.castAnimationTimer = 0.22;
+        this.castAnimationTimer = 0.20;
         particleSystem.emit({
             x: this.x + this.facingDirection * 14,
             y: this.y - 6,
@@ -115,13 +123,15 @@ export class Player {
         });
     }
 
-    update(dt) {
+    update(dt, enemies, projectiles) {
         if (!this.alive) return;
 
+        // Passive Health Regeneration
         if (this.hpRegen > 0 && this.hp < this.maxHp) {
             this.heal(this.hpRegen * dt, false);
         }
 
+        // Amulet Keeper Shield
         if (this.characterId === 'amuletKeeper') {
             this.shieldRegenTimer += dt;
             if (this.shieldRegenTimer >= 5.0) {
@@ -133,6 +143,7 @@ export class Player {
             }
         }
 
+        // Red Hit flash timer & i-frames
         if (this.hurtTimer > 0) this.hurtTimer -= dt;
         if (this.castAnimationTimer > 0) this.castAnimationTimer -= dt;
         if (this.dashCooldownTimer > 0) this.dashCooldownTimer -= dt;
@@ -144,6 +155,7 @@ export class Player {
             }
         }
 
+        // Dash Handling
         if (inputSystem.consumeDash() && this.dashCooldownTimer <= 0 && !this.isDashing) {
             this.startDash();
         }
@@ -159,6 +171,7 @@ export class Player {
             }
         }
 
+        // Movement Update
         const move = inputSystem.getMovement();
         const currentSpeed = this.isDashing ? this.dashSpeed : this.movementSpeed;
 
@@ -182,6 +195,11 @@ export class Player {
         this.y = Math.max(32, Math.min(WORLD_CONFIG.MAP_HEIGHT - 32, this.y));
 
         cameraSystem.follow(this.x, this.y);
+
+        // Update Weapons
+        for (let i = 0; i < this.weapons.length; i++) {
+            this.weapons[i].update(dt, enemies, projectiles);
+        }
     }
 
     startDash() {
@@ -212,13 +230,15 @@ export class Player {
         }
 
         this.hp -= dmgToTake;
-        this.hurtTimer = 0.25; // Red hurt flash
+        // Turn RED for 0.25 seconds instead of camera shake
+        this.hurtTimer = 0.25;
         this.grantInvulnerability(0.45);
 
         damageSystem.spawnText(this.x, this.y, `-${dmgToTake}`, false, '#ef4444');
-        particleSystem.emitHitSparks(this.x, this.y, '#ef4444', 10);
+        particleSystem.emitHitSparks(this.x, this.y, '#ef4444', 8);
         audioSystem.playHit();
-        // ZERO SCREEN SHAKE
+
+        // NO CAMERA SHAKE when player is hit!
 
         if (this.hp <= 0) {
             this.hp = 0;

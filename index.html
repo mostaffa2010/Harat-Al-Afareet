@@ -7,7 +7,7 @@
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#07090e">
+    <meta name="theme-color" content="#0b0f19">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,17 +17,26 @@
     <!-- Google Fonts for Modern Egyptian Aesthetic -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="game-container">
+    <div id="app-container">
         <!-- Main Game Canvas -->
         <canvas id="game-canvas"></canvas>
 
-        <!-- HUD Layer -->
+        <!-- In-Game HUD -->
         <div id="hud-container"></div>
+
+        <!-- 3-Second Resume / Start Countdown Overlay -->
+        <div id="countdown-overlay" style="display: none;">
+            <div class="countdown-card">
+                <div class="countdown-title">استعد يا بطل!</div>
+                <div class="countdown-number" id="countdown-num">3</div>
+                <div class="countdown-sub">هجمة العفاريت جاية في ثواني...</div>
+            </div>
+        </div>
 
         <!-- UI & Menu Overlay -->
         <div id="ui-overlay"></div>
@@ -48,21 +57,11 @@
     <script type="module">
         import { Game } from './js/core/game.js';
 
-        const initApp = async () => {
-            try {
-                const game = new Game();
-                await game.init();
-                window.gameInstance = game;
-            } catch (err) {
-                console.error('Error starting Harat El Afareet:', err);
-            }
-        };
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else {
-            initApp();
-        }
+        window.addEventListener('DOMContentLoaded', async () => {
+            const game = new Game();
+            await game.init();
+            window.gameInstance = game;
+        });
     </script>
 </body>
 </html>

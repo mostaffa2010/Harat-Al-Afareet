@@ -8,9 +8,9 @@ import { saveSystem } from '../systems/saveSystem.js';
 import { audioSystem } from '../systems/audioSystem.js';
 
 export class DifficultySelect {
-    constructor(container, onConfirmDifficulty, onBack) {
+    constructor(container, onSelectDifficulty, onBack) {
         this.container = container;
-        this.onConfirmDifficulty = onConfirmDifficulty;
+        this.onSelectDifficulty = onSelectDifficulty;
         this.onBack = onBack;
     }
 
@@ -18,68 +18,64 @@ export class DifficultySelect {
         const currentDiff = saveSystem.data.selectedDifficulty || 'NORMAL';
 
         this.container.innerHTML = `
-            <div class="menu-screen difficulty-select-screen">
+            <div class="menu-screen diff-select-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted btn-back" id="btn-diff-back">⬅ ارجع ورا</button>
-                    <h2 class="screen-title">مستوى الصعوبة</h2>
-                    <div class="top-bar-spacer"></div>
+                    <button class="btn btn-sm btn-muted" id="btn-diff-back">⬅ ارجع ورا</button>
+                    <h2 class="screen-title">اختر مستوى الصعوبة</h2>
+                    <div style="width: 50px;"></div>
                 </div>
 
-                <p class="screen-subtitle">«حدد قوة وجبروت العفاريت اللي هتنزل تواجههم في الحارة»</p>
+                <p class="diff-page-sub">«حدد التحدي اللي يناسبك قبل ما تختار بطل الحارة»</p>
 
                 <div class="difficulty-cards-container">
                     <!-- 1. Easy Mode -->
-                    <div class="diff-card ${currentDiff === 'EASY' ? 'diff-card-selected' : ''}" data-diff="EASY">
+                    <div class="diff-choice-card ${currentDiff === 'EASY' ? 'diff-card-active' : ''}" data-diff="EASY">
                         <div class="diff-card-header">
                             <span class="diff-emoji">🟢</span>
-                            <div class="diff-title-group">
-                                <h3 class="diff-card-name">مستوى عبيط</h3>
-                                <span class="diff-card-tag">سهل وللتسلية</span>
+                            <div class="diff-header-text">
+                                <h3 class="diff-mode-name">مستوى عبيط</h3>
+                                <span class="diff-mode-tag">للتسلية والتجربة</span>
                             </div>
                         </div>
-                        <p class="diff-card-desc">العفاريت ضعيفة وصحتك أعلى وسرعتك سريعة.. مناسب عشان تجرب الأبطال وتلعب بمزاج رايق.</p>
-                        <div class="diff-card-perks">
-                            <span>❤️ صحة العفاريت: -25%</span>
-                            <span>👟 سرعة حركتك: +10%</span>
+                        <p class="diff-mode-desc">مناسب للي عايز يتمشى في الحارة براحته.. العفاريت على قد حالها وضرباتها خفيفة وصحتك وسرعتك عالية.</p>
+                        <div class="diff-card-stats">
+                            <span>صحة العفاريت: 75%</span>
+                            <span>سرعتك: +10%</span>
                         </div>
                     </div>
 
                     <!-- 2. Normal Mode -->
-                    <div class="diff-card ${currentDiff === 'NORMAL' ? 'diff-card-selected' : ''}" data-diff="NORMAL">
+                    <div class="diff-choice-card ${currentDiff === 'NORMAL' ? 'diff-card-active' : ''}" data-diff="NORMAL">
                         <div class="diff-card-header">
                             <span class="diff-emoji">🟡</span>
-                            <div class="diff-title-group">
-                                <h3 class="diff-card-name">عادي</h3>
-                                <span class="diff-card-tag">متوازن وأصيل</span>
+                            <div class="diff-header-text">
+                                <h3 class="diff-mode-name">عادي</h3>
+                                <span class="diff-mode-tag">المعركة المظبوطة</span>
                             </div>
                         </div>
-                        <p class="diff-card-desc">التجربة الأصلية المضبوطة.. حماس وتحدي وسرعة لعب ممتعة وتدرج وحوش عادل.</p>
-                        <div class="diff-card-perks">
-                            <span>⚔️ توازن أصلي 100%</span>
-                            <span>🪙 مكافأة عملات عادية</span>
+                        <p class="diff-mode-desc">المعركة المتوازنة للجدعان.. حماس وتحدي وسرعة لعب ممتعة وتدرج ممتاز مع الوقت.</p>
+                        <div class="diff-card-stats">
+                            <span>الصعوبة: 100% قياسية</span>
+                            <span>المكافآت: متوازنة</span>
                         </div>
                     </div>
 
                     <!-- 3. Hard Mode -->
-                    <div class="diff-card ${currentDiff === 'HARD' ? 'diff-card-selected' : ''}" data-diff="HARD">
+                    <div class="diff-choice-card ${currentDiff === 'HARD' ? 'diff-card-active' : ''}" data-diff="HARD">
                         <div class="diff-card-header">
                             <span class="diff-emoji">🔴</span>
-                            <div class="diff-title-group">
-                                <h3 class="diff-card-name">كابوس</h3>
-                                <span class="diff-card-tag">للمحترفين والفتوات</span>
+                            <div class="diff-header-text">
+                                <h3 class="diff-mode-name">كابوس</h3>
+                                <span class="diff-mode-tag">للمعلمين والوحوش</span>
                             </div>
                         </div>
-                        <p class="diff-card-desc">ليلة العفاريت الحمرا! أسراب ضخمة، وحوش شرسة، ولكن جوائز العملات مضاعفة +80%.</p>
-                        <div class="diff-card-perks">
-                            <span>💀 قوة العفاريت: +45%</span>
-                            <span>🪙 مكافأة عملات: +80%</span>
+                        <p class="diff-mode-desc">أمواج عفاريت متوحشة وسريعة وأعداد جبارة! في المقابل بتكسب فلوس وجوايز مضاعفة +80%.</p>
+                        <div class="diff-card-stats">
+                            <span>الصعوبة: +45%</span>
+                            <span>الفلوس: +80% مكافأة</span>
                         </div>
                     </div>
                 </div>
-
-                <button class="btn btn-primary btn-large btn-glow btn-confirm-wide" id="btn-confirm-diff">
-                    <span>التالي: نقي البطل ⬅</span>
-                </button>
             </div>
         `;
 
@@ -92,20 +88,15 @@ export class DifficultySelect {
             this.onBack();
         };
 
-        const diffCards = this.container.querySelectorAll('.diff-card');
-        diffCards.forEach(card => {
+        const cards = this.container.querySelectorAll('.diff-choice-card');
+        cards.forEach(card => {
             card.onclick = () => {
                 const diffKey = card.getAttribute('data-diff');
                 saveSystem.data.selectedDifficulty = diffKey;
                 saveSystem.saveGame();
                 audioSystem.playClick();
-                this.render();
+                this.onSelectDifficulty(diffKey);
             };
         });
-
-        document.getElementById('btn-confirm-diff').onclick = () => {
-            audioSystem.playClick();
-            this.onConfirmDifficulty(saveSystem.data.selectedDifficulty || 'NORMAL');
-        };
     }
 }

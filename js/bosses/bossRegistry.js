@@ -1,20 +1,14 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Boss & Mini-Boss Registry
+ * Boss Registry
  */
 
 import { AfreetKing } from './afreetKing.js';
-import { RockBruteBoss } from './rockBruteBoss.js';
-import { NecroShamanBoss } from './necroShamanBoss.js';
-import { InfernalBruteBoss } from './infernalBruteBoss.js';
 
 export class BossRegistry {
     constructor() {
         this.bosses = new Map();
         this.register('afreetKing', AfreetKing);
-        this.register('rockBruteBoss', RockBruteBoss);
-        this.register('necroShamanBoss', NecroShamanBoss);
-        this.register('infernalBruteBoss', InfernalBruteBoss);
     }
 
     register(id, bossClass) {

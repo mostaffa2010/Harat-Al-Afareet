@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character: الست ليلى
+ * Playable Character: الست ليلى
  */
 
 export const amuletKeeper = {
@@ -14,7 +14,7 @@ export const amuletKeeper = {
     passive: {
         id: 'protective_talisman',
         name: 'حجاب حورس الحامي',
-        description: 'درع سحري أزرق بيتجدد كل 5 ثواني يصد 45 نقطة ضرر مع صحة حديدية 220 نقطة.'
+        description: 'درع سحري أزرق بيتجدد كل 5 ثواني يصد 45 نقطة ضرر مع صحة حديدية 220.'
     },
     baseStats: {
         maxHp: 220,

@@ -1,10 +1,9 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * PWA Service Worker (Cache v8.0 - Full Combat, XP & Screen Flow Fixes)
+ * PWA Service Worker for Offline Caching
  */
 
-const CACHE_NAME = 'harat-afareet-v8';
-
+const CACHE_NAME = 'harat-el-afareet-v4';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -39,16 +38,12 @@ const ASSETS_TO_CACHE = [
     './js/characters/apprentice.js',
     './js/characters/fireMage.js',
     './js/characters/amuletKeeper.js',
-    './js/weapons/weaponRegistry.js',
     './js/weapons/baseWeapon.js',
+    './js/weapons/weaponRegistry.js',
     './js/weapons/magicStaff.js',
     './js/weapons/fireWand.js',
     './js/weapons/lightningRod.js',
     './js/weapons/magicalTalisman.js',
-    './js/weapons/flyingClog.js',
-    './js/weapons/acidFlask.js',
-    './js/weapons/hunterShotgun.js',
-    './js/weapons/spiritSmoke.js',
     './js/enemies/enemyRegistry.js',
     './js/enemies/smallAfreet.js',
     './js/enemies/fastAfreet.js',
@@ -59,10 +54,12 @@ const ASSETS_TO_CACHE = [
     './js/enemies/cryptBat.js',
     './js/bosses/bossRegistry.js',
     './js/bosses/afreetKing.js',
-    './js/bosses/rockBruteBoss.js',
-    './js/bosses/necroShamanBoss.js',
-    './js/bosses/infernalBruteBoss.js',
     './js/upgrades/upgradeRegistry.js',
+    './js/upgrades/weapons/fireDamage.js',
+    './js/upgrades/weapons/projectileCount.js',
+    './js/upgrades/weapons/lightningFork.js',
+    './js/upgrades/weapons/talismanOrbitSpeed.js',
+    './js/upgrades/weapons/staffHoming.js',
     './js/upgrades/player/movementSpeed.js',
     './js/upgrades/player/maxHealth.js',
     './js/upgrades/player/pickupRange.js',
@@ -70,16 +67,10 @@ const ASSETS_TO_CACHE = [
     './js/upgrades/player/healthRegen.js',
     './js/upgrades/general/criticalChance.js',
     './js/upgrades/general/attackSpeed.js',
+    './js/upgrades/general/projectileSpeed.js',
     './js/upgrades/general/areaOfEffect.js',
     './js/upgrades/general/xpBoost.js',
-    './js/upgrades/general/rawDamage.js',
     './js/upgrades/general/goldDigger.js',
-    './js/upgrades/general/projectileSpeed.js',
-    './js/upgrades/weapons/fireDamage.js',
-    './js/upgrades/weapons/lightningFork.js',
-    './js/upgrades/weapons/projectileCount.js',
-    './js/upgrades/weapons/staffHoming.js',
-    './js/upgrades/weapons/talismanOrbitSpeed.js',
     './js/ui/uiManager.js',
     './js/ui/mainMenu.js',
     './js/ui/difficultySelect.js',
@@ -98,35 +89,30 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS_TO_CACHE);
-        }).then(() => self.skipWaiting())
+        })
     );
+    self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((keys) => {
+        caches.keys().then((cacheNames) => {
             return Promise.all(
-                keys.map((key) => {
-                    if (key !== CACHE_NAME) {
-                        return caches.delete(key);
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
                     }
                 })
             );
-        }).then(() => self.clients.claim())
+        })
     );
+    self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-            return fetch(event.request).then((networkResponse) => {
-                return networkResponse;
-            }).catch(() => {
-                // Offline fallback
-            });
+        caches.match(event.request).then((response) => {
+            return response || fetch(event.request);
         })
     );
 });

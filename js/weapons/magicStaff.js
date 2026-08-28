@@ -1,7 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Primary Weapon: الخرزانة السحرية (الواد زكي حصرياً)
- * Level 8 Evolution: عصا الحكيم الأعظم (Arch-Sage Staff)
+ * Weapon: الخرزانة السحرية
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -14,92 +13,76 @@ export class MagicStaff extends BaseWeapon {
         super(player, {
             id: 'magicStaff',
             name: 'الخرزانة السحرية',
-            description: 'تطلق طلقات زرقاء سحرية تطارد العفاريت وتصيبهم بدقة.',
+            description: 'بتحدف كور سحرية ذكية بتطارد أقرب عفريت لوحدها وتفرتكه.',
             icon: '🪄',
-            damage: 22,
-            cooldown: 0.95,
-            projectileSpeed: 380,
+            damage: 24,
+            cooldown: 0.85,
+            projectileSpeed: 420,
             projectileCount: 1,
-            range: 480,
-            critChance: 0.08,
-            knockback: 140,
+            range: 520,
             pierce: 1,
             damageType: DAMAGE_TYPES.ARCANE
         });
-        this.isPrimary = true;
-        this.isEvolved = false;
     }
 
     applyLevelStats(level) {
-        if (level === 2) {
-            this.damage = 28;
-            this.projectileCount = 2;
-        } else if (level === 3) {
-            this.damage = 36;
-            this.cooldown = 0.85;
-            this.pierce = 2;
-        } else if (level === 4) {
-            this.damage = 45;
-            this.projectileCount = 3;
-        } else if (level === 5) {
-            this.damage = 56;
-            this.cooldown = 0.75;
-            this.critChance = 0.15;
-        } else if (level === 6) {
-            this.damage = 70;
-            this.projectileCount = 4;
-            this.pierce = 3;
-        } else if (level === 7) {
-            this.damage = 88;
-            this.cooldown = 0.65;
-            this.projectileSpeed = 440;
-        } else if (level >= 8) {
-            // Level 8 Evolution: عصا الحكيم الأعظم
-            this.isEvolved = true;
-            this.name = 'عصا الحكيم الأعظم (تطور أسطوري)';
-            this.icon = '✨🪄';
-            this.damage = 135;
-            this.projectileCount = 5;
-            this.pierce = 999; // Infinite pierce!
-            this.cooldown = 0.50;
-            this.critChance = 0.28;
-            this.projectileSpeed = 500;
+        switch (level) {
+            case 2:
+                this.damage += 8;
+                break;
+            case 3:
+                this.projectileCount += 1;
+                break;
+            case 4:
+                this.cooldown *= 0.82;
+                break;
+            case 5:
+                this.damage += 12;
+                this.pierce += 1;
+                break;
+            case 6:
+                this.projectileCount += 1;
+                break;
+            case 7:
+                this.cooldown *= 0.78;
+                break;
+            case 8:
+                this.damage += 22;
+                this.projectileCount += 1;
+                this.pierce += 1;
+                break;
         }
     }
 
     fire(enemies, projectiles) {
-        if (!projectiles) return;
-
         const targets = this.findClosestEnemies(enemies, this.projectileCount, this.range);
         if (targets.length === 0) return;
 
-        audioSystem.playMagicBolt();
+        this.player.triggerCastAnimation();
+        audioSystem.playCast();
 
         for (let i = 0; i < this.projectileCount; i++) {
             const target = targets[i % targets.length];
             const dx = target.x - this.player.x;
             const dy = target.y - this.player.y;
-            const baseAngle = Math.atan2(dy, dx);
-            const spread = (i - (this.projectileCount - 1) / 2) * (this.isEvolved ? 0.25 : 0.18);
-            const angle = baseAngle + spread;
+            const angle = Math.atan2(dy, dx) + (Math.random() * 0.25 - 0.12);
 
             projectiles.push(new Projectile({
                 x: this.player.x,
                 y: this.player.y,
-                vx: Math.cos(angle) * this.projectileSpeed,
-                vy: Math.sin(angle) * this.projectileSpeed,
-                speed: this.projectileSpeed,
-                radius: this.isEvolved ? 14 : 9,
-                damage: Math.round(this.damage * (this.player.damageMultiplier || 1.0)),
+                vx: Math.cos(angle) * this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
+                vy: Math.sin(angle) * this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
+                speed: this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
+                radius: 9,
+                damage: this.damage,
                 damageType: this.damageType,
                 pierce: this.pierce,
-                duration: 3.2,
-                weaponId: 'magicStaff',
-                spriteKey: this.isEvolved ? 'magicStaffEvolved' : 'magicStaffBolt',
-                color: this.isEvolved ? '#38bdf8' : '#06b6d4',
+                duration: 2.5,
+                weaponId: this.id,
+                spriteKey: 'magicStaffBolt',
                 isHoming: true,
                 target: target,
-                homingStrength: this.isEvolved ? 8.0 : 5.5,
+                homingStrength: 7.0,
                 rotation: angle
             }));
         }

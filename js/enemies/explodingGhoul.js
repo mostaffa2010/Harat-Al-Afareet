@@ -1,10 +1,11 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Enemy: العفريت المتفجر (Zero Screen Shake)
+ * Enemy: Exploding Ghoul (العفريت المتفجر / كابوس الموت)
  */
 
 import { BaseEnemy } from '../entities/baseEnemy.js';
 import { particleSystem } from '../systems/particleSystem.js';
+import { cameraSystem } from '../systems/cameraSystem.js';
 import { audioSystem } from '../systems/audioSystem.js';
 
 export class ExplodingGhoul extends BaseEnemy {
@@ -33,16 +34,18 @@ export class ExplodingGhoul extends BaseEnemy {
         const dy = player.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
+        // If close to player, start fuse countdown
         if (dist <= 65 && !this.isDetonating) {
             this.isDetonating = true;
-            this.fuseTimer = 0.9;
+            this.fuseTimer = 0.9; // 0.9s fuse before explosion
             audioSystem.playFireball();
         }
 
         if (this.isDetonating) {
             this.fuseTimer -= dt;
-            this.speed = 40;
+            this.speed = 40; // Slows down when preparing to burst
 
+            // Violent red pulsing particles
             particleSystem.emit({
                 x: this.x + (Math.random() * 14 - 7),
                 y: this.y + (Math.random() * 14 - 7),
@@ -67,6 +70,7 @@ export class ExplodingGhoul extends BaseEnemy {
     explode(player) {
         this.alive = false;
         particleSystem.emitFireExplosion(this.x, this.y, 60);
+        cameraSystem.triggerShake(9);
         audioSystem.playLightning();
 
         if (player && player.alive) {

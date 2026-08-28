@@ -1,7 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Primary Weapon: حجاب عين حورس (الست ليلى حصرياً)
- * Level 8 Evolution: درع حورس السماوي (Celestial Horus Aegis)
+ * Weapon: حجاب عين حورس
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -13,97 +12,88 @@ export class MagicalTalisman extends BaseWeapon {
         super(player, {
             id: 'magicalTalisman',
             name: 'حجاب عين حورس',
-            description: 'تمائم فرعونية تلف حوالين اللاعب وتصد أي عفريت يقرب.',
+            description: 'تمائم بتلف وتدور حواليك زي الخلاط تفرم أي عفريت يقرب منك.',
             icon: '🧿',
-            damage: 26,
-            cooldown: 9999, // Persistent orbiting projectiles
-            projectileSpeed: 0,
+            damage: 22,
+            cooldown: 0.1,
             projectileCount: 2,
-            range: 120,
-            critChance: 0.10,
-            knockback: 220,
-            pierce: 999,
             damageType: DAMAGE_TYPES.ARCANE
         });
-        this.isPrimary = true;
-        this.isEvolved = false;
-        this.orbitRadius = 75;
-        this.orbitSpeed = 3.2; // Radians per sec
-        this.spawnedProjectiles = [];
+        this.orbitRadius = 80;
+        this.orbitSpeed = 3.5;
+        this.activeTalismans = [];
     }
 
     applyLevelStats(level) {
-        if (level === 2) {
-            this.damage = 35;
-            this.orbitSpeed = 3.8;
-        } else if (level === 3) {
-            this.damage = 46;
-            this.projectileCount = 3;
-            this.orbitRadius = 85;
-        } else if (level === 4) {
-            this.damage = 60;
-            this.orbitSpeed = 4.4;
-        } else if (level === 5) {
-            this.damage = 76;
-            this.projectileCount = 4;
-            this.orbitRadius = 95;
-        } else if (level === 6) {
-            this.damage = 95;
-            this.orbitSpeed = 5.0;
-            this.critChance = 0.20;
-        } else if (level === 7) {
-            this.damage = 120;
-            this.projectileCount = 5;
-            this.orbitRadius = 105;
-        } else if (level >= 8) {
-            // Level 8 Evolution: درع حورس السماوي
-            this.isEvolved = true;
-            this.name = 'درع حورس السماوي (تطور أسطوري)';
-            this.icon = '𓂀✨';
-            this.damage = 185;
-            this.projectileCount = 6;
-            this.orbitSpeed = 6.2;
-            this.orbitRadius = 120;
-            this.critChance = 0.30;
+        switch (level) {
+            case 2:
+                this.projectileCount += 1;
+                break;
+            case 3:
+                this.damage += 8;
+                this.orbitSpeed += 0.6;
+                break;
+            case 4:
+                this.orbitRadius += 15;
+                this.projectileCount += 1;
+                break;
+            case 5:
+                this.damage += 12;
+                break;
+            case 6:
+                this.projectileCount += 1;
+                this.orbitSpeed += 0.8;
+                break;
+            case 7:
+                this.damage += 16;
+                this.orbitRadius += 15;
+                break;
+            case 8:
+                this.projectileCount += 1;
+                this.damage += 25;
+                this.orbitSpeed += 1.0;
+                break;
         }
-
-        // Force recreation of orbiting projectiles
-        this.refreshProjectiles();
-    }
-
-    refreshProjectiles() {
-        for (const p of this.spawnedProjectiles) {
-            p.alive = false;
-        }
-        this.spawnedProjectiles = [];
     }
 
     update(dt, enemies, projectiles) {
-        // Maintain continuous orbiting projectiles in game state
-        if (this.spawnedProjectiles.length !== this.projectileCount) {
-            this.refreshProjectiles();
+        this.syncTalismans(projectiles);
+    }
 
-            for (let i = 0; i < this.projectileCount; i++) {
-                const angle = (Math.PI * 2 / this.projectileCount) * i;
-                const p = new Projectile({
-                    x: this.player.x + Math.cos(angle) * this.orbitRadius,
-                    y: this.player.y + Math.sin(angle) * this.orbitRadius,
-                    speed: 0,
-                    radius: this.isEvolved ? 18 : 12,
-                    damage: Math.round(this.damage * (this.player.damageMultiplier || 1.0)),
+    syncTalismans(projectiles) {
+        this.activeTalismans = this.activeTalismans.filter(p => p.alive && projectiles.includes(p));
+
+        const targetCount = this.projectileCount;
+        if (this.activeTalismans.length !== targetCount) {
+            for (let i = 0; i < this.activeTalismans.length; i++) {
+                this.activeTalismans[i].alive = false;
+            }
+            this.activeTalismans = [];
+
+            const angleStep = (Math.PI * 2) / targetCount;
+            for (let i = 0; i < targetCount; i++) {
+                const tal = new Projectile({
+                    x: this.player.x,
+                    y: this.player.y,
+                    damage: this.damage,
                     damageType: this.damageType,
-                    pierce: 999,
-                    duration: 99999,
-                    weaponId: 'magicalTalisman',
-                    spriteKey: this.isEvolved ? 'talismanEvolved' : 'magicalTalismanOrb',
-                    color: this.isEvolved ? '#fbbf24' : '#2563eb',
+                    radius: 13,
+                    weaponId: this.id,
+                    spriteKey: 'magicalTalismanShield',
                     isOrbiting: true,
-                    orbitRadius: this.orbitRadius,
+                    orbitRadius: this.orbitRadius * (this.player.areaMultiplier || 1.0),
                     orbitSpeed: this.orbitSpeed,
-                    orbitAngle: angle
+                    orbitAngle: i * angleStep
                 });
-                this.spawnedProjectiles.push(p);
-                projectiles.push(p);
+                this.activeTalismans.push(tal);
+                projectiles.push(tal);
+            }
+        } else {
+            for (let i = 0; i < this.activeTalismans.length; i++) {
+                const tal = this.activeTalismans[i];
+                tal.damage = this.damage;
+                tal.orbitRadius = this.orbitRadius * (this.player.areaMultiplier || 1.0);
+                tal.orbitSpeed = this.orbitSpeed;
             }
         }
     }

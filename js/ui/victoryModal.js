@@ -15,23 +15,27 @@ export class VictoryModal {
     render(runSummary) {
         this.container.innerHTML = `
             <div class="modal-overlay">
-                <div class="modal-dialog victory-dialog">
+                <div class="menu-dialog victory-dialog">
                     <div class="dialog-trophy">👑✨</div>
                     <h2 class="dialog-title text-gold">يا جمالو.. طهرت الحارة وفرتكت سلطان الجان!</h2>
                     <p class="dialog-sub">مبروك يا معلم، كسبت معركة الـ 10 دقايق والفلوس هلت عليك!</p>
 
                     <div class="run-summary-card">
                         <div class="stat-row">
+                            <span>البطل المعلم:</span>
+                            <span class="stat-val highlight">${runSummary.characterName}</span>
+                        </div>
+                        <div class="stat-row">
                             <span>الصمود الكامل:</span>
                             <span class="stat-val highlight">10:00 (10 دقائق بالتمام)</span>
                         </div>
                         <div class="stat-row">
                             <span>العفاريت المهزومة:</span>
-                            <span class="stat-val highlight">${runSummary.enemiesDefeated || 0}</span>
+                            <span class="stat-val">${runSummary.enemiesDefeated}</span>
                         </div>
                         <div class="stat-row">
                             <span>مكافأة الفوز الكبيرة:</span>
-                            <span class="stat-val text-gold">🪙 +${runSummary.coinsCollected || 0} عملة</span>
+                            <span class="stat-val text-gold">🪙 +${runSummary.coinsEarned} عملة</span>
                         </div>
                     </div>
 

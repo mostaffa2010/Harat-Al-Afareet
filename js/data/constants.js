@@ -1,15 +1,14 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Global Constants (Pure Egyptian Arabic & Authentic Slang)
+ * Global Constants & Configurations (Pure Egyptian Colloquial)
  */
-
-export const GAME_VERSION = 'v5.0';
 
 export const GAME_STATES = {
     MAIN_MENU: 'MAIN_MENU',
     DIFFICULTY_SELECT: 'DIFFICULTY_SELECT',
     CHARACTER_SELECT: 'CHARACTER_SELECT',
     PLAYING: 'PLAYING',
+    COUNTDOWN: 'COUNTDOWN',
     PAUSED: 'PAUSED',
     LEVEL_UP: 'LEVEL_UP',
     BAZAAR: 'BAZAAR',
@@ -23,8 +22,8 @@ export const DIFFICULTY_MODES = {
     EASY: {
         id: 'EASY',
         name: 'مستوى عبيط',
-        badge: '🟢 عبيط',
-        description: 'العفاريت ضعيفة وصحتك أعلى ومناسب للتسلية وتجربة الأبطال براحتك.',
+        badge: '🟢 مستوى عبيط',
+        description: 'مناسب للي عايز يتمشى في الحارة براحته.. العفاريت على قد حالها وصحتك عالية.',
         enemyHpMult: 0.75,
         enemyDmgMult: 0.70,
         spawnIntervalMult: 1.25,
@@ -35,7 +34,7 @@ export const DIFFICULTY_MODES = {
         id: 'NORMAL',
         name: 'عادي',
         badge: '🟡 عادي',
-        description: 'التجربة القياسية الأصلية.. حماس وتحدي وسرعة لعب متوازنة وممتعة.',
+        description: 'المعركة المظبوطة للجدعان.. حماس وتحدي وسرعة لعب ممتعة.',
         enemyHpMult: 1.0,
         enemyDmgMult: 1.0,
         spawnIntervalMult: 1.0,
@@ -46,7 +45,7 @@ export const DIFFICULTY_MODES = {
         id: 'HARD',
         name: 'كابوس',
         badge: '🔴 كابوس',
-        description: 'للمحترفين فقط! أمواج هائلة، عفاريت سريعة، وجوائز عملات مضاعفة.',
+        description: 'للمعلمين والوحوش بس! أمواج عفاريت هائلة وجوائز فلوس مضاعفة.',
         enemyHpMult: 1.45,
         enemyDmgMult: 1.35,
         spawnIntervalMult: 0.75,
@@ -60,7 +59,7 @@ export const WORLD_CONFIG = {
     MAP_HEIGHT: 2600,
     TILE_SIZE: 64,
     SAFE_ZONE_RADIUS: 140,
-    TOTAL_RUN_DURATION: 600
+    TOTAL_RUN_DURATION: 600, // 10 minutes (600s)
 };
 
 export const UPGRADE_RARITIES = {
@@ -68,49 +67,33 @@ export const UPGRADE_RARITIES = {
         id: 'COMMON',
         name: 'على قد الإيد',
         color: '#94a3b8',
-        glow: 'rgba(148, 163, 184, 0.45)',
+        glow: 'rgba(148, 163, 184, 0.4)',
         multiplier: 1.0,
-        weight: 42
-    },
-    UNCOMMON: {
-        id: 'UNCOMMON',
-        name: 'يا بختك',
-        color: '#22c55e',
-        glow: 'rgba(34, 197, 94, 0.55)',
-        multiplier: 1.3,
-        weight: 28
+        weight: 58
     },
     RARE: {
         id: 'RARE',
-        name: 'لقطة ده نادر',
-        color: '#3b82f6',
-        glow: 'rgba(59, 130, 246, 0.65)',
-        multiplier: 1.7,
-        weight: 16
+        name: 'لقطة يا بختك',
+        color: '#38bdf8',
+        glow: 'rgba(56, 189, 248, 0.6)',
+        multiplier: 1.5,
+        weight: 26
     },
     EPIC: {
         id: 'EPIC',
-        name: 'شغل معلمين',
-        color: '#a855f7',
-        glow: 'rgba(168, 85, 247, 0.75)',
-        multiplier: 2.3,
-        weight: 9
+        name: 'حاجة فاخرة',
+        color: '#c084fc',
+        glow: 'rgba(192, 132, 252, 0.7)',
+        multiplier: 2.2,
+        weight: 13
     },
     LEGENDARY: {
         id: 'LEGENDARY',
-        name: 'سر الفراعنة',
-        color: '#ef4444',
-        glow: 'rgba(239, 68, 68, 0.85)',
-        multiplier: 3.2,
-        weight: 5
-    },
-    EVOLVED: {
-        id: 'EVOLVED',
-        name: 'عظمة على عظمة (المستوى الأقصى)',
+        name: 'شغل معلمين',
         color: '#fbbf24',
-        glow: 'rgba(251, 191, 36, 0.95)',
-        multiplier: 4.5,
-        weight: 0
+        glow: 'rgba(251, 191, 36, 0.9)',
+        multiplier: 3.2,
+        weight: 3
     }
 };
 
@@ -118,8 +101,7 @@ export const DAMAGE_TYPES = {
     PHYSICAL: 'PHYSICAL',
     FIRE: 'FIRE',
     LIGHTNING: 'LIGHTNING',
-    ARCANE: 'ARCANE',
-    POISON: 'POISON'
+    ARCANE: 'ARCANE'
 };
 
 export const PICKUP_TYPES = {

@@ -1,12 +1,13 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Boss: سلطان الجان (Zero Screen Shake)
+ * Boss: Afreet King (سلطان الجان / ملك العفاريت)
  */
 
 import { BaseEnemy } from '../entities/baseEnemy.js';
 import { Projectile } from '../entities/projectile.js';
 import { Pickup } from '../entities/pickup.js';
 import { PICKUP_TYPES, DAMAGE_TYPES } from '../data/constants.js';
+import { cameraSystem } from '../systems/cameraSystem.js';
 import { particleSystem } from '../systems/particleSystem.js';
 import { audioSystem } from '../systems/audioSystem.js';
 import { SmallAfreet } from '../enemies/smallAfreet.js';
@@ -39,10 +40,12 @@ export class AfreetKing extends BaseEnemy {
     updateAI(dt, player, projectiles, warnings = [], enemies = []) {
         if (!player || !player.alive) return;
 
+        // Enrage check at 50% HP
         if (!this.isEnraged && this.hp < this.maxHp * 0.5) {
             this.isEnraged = true;
             this.speed *= 1.3;
             audioSystem.playBossRoar();
+            cameraSystem.triggerShake(12);
             particleSystem.emitDeathExplosion(this.x, this.y, '#dc2626', 30);
         }
 
@@ -56,18 +59,21 @@ export class AfreetKing extends BaseEnemy {
             this.facingDirection = dx >= 0 ? 1 : -1;
         }
 
+        // 1. Dark Fire Breath
         this.specialAttackTimer += dt;
         if (this.specialAttackTimer >= (this.isEnraged ? 3.0 : 4.5)) {
             this.specialAttackTimer = 0;
             this.castDarkFireBreath(player, projectiles);
         }
 
+        // 2. Meteor Slam with Warning Ring
         this.meteorCooldown -= dt;
         if (this.meteorCooldown <= 0) {
             this.meteorCooldown = this.isEnraged ? 5.5 : 8.5;
             this.telegraphMeteor(player, warnings);
         }
 
+        // 3. Minion Summon Portal
         if (this.isEnraged) {
             this.summonTimer += dt;
             if (this.summonTimer >= this.summonCooldown) {
@@ -76,6 +82,7 @@ export class AfreetKing extends BaseEnemy {
             }
         }
 
+        // Contact attack
         if (dist <= this.radius + player.radius && this.attackTimer <= 0) {
             player.takeDamage(this.damage);
             this.attackTimer = this.attackCooldown;
@@ -127,6 +134,7 @@ export class AfreetKing extends BaseEnemy {
             duration: warningDuration,
             timeLeft: warningDuration,
             onTrigger: (p) => {
+                cameraSystem.triggerShake(14);
                 audioSystem.playLightning();
                 particleSystem.emitFireExplosion(targetX, targetY, meteorRadius);
 
@@ -164,6 +172,7 @@ export class AfreetKing extends BaseEnemy {
 
     die(player = null) {
         super.die(player);
+        cameraSystem.triggerShake(22);
         audioSystem.playBossRoar();
 
         for (let i = 0; i < 4; i++) {

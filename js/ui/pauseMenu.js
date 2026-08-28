@@ -14,48 +14,43 @@ export class PauseMenu {
     }
 
     render(player, xpSystem, waveSystem) {
-        const time = (waveSystem && waveSystem.runTime !== undefined) ? waveSystem.runTime : 0;
-        const mins = Math.floor(time / 60).toString().padStart(2, '0');
-        const secs = Math.floor(time % 60).toString().padStart(2, '0');
-        const lvl = (xpSystem && xpSystem.level !== undefined) ? xpSystem.level : 1;
-        const coins = (xpSystem && xpSystem.runCoins !== undefined) ? xpSystem.runCoins : 0;
-        const charName = (player && player.characterName) ? player.characterName : 'البطل';
-        const charColor = (player && player.themePrimary) ? player.themePrimary : '#fbbf24';
+        const mins = Math.floor(waveSystem.runTime / 60).toString().padStart(2, '0');
+        const secs = Math.floor(waveSystem.runTime % 60).toString().padStart(2, '0');
 
         this.container.innerHTML = `
             <div class="modal-overlay">
-                <div class="modal-dialog pause-dialog">
-                    <h2 class="dialog-title">⏸ مريح شوية</h2>
+                <div class="menu-dialog">
+                    <h2 class="dialog-title">⏸ مريح شوية (Pause)</h2>
                     <p class="dialog-sub">خد نفسك.. العفاريت مستنياك ترجع تدوس!</p>
 
                     <div class="pause-stats-card">
                         <div class="stat-row">
                             <span>البطل اللي نازل بيه:</span>
-                            <span class="stat-val" style="color: ${charColor}">${charName}</span>
+                            <span class="stat-val" style="color: ${player.themePrimary}">${player.characterName}</span>
                         </div>
                         <div class="stat-row">
                             <span>وقت الصمود في الحارة:</span>
-                            <span class="stat-val highlight">${mins}:${secs}</span>
+                            <span class="stat-val">${mins}:${secs}</span>
                         </div>
                         <div class="stat-row">
                             <span>المستوى الحالي:</span>
-                            <span class="stat-val highlight">${lvl}</span>
+                            <span class="stat-val">${xpSystem.level}</span>
                         </div>
                         <div class="stat-row">
                             <span>الفلوس اللي جمعتها:</span>
-                            <span class="stat-val text-gold">🪙 +${coins}</span>
+                            <span class="stat-val">🪙 ${xpSystem.runCoins}</span>
                         </div>
                     </div>
 
                     <div class="dialog-buttons">
-                        <button class="btn btn-primary btn-large btn-glow" id="btn-pause-resume">
-                            <span>⚔️ كمل المعركة</span>
+                        <button class="btn btn-primary btn-large" id="btn-pause-resume">
+                            <span>كمل المعركة (Resume)</span>
                         </button>
                         <button class="btn btn-secondary" id="btn-pause-restart">
-                            <span>ابدأ الجولة من الأول</span>
+                            <span>ابدأ الجولة من الأول (Restart)</span>
                         </button>
                         <button class="btn btn-muted" id="btn-pause-quit">
-                            <span>سوق العطارين والقائمة الرئيسية</span>
+                            <span>ارجع للقائمة وسوق العطارين (Menu)</span>
                         </button>
                     </div>
                 </div>

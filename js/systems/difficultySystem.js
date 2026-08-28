@@ -17,14 +17,6 @@ export class DifficultySystem {
         this.currentMode = DIFFICULTY_MODES[modeKey] || DIFFICULTY_MODES.NORMAL;
     }
 
-    setDifficulty(modeKey) {
-        this.setMode(modeKey);
-    }
-
-    get currentDifficulty() {
-        return this.currentMode;
-    }
-
     getDifficultyMultiplier(runTimeSeconds) {
         const timeFactor = 1.0 + (runTimeSeconds / 60) * 0.22 + Math.pow(runTimeSeconds / 600, 1.7) * 0.7;
         return timeFactor * (this.currentMode.enemyHpMult || 1.0);

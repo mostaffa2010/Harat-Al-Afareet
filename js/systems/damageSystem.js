@@ -10,10 +10,6 @@ export class DamageSystem {
         this.damageNumbers = [];
     }
 
-    get floatingTexts() {
-        return this.damageNumbers;
-    }
-
     /**
      * Compute actual damage considering crits, multipliers, and armor
      */
@@ -71,10 +67,6 @@ export class DamageSystem {
             dn.y += dn.vy * dt;
             dn.vy *= 0.94; // Decelerate float
         }
-    }
-
-    reset() {
-        this.clear();
     }
 
     clear() {
