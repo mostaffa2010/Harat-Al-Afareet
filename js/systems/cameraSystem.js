@@ -31,6 +31,16 @@ export class CameraSystem {
         this.targetY = targetY;
     }
 
+    reset(targetX, targetY) {
+        this.x = targetX !== undefined ? targetX : WORLD_CONFIG.MAP_WIDTH / 2;
+        this.y = targetY !== undefined ? targetY : WORLD_CONFIG.MAP_HEIGHT / 2;
+        this.targetX = this.x;
+        this.targetY = this.y;
+        this.shakeIntensity = 0;
+        this.shakeOffsetX = 0;
+        this.shakeOffsetY = 0;
+    }
+
     triggerShake(intensity = 0) {
         // Permanently disabled per design request
         this.shakeIntensity = 0;
@@ -38,9 +48,19 @@ export class CameraSystem {
         this.shakeOffsetY = 0;
     }
 
-    update(dt) {
-        this.x += (this.targetX - this.x) * Math.min(1.0, this.lerpSpeed * dt);
-        this.y += (this.targetY - this.y) * Math.min(1.0, this.lerpSpeed * dt);
+    update(targetXOrDt, targetY, dt) {
+        let actualDt = dt;
+        if (targetY !== undefined && dt !== undefined) {
+            this.targetX = targetXOrDt;
+            this.targetY = targetY;
+            actualDt = dt;
+        } else {
+            actualDt = targetXOrDt;
+        }
+        actualDt = actualDt || 0.016;
+
+        this.x += (this.targetX - this.x) * Math.min(1.0, this.lerpSpeed * actualDt);
+        this.y += (this.targetY - this.y) * Math.min(1.0, this.lerpSpeed * actualDt);
 
         const halfW = this.viewportWidth / 2;
         const halfH = this.viewportHeight / 2;

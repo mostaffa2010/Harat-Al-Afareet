@@ -1030,6 +1030,16 @@ export class AssetManager {
         return null;
     }
 
+    getEnemySpriteCanvas(enemyId) {
+        if (this.sprites.enemies && this.sprites.enemies[enemyId]) {
+            return this.sprites.enemies[enemyId].idle || this.sprites.enemies[enemyId].walk1 || null;
+        }
+        if (this.sprites.bosses && this.sprites.bosses[enemyId]) {
+            return this.sprites.bosses[enemyId].idle || null;
+        }
+        return null;
+    }
+
     getIllustration(characterId) {
         return this.illustrations.characters[characterId] || null;
     }

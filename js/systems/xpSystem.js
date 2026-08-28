@@ -33,6 +33,14 @@ export class XpSystem {
         return this.getXpForLevel(this.level);
     }
 
+    checkLevelUp() {
+        if (this.levelUpPending) {
+            this.levelUpPending = false;
+            return true;
+        }
+        return false;
+    }
+
     addXp(amount, player) {
         const bonus = (player && player.xpMultiplier) ? player.xpMultiplier : 1.0;
         const totalAmount = Math.round(amount * bonus);
@@ -46,7 +54,7 @@ export class XpSystem {
 
             // Trigger visual & audio celebration
             if (player) {
-                particleSystem.emitLevelUp(player.x, player.y);
+                particleSystem.emitLevelUpPulse ? particleSystem.emitLevelUpPulse(player.x, player.y) : particleSystem.emitLevelUp(player.x, player.y);
             }
             audioSystem.playLevelUp();
         }

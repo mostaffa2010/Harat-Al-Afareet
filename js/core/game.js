@@ -86,16 +86,14 @@ export class Game {
     }
 
     handleDifficultySelect(difficultyKey) {
-        difficultySystem.setDifficulty(difficultyKey);
-        saveSystem.data.selectedDifficulty = difficultyKey;
+        difficultySystem.setDifficulty(difficultyKey || 'NORMAL');
+        saveSystem.data.selectedDifficulty = difficultyKey || 'NORMAL';
         saveSystem.saveGame();
         this.setState(GAME_STATES.CHARACTER_SELECT);
     }
 
     startRun(characterConfig) {
         const charData = characterConfig || characterRegistry.get(saveSystem.data.selectedCharacter || 'apprentice');
-        const diffConfig = difficultySystem.currentDifficulty;
-
         this.player = new Player(charData);
 
         // Apply Permanent Bazaar Upgrades from Save
@@ -370,11 +368,12 @@ export class Game {
             state: this.state,
             player: this.player,
             enemies: allHostiles,
+            boss: this.activeBoss,
             projectiles: this.projectiles,
             pickups: this.pickups,
             particles: particleSystem.particles,
-            floatingTexts: damageSystem.floatingTexts,
-            telegraphedWarnings: this.telegraphedWarnings,
+            damageNumbers: damageSystem.damageNumbers,
+            warnings: this.telegraphedWarnings,
             camera: cameraSystem
         });
     }
