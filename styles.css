@@ -1,6 +1,6 @@
 /*
  * حارة العفاريت — Harat El Afareet
- * Egyptian Noir & 20 Minutes Till Dawn-Inspired Style Sheet
+ * Egyptian Noir & 20 Minutes Till Dawn-Inspired Style Sheet (v4)
  */
 
 :root {
@@ -271,7 +271,7 @@ html, body {
 .game-tagline {
     font-size: 13px;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .gold-badge {
@@ -320,42 +320,29 @@ html, body {
 /* =========================================
    DIFFICULTY SELECTION SCREEN
    ========================================= */
-.diff-select-screen {
-    background: radial-gradient(circle at 50% 25%, #181c2b 0%, #07090e 90%);
-}
-
-.diff-page-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 16px;
-}
-
 .difficulty-cards-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    margin: 12px 0 20px 0;
 }
 
-.diff-choice-card {
-    background: rgba(24, 32, 50, 0.88);
+.diff-card {
+    background: rgba(24, 32, 50, 0.85);
     border: 2px solid #334155;
     border-radius: 14px;
     padding: 14px 16px;
     text-align: right;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
 }
 
-.diff-choice-card:active {
-    transform: scale(0.97);
-}
-
-.diff-choice-card.diff-card-active {
+.diff-card-selected {
     border-color: var(--gold-bright);
+    background: rgba(30, 41, 62, 0.95);
     box-shadow: 0 0 16px var(--gold-glow);
-    background: rgba(30, 41, 65, 0.95);
 }
 
 .diff-card-header {
@@ -369,40 +356,36 @@ html, body {
     font-size: 24px;
 }
 
-.diff-header-text {
-    flex: 1;
+.diff-title-group {
     display: flex;
     align-items: baseline;
     gap: 8px;
 }
 
-.diff-mode-name {
+.diff-card-name {
     font-size: 17px;
-    font-weight: 900;
+    font-weight: 800;
     color: #fff;
 }
 
-.diff-mode-tag {
-    font-size: 11px;
+.diff-card-tag {
+    font-size: 12px;
     color: var(--gold-bright);
-    font-weight: 700;
 }
 
-.diff-mode-desc {
-    font-size: 12.5px;
+.diff-card-desc {
+    font-size: 12px;
     color: #cbd5e1;
     line-height: 1.4;
     margin-bottom: 8px;
 }
 
-.diff-card-stats {
+.diff-card-perks {
     display: flex;
-    justify-content: space-between;
+    gap: 12px;
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--cyan-magic);
-    border-top: 1px solid #334155;
-    padding-top: 6px;
 }
 
 .diff-badge-active {
@@ -416,8 +399,23 @@ html, body {
 }
 
 /* =========================================
-   CHARACTER SELECTION
+   CHARACTER SELECTION (256x256 NO CIRCLE)
    ========================================= */
+.screen-top-bar {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.screen-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--gold-bright);
+}
+
 .char-display-card {
     width: 100%;
     max-width: 390px;
@@ -431,13 +429,14 @@ html, body {
     box-shadow: 0 8px 26px rgba(0, 0, 0, 0.7);
 }
 
-.char-art-container {
+.char-art-container-256 {
     width: 256px;
     height: 256px;
-    margin-bottom: 6px;
+    max-width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 8px;
 }
 
 .char-carousel-nav {
@@ -445,7 +444,7 @@ html, body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .btn-arrow {
@@ -467,7 +466,7 @@ html, body {
 }
 
 .char-name {
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 900;
 }
 
@@ -477,9 +476,9 @@ html, body {
 }
 
 .char-desc {
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--text-muted);
-    line-height: 1.4;
+    line-height: 1.5;
     margin-bottom: 12px;
     text-align: center;
 }
@@ -521,7 +520,7 @@ html, body {
 }
 
 /* =========================================
-   HUD (FIXED FLEX & ZERO TEXT WRAPPING)
+   HUD (SINGLE-LINE FLEX ALIGNMENT)
    ========================================= */
 .game-hud {
     position: relative;
@@ -555,16 +554,16 @@ html, body {
     display: flex;
     align-items: center;
     gap: 4px;
-    min-width: 52px;
+    min-width: 54px;
     justify-content: center;
 }
 
 .level-icon {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .level-val {
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 900;
     color: var(--gold-bright);
     line-height: 1;
@@ -649,6 +648,7 @@ html, body {
     cursor: pointer;
 }
 
+/* Boss Bar */
 .hud-boss-bar-container {
     width: 85%;
     max-width: 420px;
@@ -674,9 +674,10 @@ html, body {
     background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 }
 
+/* Bottom Bar */
 .hud-bottom-bar {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-end;
     margin-bottom: calc(8px + var(--safe-area-inset-bottom));
 }
@@ -709,53 +710,8 @@ html, body {
     font-weight: 800;
 }
 
-.hud-action-buttons {
-    pointer-events: auto;
-}
-
-.hud-action-btn {
-    position: relative;
-    width: 66px;
-    height: 66px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #06b6d4, #0891b2);
-    border: 2px solid #67e8f9;
-    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.45);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    cursor: pointer;
-    overflow: hidden;
-}
-
-.hud-action-btn:active {
-    transform: scale(0.92);
-}
-
-.action-icon {
-    font-size: 24px;
-}
-
-.action-label {
-    font-size: 10px;
-    font-weight: 800;
-}
-
-.cooldown-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 0%;
-    background: rgba(0, 0, 0, 0.7);
-    pointer-events: none;
-    transition: height 0.1s linear;
-}
-
 /* =========================================
-   MODALS
+   MODALS & UPGRADE CARDS
    ========================================= */
 .modal-overlay {
     position: absolute;
@@ -779,13 +735,13 @@ html, body {
     background: rgba(15, 20, 34, 0.96);
     border: 2px solid var(--border-gold);
     border-radius: 18px;
-    padding: 20px;
+    padding: 18px;
     text-align: center;
     box-shadow: 0 10px 32px rgba(0, 0, 0, 0.85);
 }
 
 .level-up-header {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .radiant-star {
@@ -811,13 +767,12 @@ html, body {
 }
 
 .upgrade-card {
-    background: rgba(24, 32, 50, 0.85);
+    background: rgba(24, 32, 50, 0.88);
     border: 2px solid var(--card-color, #475569);
     border-radius: 14px;
-    padding: 12px 16px;
+    padding: 12px 14px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     text-align: right;
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -828,40 +783,70 @@ html, body {
     transform: scale(0.97);
 }
 
-.card-rarity-badge {
-    align-self: flex-start;
-    padding: 2px 10px;
-    border-radius: 12px;
+.card-top-badges {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.card-category-badge {
+    padding: 3px 10px;
+    border-radius: 8px;
     font-size: 11px;
     font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 6px;
+}
+
+.card-rarity-badge {
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 10.5px;
+    font-weight: 800;
+}
+
+.card-main-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
 }
 
 .card-icon-frame {
     font-size: 26px;
-    margin-bottom: 4px;
+    width: 44px;
+    height: 44px;
+    border: 2px solid #475569;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(11, 15, 25, 0.6);
+    flex-shrink: 0;
+}
+
+.card-text-group {
+    flex: 1;
 }
 
 .card-title {
     font-size: 16px;
     font-weight: 800;
     color: #fff;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .card-desc {
-    font-size: 13px;
+    font-size: 12.5px;
     color: #cbd5e1;
     line-height: 1.4;
-    margin-bottom: 8px;
 }
 
 .card-footer {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     color: var(--gold-bright);
     border-top: 1px solid #334155;
@@ -917,9 +902,9 @@ html, body {
 }
 
 /* =========================================
-   ACHIEVEMENTS MODAL
+   ACHIEVEMENTS, BAZAAR & COLLECTION
    ========================================= */
-.achievements-list-grid {
+.achievements-list-grid, .bazaar-items-grid, .collection-sections {
     width: 100%;
     max-width: 440px;
     display: flex;
@@ -930,7 +915,7 @@ html, body {
     padding-bottom: 16px;
 }
 
-.achievement-card {
+.achievement-card, .bazaar-card {
     background: rgba(24, 32, 50, 0.85);
     border: 1px solid #475569;
     border-radius: 12px;
@@ -943,28 +928,28 @@ html, body {
     box-shadow: 0 0 12px var(--gold-glow);
 }
 
-.ach-header {
+.ach-header, .bazaar-card-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;
 }
 
-.ach-icon {
+.ach-icon, .bazaar-icon {
     font-size: 26px;
 }
 
-.ach-info {
+.ach-info, .bazaar-title-group {
     flex: 1;
 }
 
-.ach-name {
-    font-size: 14px;
+.ach-name, .bazaar-item-name {
+    font-size: 14.5px;
     font-weight: 800;
     color: #fff;
 }
 
-.ach-desc {
+.ach-desc, .bazaar-item-desc {
     font-size: 12px;
     color: var(--text-muted);
 }
@@ -995,7 +980,7 @@ html, body {
     color: #fff;
 }
 
-.ach-footer {
+.ach-footer, .bazaar-card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1007,8 +992,8 @@ html, body {
     color: var(--gold-bright);
 }
 
-.badge-claimed {
-    font-size: 11px;
+.badge-claimed, .badge-max {
+    font-size: 11.5px;
     font-weight: 800;
     color: var(--green-heal);
 }
@@ -1019,81 +1004,10 @@ html, body {
     color: var(--text-muted);
 }
 
-/* =========================================
-   BAZAAR & COLLECTION
-   ========================================= */
-.bazaar-intro {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 14px;
-}
-
-.bazaar-items-grid {
-    width: 100%;
-    max-width: 440px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    overflow-y: auto;
-    max-height: 70vh;
-    padding-bottom: 16px;
-}
-
-.bazaar-card {
-    background: rgba(24, 32, 50, 0.85);
-    border: 1px solid var(--border-gold);
-    border-radius: 12px;
-    padding: 12px;
-    text-align: right;
-}
-
-.bazaar-card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 6px;
-}
-
-.bazaar-icon {
-    font-size: 26px;
-}
-
-.bazaar-title-group {
-    flex: 1;
-}
-
-.bazaar-item-name {
-    font-size: 15px;
-    font-weight: 800;
-    color: #fff;
-}
-
 .bazaar-item-lvl {
     font-size: 12px;
     font-weight: 700;
     color: var(--gold-bright);
-}
-
-.bazaar-item-desc {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
-
-.badge-max {
-    font-size: 12px;
-    color: var(--green-heal);
-    font-weight: 800;
-}
-
-.collection-sections {
-    width: 100%;
-    max-width: 440px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    overflow-y: auto;
-    max-height: 75vh;
 }
 
 .col-section-title {
@@ -1132,6 +1046,22 @@ html, body {
     font-size: 12px;
     color: var(--text-muted);
     line-height: 1.4;
+}
+
+.enemy-sprite-frame {
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--border-gold);
+    border-radius: 8px;
+    background: rgba(11, 15, 25, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.enemy-sprite-frame canvas {
+    image-rendering: pixelated;
 }
 
 .boss-entry {

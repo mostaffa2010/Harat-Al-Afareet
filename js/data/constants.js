@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Global Constants & Configurations (Pure Egyptian Colloquial)
+ * Global Constants (Pure Egyptian Arabic)
  */
 
 export const GAME_STATES = {
@@ -22,8 +22,8 @@ export const DIFFICULTY_MODES = {
     EASY: {
         id: 'EASY',
         name: 'مستوى عبيط',
-        badge: '🟢 مستوى عبيط',
-        description: 'مناسب للي عايز يتمشى في الحارة براحته.. العفاريت على قد حالها وصحتك عالية.',
+        badge: '🟢 عبيط',
+        description: 'العفاريت ضعيفة وصحتك أعلى ومناسب للتسلية وتجربة الأبطال براحتك.',
         enemyHpMult: 0.75,
         enemyDmgMult: 0.70,
         spawnIntervalMult: 1.25,
@@ -34,7 +34,7 @@ export const DIFFICULTY_MODES = {
         id: 'NORMAL',
         name: 'عادي',
         badge: '🟡 عادي',
-        description: 'المعركة المظبوطة للجدعان.. حماس وتحدي وسرعة لعب ممتعة.',
+        description: 'التجربة القياسية الأصلية.. حماس وتحدي وسرعة لعب متوازنة وممتعة.',
         enemyHpMult: 1.0,
         enemyDmgMult: 1.0,
         spawnIntervalMult: 1.0,
@@ -45,7 +45,7 @@ export const DIFFICULTY_MODES = {
         id: 'HARD',
         name: 'كابوس',
         badge: '🔴 كابوس',
-        description: 'للمعلمين والوحوش بس! أمواج عفاريت هائلة وجوائز فلوس مضاعفة.',
+        description: 'للمحترفين فقط! أمواج هائلة، عفاريت سريعة، وجوائز عملات مضاعفة.',
         enemyHpMult: 1.45,
         enemyDmgMult: 1.35,
         spawnIntervalMult: 0.75,
@@ -59,7 +59,7 @@ export const WORLD_CONFIG = {
     MAP_HEIGHT: 2600,
     TILE_SIZE: 64,
     SAFE_ZONE_RADIUS: 140,
-    TOTAL_RUN_DURATION: 600, // 10 minutes (600s)
+    TOTAL_RUN_DURATION: 600
 };
 
 export const UPGRADE_RARITIES = {

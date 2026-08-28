@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Master UI Manager (Streamlined Flow)
+ * Master UI Manager (Full Screen Routing)
  */
 
 import { GAME_STATES } from '../data/constants.js';

@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Upgrade Registry (Pure Egyptian Colloquial)
+ * Upgrade Registry (Clear 3-Category Distinction: New Weapon, Weapon Upgrade, Hero Stat)
  */
 
 import { fireDamageUpgrade } from './weapons/fireDamage.js';
@@ -52,18 +52,21 @@ export class UpgradeRegistry {
     getEligibleUpgrades(player, playerUpgradeLevels = {}) {
         const eligible = [];
 
-        // 1. Passive & Stat Upgrades
+        // Category 1: Player Stats & Passives (ميزة وقوة للبطل)
         for (let i = 0; i < this.upgrades.length; i++) {
             const up = this.upgrades[i];
             const currentLvl = playerUpgradeLevels[up.id] || 0;
             if (currentLvl < up.maxLevel && up.canApply(player)) {
                 eligible.push({
                     type: 'STAT',
+                    categoryName: 'ميزة وقوة للبطل',
+                    categoryBadge: '🛡️ ميزة للبطل',
+                    categoryColor: '#10b981',
                     id: up.id,
                     name: up.name,
                     description: up.description,
                     icon: up.icon,
-                    themeColor: up.themeColor,
+                    themeColor: up.themeColor || '#10b981',
                     level: currentLvl + 1,
                     maxLevel: up.maxLevel,
                     apply: () => {
@@ -74,15 +77,18 @@ export class UpgradeRegistry {
             }
         }
 
-        // 2. Existing Weapon Level-Ups
+        // Category 2: Existing Weapon Level-Ups (ترقية سلاحك)
         for (let i = 0; i < player.weapons.length; i++) {
             const wep = player.weapons[i];
             if (wep.level < wep.maxLevel) {
                 eligible.push({
                     type: 'WEAPON_UPGRADE',
+                    categoryName: 'ترقية سلاح حالي',
+                    categoryBadge: '🔄 ترقية سلاحك',
+                    categoryColor: '#f59e0b',
                     id: `weapon_${wep.id}`,
                     name: `ترقية ${wep.name}`,
-                    description: `رفع مستوى السلاح لمستوى ${wep.level + 1} لزيادة الضرر وسرعة الضرب.`,
+                    description: `رفع مستوى ${wep.name} للمستوى ${wep.level + 1} لزيادة الضرر والسرعة.`,
                     icon: wep.icon,
                     themeColor: '#f59e0b',
                     level: wep.level + 1,
@@ -94,16 +100,16 @@ export class UpgradeRegistry {
             }
         }
 
-        // 3. New Weapon Unlocks
+        // Category 3: New Weapon Unlocks (سلاح هجومي جديد)
         const allWeaponIds = ['magicStaff', 'fireWand', 'lightningRod', 'magicalTalisman'];
         const currentWeaponIds = player.weapons.map(w => w.id);
         const availableNewWeapons = allWeaponIds.filter(id => !currentWeaponIds.includes(id));
 
         const weaponMeta = {
-            magicStaff: { name: 'الخرزانة السحرية', desc: 'سلاح موجه يطلق قذائف ذكية تطارد العفاريت.', icon: '🪄' },
-            fireWand: { name: 'ولاعة الجان', desc: 'كرات نارية متفجرة وحرائق متسلسلة في الحارة.', icon: '🔥' },
-            lightningRod: { name: 'كهربا الحارة', desc: 'صواعق ورعود تكهرب وتفرتك العفاريت من السماء.', icon: '⚡' },
-            magicalTalisman: { name: 'حجاب عين حورس', desc: 'تمائم سحرية تدور حولك وتصد العفاريت كفرامة.', icon: '🧿' }
+            magicStaff: { name: 'الخرزانة السحرية', desc: 'سلاح يطلق طلقات ذكية تطارد العفاريت لوحدها.', icon: '🪄' },
+            fireWand: { name: 'ولاعة الجان', desc: 'كرات نارية متفجرة وحرائق متسلسلة في الحشود.', icon: '🔥' },
+            lightningRod: { name: 'كهربا الحارة', desc: 'صواعق ورعود كهربائية مدمرة من السماء.', icon: '⚡' },
+            magicalTalisman: { name: 'حجاب عين حورس', desc: 'تمائم سحرية تدور كخلاط وتصد أي عفريت يقرب.', icon: '🧿' }
         };
 
         for (let i = 0; i < availableNewWeapons.length; i++) {
@@ -112,8 +118,11 @@ export class UpgradeRegistry {
             if (meta) {
                 eligible.push({
                     type: 'NEW_WEAPON',
+                    categoryName: 'سلاح هجومي جديد',
+                    categoryBadge: '⚔️ سلاح جديد',
+                    categoryColor: '#06b6d4',
                     id: `new_weapon_${wepId}`,
-                    name: `سلاح جديد: ${meta.name}`,
+                    name: meta.name,
                     description: meta.desc,
                     icon: meta.icon,
                     themeColor: '#06b6d4',

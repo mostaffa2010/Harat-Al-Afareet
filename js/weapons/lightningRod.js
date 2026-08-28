@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Weapon: Lightning Rod (كهربا الحارة) — Zero Camera Shake, Clean Vertical Lightning Beam
+ * Weapon: كهربا الحارة (Zero Screen Shake + Sky Lightning Beam Visual)
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -14,7 +14,7 @@ export class LightningRod extends BaseWeapon {
         super(player, {
             id: 'lightningRod',
             name: 'كهربا الحارة',
-            description: 'بتنزل صواعق ورعود تكهرب وتفرتك عفاريت كتيرة في ثانية واحدة.',
+            description: 'بتنزل برق ورعد من السما يكهرب كذا عفريت في نفس اللحظة.',
             icon: '⚡',
             damage: 48,
             cooldown: 1.6,
@@ -62,8 +62,7 @@ export class LightningRod extends BaseWeapon {
 
         this.player.triggerCastAnimation();
         audioSystem.playLightning();
-
-        // NO CAMERA SHAKE on lightning strike!
+        // NO SCREEN SHAKE
 
         for (let i = 0; i < targets.length; i++) {
             const target = targets[i];
@@ -73,29 +72,28 @@ export class LightningRod extends BaseWeapon {
             target.takeDamage(result.damage, this.player, true);
             damageSystem.spawnText(target.x, target.y, result.damage, result.isCrit, '#67e8f9');
 
-            // 1. Vertical Lightning Beam Impact Particle
-            particleSystem.emit({
-                x: target.x,
-                y: target.y - 120,
-                vx: 0,
-                vy: 500,
-                color: '#ffffff',
-                size: 4,
-                life: 0.16,
-                shape: 'circle'
-            });
+            // Sky-to-Ground Lightning Bolt Visual Particle Trail
+            for (let yOff = -300; yOff <= 0; yOff += 20) {
+                particleSystem.emit({
+                    x: target.x + (Math.random() * 12 - 6),
+                    y: target.y + yOff,
+                    color: '#67e8f9',
+                    size: 3.5,
+                    life: 0.18,
+                    drag: 0.8
+                });
+            }
 
-            // 2. Ground Shockwave Ring
             particleSystem.emit({
                 x: target.x,
                 y: target.y,
                 color: '#67e8f9',
                 size: this.strikeRadius * (this.player.areaMultiplier || 1.0),
-                life: 0.20,
+                life: 0.22,
                 shape: 'ring',
-                lineWidth: 3
+                lineWidth: 4
             });
-            particleSystem.emitHitSparks(target.x, target.y, '#ffffff', 10);
+            particleSystem.emitHitSparks(target.x, target.y, '#ffffff', 12);
 
             const splashRadius = this.strikeRadius * (this.player.areaMultiplier || 1.0);
             for (let j = 0; j < enemies.length; j++) {

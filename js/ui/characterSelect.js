@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character Selection Screen (Cleaned Up & Pure Egyptian)
+ * Character Selection Screen (256x256 Artwork, No Circle, No Color Swatches)
  */
 
 import { characterRegistry } from '../characters/characterRegistry.js';
@@ -21,7 +21,7 @@ export class CharacterSelect {
     render() {
         const char = this.characters[this.currentIndex];
         const diffKey = saveSystem.data.selectedDifficulty || 'NORMAL';
-        const diffObj = DIFFICULTY_MODES[diffKey];
+        const diffObj = DIFFICULTY_MODES[diffKey] || DIFFICULTY_MODES.NORMAL;
 
         this.container.innerHTML = `
             <div class="menu-screen char-select-screen">
@@ -32,7 +32,8 @@ export class CharacterSelect {
                 </div>
 
                 <div class="char-display-card" style="--char-primary: ${char.themePrimary}; --char-secondary: ${char.themeSecondary};">
-                    <div class="char-art-container" id="char-art-slot"></div>
+                    <!-- 256x256 Clean Art Frame (No Circle) -->
+                    <div class="char-art-container-256" id="char-art-slot"></div>
 
                     <div class="char-carousel-nav">
                         <button class="btn-arrow" id="btn-prev-char">❮</button>
@@ -59,7 +60,7 @@ export class CharacterSelect {
                     </div>
 
                     <button class="btn btn-primary btn-large btn-glow" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 16px ${char.themePrimary}">
-                        <span>⚔️ انزل الحارة بهذا البطل (${diffObj.name})</span>
+                        <span>⚔️ انزل الحارة بهذا البطل (${diffObj.badge})</span>
                     </button>
                 </div>
             </div>

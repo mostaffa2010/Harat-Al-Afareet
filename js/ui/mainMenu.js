@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Main Menu Screen (Pure Egyptian Colloquial)
+ * Main Menu Screen (Pure Egyptian Arabic)
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -17,7 +17,7 @@ export class MainMenu {
                 <div class="menu-header">
                     <div class="ancient-symbol">𓂀</div>
                     <h1 class="game-title">حارة العفاريت</h1>
-                    <h2 class="game-subtitle">حرب السحرة والمردة</h2>
+                    <h2 class="game-subtitle">Harat El Afareet</h2>
                     <p class="game-tagline">«سحر الفراعنة وجان الحارة في معركة ملحمية.. وريهم العين الحمرا!»</p>
                 </div>
 
@@ -34,17 +34,17 @@ export class MainMenu {
 
                     <button class="btn btn-secondary" id="btn-bazaar">
                         <span class="btn-icon">🏺</span>
-                        <span>سوق العطارين والبركات</span>
+                        <span>سوق العطارين</span>
                     </button>
 
                     <button class="btn btn-secondary" id="btn-achievements">
                         <span class="btn-icon">🏆</span>
-                        <span>إنجازات وجوائز الحارة</span>
+                        <span>إنجازات وجوائز</span>
                     </button>
 
                     <button class="btn btn-secondary" id="btn-collection">
                         <span class="btn-icon">📜</span>
-                        <span>موسوعة أسرار الجان والأسلحة</span>
+                        <span>موسوعة أسرار الجان</span>
                     </button>
 
                     <button class="btn btn-muted" id="btn-sound-toggle">
@@ -54,7 +54,7 @@ export class MainMenu {
                 </div>
 
                 <div class="menu-footer">
-                    <span>أطول صمود: ${Math.floor((saveData.highScoreTime || 0) / 60)}د ${(saveData.highScoreTime || 0) % 60}ث</span>
+                    <span>أطول صمود يا بطل: ${Math.floor((saveData.highScoreTime || 0) / 60)}د ${(saveData.highScoreTime || 0) % 60}ث</span>
                     <span>|</span>
                     <span>عفاريت مفرتكة: ${saveData.totalEnemiesDefeated || 0}</span>
                 </div>

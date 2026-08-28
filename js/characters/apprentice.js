@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Playable Character: الواد زكي
+ * Character: الواد زكي
  */
 
 export const apprentice = {

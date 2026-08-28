@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * PWA Service Worker for Offline Caching
+ * PWA Service Worker for Offline Caching (v4)
  */
 
 const CACHE_NAME = 'harat-el-afareet-v4';
@@ -9,6 +9,7 @@ const ASSETS_TO_CACHE = [
     './index.html',
     './styles.css',
     './manifest.json',
+    './vercel.json',
     './assets/icon-192.png',
     './assets/icon-512.png',
     './js/core/game.js',

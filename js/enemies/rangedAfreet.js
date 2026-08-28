@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Enemy: Ranged Afreet (عفريت القاذف)
+ * Enemy: عفريت القاذف (Yellow Ranged Spitter with 1.5s Initial Delay)
  */
 
 import { BaseEnemy } from '../entities/baseEnemy.js';
@@ -23,6 +23,8 @@ export class RangedAfreet extends BaseEnemy {
             attackCooldown: 2.4
         });
         this.preferredDistance = 250;
+        // 1.5s initial attack delay so it doesn't shoot immediately on spawn
+        this.attackTimer = 1.5;
     }
 
     updateAI(dt, player, projectiles) {
