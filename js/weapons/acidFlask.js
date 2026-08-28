@@ -1,7 +1,7 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Secondary Weapon 3: مية النار السحرية (Holy Acid Flask)
- * Level 8 Evolution: طوفان الأسيد الملكي (Royal Caustic Inferno)
+ * Secondary Weapon 5: جراب الرمال المسحورة (Enchanted Sand Whirlwind Flask)
+ * Max 5 Levels
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -13,12 +13,12 @@ export class AcidFlask extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'acidFlask',
-            name: 'مية النار السحرية',
-            description: 'قزازة مية نار تترمى على الأرض وتعمل بقعة كاوية تحرق العفاريت.',
-            icon: '🧪',
-            damage: 18, // per tick
-            cooldown: 2.4,
-            projectileSpeed: 260,
+            name: 'جراب الرمال المسحورة',
+            description: 'قوارير رمال مسحورة تنفجر على الأرض وتذيب وتبطئ العفاريت.',
+            icon: '🏺',
+            damage: 22,
+            cooldown: 2.2,
+            projectileSpeed: 280,
             projectileCount: 1,
             range: 380,
             critChance: 0.10,
@@ -29,43 +29,35 @@ export class AcidFlask extends BaseWeapon {
         this.isPrimary = false;
         this.isSecondary = true;
         this.isEvolved = false;
-        this.poolRadius = 50;
+        this.poolRadius = 55;
         this.poolDuration = 3.5;
     }
 
     applyLevelStats(level) {
         if (level === 2) {
-            this.damage = 25;
-            this.poolRadius = 60;
+            // Level 2: شغل معلمين
+            this.damage = 32;
+            this.poolRadius = 68;
         } else if (level === 3) {
-            this.damage = 34;
+            // Level 3: سحر الفراعنة
+            this.damage = 48;
             this.projectileCount = 2;
-            this.cooldown = 2.1;
+            this.cooldown = 1.9;
         } else if (level === 4) {
-            this.damage = 45;
-            this.poolRadius = 75;
-            this.poolDuration = 4.2;
-        } else if (level === 5) {
-            this.damage = 58;
-            this.projectileCount = 3;
-            this.cooldown = 1.85;
-        } else if (level === 6) {
-            this.damage = 75;
-            this.poolRadius = 90;
+            // Level 4: بركة الأوليا
+            this.damage = 70;
+            this.poolRadius = 85;
+            this.poolDuration = 4.5;
             this.critChance = 0.20;
-        } else if (level === 7) {
-            this.damage = 95;
-            this.projectileCount = 4;
-            this.cooldown = 1.6;
-        } else if (level >= 8) {
-            // Level 8 Evolution: طوفان الأسيد الملكي
+        } else if (level >= 5) {
+            // Level 5: أسطورة الحارة (Max)
             this.isEvolved = true;
-            this.name = 'طوفان الأسيد الملكي (تطور أسطوري)';
-            this.icon = '☣️🧪';
-            this.damage = 165;
-            this.projectileCount = 5;
-            this.poolRadius = 130;
-            this.poolDuration = 6.0;
+            this.name = 'عاصفة الرمال الملكية (أسطورة الحارة)';
+            this.icon = '🌪️🏺';
+            this.damage = 120;
+            this.projectileCount = 4;
+            this.poolRadius = 120;
+            this.poolDuration = 5.5;
             this.cooldown = 1.2;
             this.critChance = 0.35;
         }
@@ -99,11 +91,11 @@ export class AcidFlask extends BaseWeapon {
                 duration: duration,
                 weaponId: 'acidFlask',
                 spriteKey: this.isEvolved ? 'acidFlaskEvolved' : 'acidFlaskItem',
-                color: this.isEvolved ? '#22c55e' : '#10b981',
+                color: this.isEvolved ? '#eab308' : '#d97706',
                 explodeOnHit: true,
                 explosionRadius: this.poolRadius,
                 appliesBurn: true,
-                burnDamage: Math.round(this.damage * 0.8),
+                burnDamage: Math.round(this.damage * 0.75),
                 burnDuration: this.poolDuration
             }));
         }

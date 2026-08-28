@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Playable Character: الأسطى ريان
+ * Character: الأسطى ريان
  */
 
 export const fireMage = {
@@ -17,7 +17,7 @@ export const fireMage = {
         description: 'أي عفريت يولع بيولع في اللي جنبه، مع ضربات نارية أقوى بنسبة 30%.'
     },
     baseStats: {
-        maxHp: 155,
+        maxHp: 160,
         hpRegen: 0.3,
         movementSpeed: 215,
         damageMultiplier: 1.35,
@@ -26,7 +26,6 @@ export const fireMage = {
         criticalMultiplier: 2.1,
         pickupRadius: 95,
         armor: 1,
-        xpMultiplier: 1.0,
-        dashCooldown: 3.0
+        xpMultiplier: 1.0
     }
 };

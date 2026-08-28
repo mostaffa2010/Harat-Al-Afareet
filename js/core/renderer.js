@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Canvas 2D Renderer (High-Contrast 20 Minutes Till Dawn Style & Crystal Clear Player)
+ * Canvas 2D Renderer (High-Contrast 20 Minutes Till Dawn Style & Red Hurt Flash on Damage)
  */
 
 import { WORLD_CONFIG } from '../data/constants.js';
@@ -14,8 +14,8 @@ export class Renderer {
         this.ctx = canvas.getContext('2d', { alpha: false });
         this.ctx.imageSmoothingEnabled = false;
 
-        this.width = canvas.width;
-        this.height = canvas.height;
+        this.width = canvas.width || 360;
+        this.height = canvas.height || 640;
     }
 
     resize(width, height) {
@@ -30,8 +30,8 @@ export class Renderer {
     render(gameState) {
         const { player, enemies, boss, projectiles, pickups, particles, damageNumbers, warnings } = gameState;
 
-        // 1. Clear background
-        this.ctx.fillStyle = '#07090e';
+        // 1. Clear background with Egyptian night deep slate
+        this.ctx.fillStyle = '#06080d';
         this.ctx.fillRect(0, 0, this.width, this.height);
 
         // 2. Render Environment & Ground Tiles
@@ -55,13 +55,13 @@ export class Renderer {
         if (enemies) {
             for (let i = 0; i < enemies.length; i++) {
                 const enemy = enemies[i];
-                if (enemy.alive && cameraSystem.isVisible(enemy.x, enemy.y, enemy.radius + 36)) {
+                if (enemy.alive && cameraSystem.isVisible(enemy.x, enemy.y, enemy.radius + 40)) {
                     renderableEntities.push({ type: 'enemy', entity: enemy, y: enemy.y });
                 }
             }
         }
 
-        if (boss && boss.alive && cameraSystem.isVisible(boss.x, boss.y, boss.radius + 70)) {
+        if (boss && boss.alive && cameraSystem.isVisible(boss.x, boss.y, boss.radius + 80)) {
             renderableEntities.push({ type: 'boss', entity: boss, y: boss.y });
         }
 
@@ -98,15 +98,26 @@ export class Renderer {
         this.renderVirtualJoystick();
     }
 
+    drawShadow(x, y, rx, ry, alpha = 0.5) {
+        this.ctx.save();
+        this.ctx.fillStyle = 'rgba(0, 0, 0, ' + alpha + ')';
+        this.ctx.translate(x, y);
+        this.ctx.scale(1, ry / rx);
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, rx, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+    }
+
     renderEnvironment() {
         const cobbleTile = assetManager.tiles['ground_cobble'];
         if (!cobbleTile) return;
 
         const tileSize = 64;
-        const startCol = Math.max(0, Math.floor((cameraSystem.x - this.width / 2) / tileSize));
-        const endCol = Math.min(WORLD_CONFIG.MAP_WIDTH / tileSize, Math.ceil((cameraSystem.x + this.width / 2) / tileSize));
-        const startRow = Math.max(0, Math.floor((cameraSystem.y - this.height / 2) / tileSize));
-        const endRow = Math.min(WORLD_CONFIG.MAP_HEIGHT / tileSize, Math.ceil((cameraSystem.y + this.height / 2) / tileSize));
+        const startCol = Math.max(0, Math.floor((cameraSystem.x - this.width / 2) / tileSize) - 1);
+        const endCol = Math.min(Math.ceil(WORLD_CONFIG.MAP_WIDTH / tileSize), Math.ceil((cameraSystem.x + this.width / 2) / tileSize) + 1);
+        const startRow = Math.max(0, Math.floor((cameraSystem.y - this.height / 2) / tileSize) - 1);
+        const endRow = Math.min(Math.ceil(WORLD_CONFIG.MAP_HEIGHT / tileSize), Math.ceil((cameraSystem.y + this.height / 2) / tileSize) + 1);
 
         for (let r = startRow; r < endRow; r++) {
             for (let c = startCol; c < endCol; c++) {
@@ -114,7 +125,7 @@ export class Renderer {
                 const worldY = r * tileSize;
                 const screen = cameraSystem.worldToScreen(worldX, worldY);
 
-                if ((r % 7 === 0 && c % 7 === 0) || (r === 20 && c === 20)) {
+                if ((r % 6 === 0 && c % 6 === 0) || (r === 20 && c === 20)) {
                     this.ctx.drawImage(assetManager.tiles['ground_rune'], screen.x, screen.y);
                 } else {
                     this.ctx.drawImage(cobbleTile, screen.x, screen.y);
@@ -129,9 +140,11 @@ export class Renderer {
         const topLeft = cameraSystem.worldToScreen(0, 0);
         const bottomRight = cameraSystem.worldToScreen(WORLD_CONFIG.MAP_WIDTH, WORLD_CONFIG.MAP_HEIGHT);
 
+        this.ctx.save();
         this.ctx.strokeStyle = '#ef4444';
         this.ctx.lineWidth = 4;
         this.ctx.strokeRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+        this.ctx.restore();
     }
 
     renderPickups(pickups) {
@@ -146,10 +159,7 @@ export class Renderer {
             const sprite = assetManager.sprites.pickups[p.type];
             const floatOffset = Math.sin(now + p.x) * 3;
 
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-            this.ctx.beginPath();
-            this.ctx.ellipse(screen.x, screen.y + 8, 8, 4, 0, 0, Math.PI * 2);
-            this.ctx.fill();
+            this.drawShadow(screen.x, screen.y + 8, 8, 4, 0.45);
 
             if (sprite) {
                 this.ctx.drawImage(
@@ -164,7 +174,7 @@ export class Renderer {
     renderPlayer(player) {
         const screen = cameraSystem.worldToScreen(player.x, player.y);
 
-        // Vibrant Ground Aura (High Contrast 20 Minutes Till Dawn Rim)
+        // Vibrant Ground Aura (High Contrast Rim)
         this.ctx.save();
         const auraGrad = this.ctx.createRadialGradient(screen.x, screen.y, 4, screen.x, screen.y, 38);
         auraGrad.addColorStop(0, player.themePrimary + '55');
@@ -177,10 +187,7 @@ export class Renderer {
         this.ctx.restore();
 
         // Shadow under feet
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        this.ctx.beginPath();
-        this.ctx.ellipse(screen.x, screen.y + 14, 18, 8, 0, 0, Math.PI * 2);
-        this.ctx.fill();
+        this.drawShadow(screen.x, screen.y + 14, 18, 8, 0.6);
 
         // Attack Casting Flare Ring
         if (player.castAnimationTimer > 0) {
@@ -202,6 +209,16 @@ export class Renderer {
             this.ctx.arc(screen.x, screen.y, 30, 0, Math.PI * 2);
             this.ctx.stroke();
             this.ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+            this.ctx.fill();
+            this.ctx.restore();
+        }
+
+        // Red Hurt Flash Effect on damage (Quarter-second flash)
+        if (player.hurtTimer > 0) {
+            this.ctx.save();
+            this.ctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
+            this.ctx.beginPath();
+            this.ctx.arc(screen.x, screen.y, 24, 0, Math.PI * 2);
             this.ctx.fill();
             this.ctx.restore();
         }
@@ -257,10 +274,7 @@ export class Renderer {
     renderEnemy(enemy) {
         const screen = cameraSystem.worldToScreen(enemy.x, enemy.y);
 
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-        this.ctx.beginPath();
-        this.ctx.ellipse(screen.x, screen.y + enemy.radius * 0.75, enemy.radius * 0.8, enemy.radius * 0.4, 0, 0, Math.PI * 2);
-        this.ctx.fill();
+        this.drawShadow(screen.x, screen.y + enemy.radius * 0.75, Math.max(8, enemy.radius * 0.8), Math.max(4, enemy.radius * 0.4), 0.45);
 
         if (enemy.burnTimer > 0) {
             this.ctx.save();
@@ -306,10 +320,7 @@ export class Renderer {
     renderBoss(boss) {
         const screen = cameraSystem.worldToScreen(boss.x, boss.y);
 
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
-        this.ctx.beginPath();
-        this.ctx.ellipse(screen.x, screen.y + boss.radius * 0.8, boss.radius * 1.1, boss.radius * 0.5, 0, 0, Math.PI * 2);
-        this.ctx.fill();
+        this.drawShadow(screen.x, screen.y + boss.radius * 0.8, boss.radius * 1.1, boss.radius * 0.5, 0.65);
 
         if (boss.isEnraged) {
             this.ctx.save();
@@ -454,7 +465,7 @@ export class Renderer {
 
         const vigGrad = this.ctx.createRadialGradient(cx, cy, maxDim * 0.35, cx, cy, maxDim * 0.75);
         vigGrad.addColorStop(0, 'rgba(5, 7, 10, 0)');
-        vigGrad.addColorStop(1, 'rgba(5, 7, 10, 0.7)');
+        vigGrad.addColorStop(1, 'rgba(5, 7, 10, 0.65)');
 
         this.ctx.fillStyle = vigGrad;
         this.ctx.fillRect(0, 0, this.width, this.height);
@@ -467,8 +478,8 @@ export class Renderer {
         const current = inputSystem.touchCurrent;
 
         this.ctx.save();
-        this.ctx.fillStyle = 'rgba(245, 158, 11, 0.12)';
-        this.ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+        this.ctx.fillStyle = 'rgba(245, 158, 11, 0.15)';
+        this.ctx.strokeStyle = 'rgba(245, 158, 11, 0.5)';
         this.ctx.lineWidth = 2.5;
         this.ctx.beginPath();
         this.ctx.arc(origin.x, origin.y, inputSystem.maxRadius, 0, Math.PI * 2);

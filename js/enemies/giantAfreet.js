@@ -1,10 +1,9 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Enemy: Giant Afreet (مارد الحارة)
+ * Enemy: مارد الحارة (Zero Screen Shake)
  */
 
 import { BaseEnemy } from '../entities/baseEnemy.js';
-import { cameraSystem } from '../systems/cameraSystem.js';
 import { particleSystem } from '../systems/particleSystem.js';
 
 export class GiantAfreet extends BaseEnemy {
@@ -41,7 +40,6 @@ export class GiantAfreet extends BaseEnemy {
         this.stompTimer += dt;
         if (this.stompTimer >= 4.5) {
             this.stompTimer = 0;
-            cameraSystem.triggerShake(4);
             particleSystem.emit({
                 x: this.x,
                 y: this.y,

@@ -33,20 +33,33 @@ export class XpSystem {
         return this.getXpForLevel(this.level);
     }
 
+    checkLevelUp() {
+        if (this.levelUpPending) {
+            this.levelUpPending = false;
+            return true;
+        }
+        return false;
+    }
+
     addXp(amount, player) {
         const bonus = (player && player.xpMultiplier) ? player.xpMultiplier : 1.0;
-        const totalAmount = Math.round(amount * bonus);
+        const totalAmount = Math.max(1, Math.round(amount * bonus));
         this.currentXp += totalAmount;
 
-        const req = this.getXpRequired();
-        if (this.currentXp >= req) {
+        let req = this.getXpRequired();
+        while (this.currentXp >= req) {
             this.currentXp -= req;
             this.level += 1;
             this.levelUpPending = true;
+            req = this.getXpRequired();
 
             // Trigger visual & audio celebration
             if (player) {
-                particleSystem.emitLevelUp(player.x, player.y);
+                if (typeof particleSystem.emitLevelUpPulse === 'function') {
+                    particleSystem.emitLevelUpPulse(player.x, player.y);
+                } else if (typeof particleSystem.emitLevelUp === 'function') {
+                    particleSystem.emitLevelUp(player.x, player.y);
+                }
             }
             audioSystem.playLevelUp();
         }
@@ -60,8 +73,8 @@ export class XpSystem {
     /**
      * Handle pickup collection effects
      */
-    handlePickupCollection(pickup, player, allPickups) {
-        if (!pickup.alive) return;
+    handlePickupCollection(pickup, player, allPickups = null) {
+        if (!pickup) return;
 
         switch (pickup.type) {
             case PICKUP_TYPES.XP_SMALL:
@@ -69,7 +82,7 @@ export class XpSystem {
             case PICKUP_TYPES.XP_LARGE:
                 this.addXp(pickup.value, player);
                 audioSystem.playPickupXp();
-                particleSystem.emitHitSparks(pickup.x, pickup.y, '#06b6d4', 4);
+                particleSystem.emitHitSparks(pickup.x, pickup.y, '#06b6d4', 6);
                 break;
 
             case PICKUP_TYPES.COIN:
@@ -86,7 +99,7 @@ export class XpSystem {
 
             case PICKUP_TYPES.MAGNET:
                 // Attract all existing pickups on map
-                if (allPickups) {
+                if (allPickups && Array.isArray(allPickups)) {
                     for (let i = 0; i < allPickups.length; i++) {
                         allPickups[i].isAttracted = true;
                     }
@@ -95,8 +108,6 @@ export class XpSystem {
                 particleSystem.emitHitSparks(player.x, player.y, '#38bdf8', 12);
                 break;
         }
-
-        pickup.alive = false;
     }
 }
 

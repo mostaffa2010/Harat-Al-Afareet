@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Default Data & Pure Egyptian Progression
+ * Default Data & Permanent Progression (Pure Egyptian Arabic)
  */
 
 export const DEFAULT_PLAYER_STATS = {
@@ -15,9 +15,6 @@ export const DEFAULT_PLAYER_STATS = {
     pickupRadius: 110,
     armor: 1,
     xpMultiplier: 1.0,
-    dashCooldown: 2.8,
-    dashSpeed: 560,
-    dashDuration: 0.25,
     areaMultiplier: 1.0,
     projectileSpeedMultiplier: 1.0
 };
@@ -105,7 +102,7 @@ export const PERMANENT_UPGRADES = [
 export const ACHIEVEMENTS = [
     {
         id: 'first_blood',
-        name: 'أول قطرة دم',
+        name: 'أول الغيث',
         description: 'فرتك أول 50 عفريت في الحارة.',
         icon: '🩸',
         rewardCoins: 50,

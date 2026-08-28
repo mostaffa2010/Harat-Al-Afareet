@@ -1,7 +1,7 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Secondary Weapon 2: قبقاب الفتوة (Brawler's Flying Clog)
- * Level 8 Evolution: قبقاب الفتوة الأسطوري (Titan's Heavy Clog)
+ * Secondary Weapon 2: قبضة الفتوات (Brawler's Fist / Flying Clog)
+ * Max 5 Levels
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -13,12 +13,12 @@ export class FlyingClog extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'flyingClog',
-            name: 'قبقاب الفتوة',
-            description: 'قبقاب خشب سحري يطير ويلف في مسار بيضاوي يكسر عظام أي عفريت.',
-            icon: '🪵',
-            damage: 38,
-            cooldown: 2.2,
-            projectileSpeed: 360,
+            name: 'قبضة الفتوات',
+            description: 'قبضات شبحية تطير وتضرب العفاريت في مسار بيضاوي وتدفعها للخلف.',
+            icon: '🥊',
+            damage: 42,
+            cooldown: 2.0,
+            projectileSpeed: 380,
             projectileCount: 1,
             range: 400,
             critChance: 0.12,
@@ -33,34 +33,29 @@ export class FlyingClog extends BaseWeapon {
 
     applyLevelStats(level) {
         if (level === 2) {
-            this.damage = 50;
-            this.cooldown = 2.0;
-        } else if (level === 3) {
-            this.damage = 65;
-            this.projectileCount = 2;
-        } else if (level === 4) {
-            this.damage = 85;
+            // Level 2: شغل معلمين
+            this.damage = 60;
             this.cooldown = 1.75;
-            this.knockback = 300;
-        } else if (level === 5) {
-            this.damage = 110;
+        } else if (level === 3) {
+            // Level 3: سحر الفراعنة
+            this.damage = 85;
+            this.projectileCount = 2;
+            this.knockback = 320;
+        } else if (level === 4) {
+            // Level 4: بركة الأوليا
+            this.damage = 120;
             this.projectileCount = 3;
-        } else if (level === 6) {
-            this.damage = 145;
-            this.cooldown = 1.5;
+            this.cooldown = 1.45;
             this.critChance = 0.25;
-        } else if (level === 7) {
-            this.damage = 190;
-            this.projectileCount = 4;
-        } else if (level >= 8) {
-            // Level 8 Evolution: قبقاب الفتوة الأسطوري
+        } else if (level >= 5) {
+            // Level 5: أسطورة الحارة (Max)
             this.isEvolved = true;
-            this.name = 'قبقاب الفتوة الأسطوري (تطور أسطوري)';
-            this.icon = '👑🪵';
-            this.damage = 320;
+            this.name = 'قبضة الفتوة الأسطورية (أسطورة الحارة)';
+            this.icon = '👑🥊';
+            this.damage = 220;
             this.projectileCount = 5;
-            this.cooldown = 1.1;
-            this.critChance = 0.38;
+            this.cooldown = 1.0;
+            this.critChance = 0.35;
             this.knockback = 450;
         }
     }

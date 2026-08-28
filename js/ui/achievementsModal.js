@@ -19,15 +19,15 @@ export class AchievementsModal {
         this.container.innerHTML = `
             <div class="menu-screen achievements-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted" id="btn-ach-back">⬅ ارجع ورا</button>
-                    <h2 class="screen-title">🏆 إنجازات وجوائز الحارة</h2>
+                    <button class="btn btn-sm btn-muted btn-back" id="btn-ach-back">⬅ ارجع ورا</button>
+                    <h2 class="screen-title">إنجازات الحارة</h2>
                     <div class="gold-badge-small">
                         <span>🪙</span>
                         <span>${saveSystem.data.coins}</span>
                     </div>
                 </div>
 
-                <p class="bazaar-intro">«حقق الإنجازات في المعارك واستلم جوائز عملات ذهبية ضخمة!»</p>
+                <p class="screen-subtitle">«حقق الإنجازات في المعارك واستلم جوائز عملات ذهبية ضخمة!»</p>
 
                 <div class="achievements-list-grid">
                     ${list.map(ach => `

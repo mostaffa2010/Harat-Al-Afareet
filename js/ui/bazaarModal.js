@@ -19,15 +19,15 @@ export class BazaarModal {
         this.container.innerHTML = `
             <div class="menu-screen bazaar-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted" id="btn-bazaar-back">⬅ ارجع ورا</button>
-                    <h2 class="screen-title">سوق العطارين والبركات الدائمة</h2>
+                    <button class="btn btn-sm btn-muted btn-back" id="btn-bazaar-back">⬅ ارجع ورا</button>
+                    <h2 class="screen-title">سوق العطارين</h2>
                     <div class="gold-badge-small">
                         <span>🪙</span>
                         <span id="bazaar-gold-amount">${data.coins}</span>
                     </div>
                 </div>
 
-                <p class="bazaar-intro">«شخلل جيبك بالعملات الأثرية وطور صحتك وضرر أبطالك عشان الجولات الجاية»</p>
+                <p class="screen-subtitle">«شخلل جيبك بالعملات الأثرية وطور صحتك وضرر أبطالك عشان الجولات الجاية»</p>
 
                 <div class="bazaar-items-grid">
                     ${PERMANENT_UPGRADES.map(item => {
@@ -50,7 +50,7 @@ export class BazaarModal {
 
                                 <div class="bazaar-card-footer">
                                     ${isMax ? `
-                                        <span class="badge-max">متقفل ع الآخر (MAX) ✨</span>
+                                        <span class="badge-max">متقفل ع الآخر ✨</span>
                                     ` : `
                                         <button class="btn btn-sm ${canAfford ? 'btn-gold' : 'btn-disabled'} btn-buy-upgrade" data-id="${item.id}" data-cost="${cost}" ${!canAfford ? 'disabled' : ''}>
                                             <span>اشترِ البركة (🪙 ${cost})</span>

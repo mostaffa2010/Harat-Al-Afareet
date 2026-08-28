@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character Selection Screen (Cleaned Up & Pure Egyptian)
+ * Character Selection Screen (256x256 Pixel Art Illustration, No Background Circle, Pure Egyptian Slang)
  */
 
 import { characterRegistry } from '../characters/characterRegistry.js';
@@ -21,18 +21,19 @@ export class CharacterSelect {
     render() {
         const char = this.characters[this.currentIndex];
         const diffKey = saveSystem.data.selectedDifficulty || 'NORMAL';
-        const diffObj = DIFFICULTY_MODES[diffKey];
+        const diffObj = DIFFICULTY_MODES[diffKey] || DIFFICULTY_MODES.NORMAL;
 
         this.container.innerHTML = `
             <div class="menu-screen char-select-screen">
                 <div class="screen-top-bar">
-                    <button class="btn btn-sm btn-muted" id="btn-char-back">⬅ ارجع ورا</button>
+                    <button class="btn btn-sm btn-muted btn-back" id="btn-char-back">⬅ ارجع ورا</button>
                     <h2 class="screen-title">نقي بطل المعركة</h2>
                     <span class="diff-badge-active">${diffObj.badge}</span>
                 </div>
 
                 <div class="char-display-card" style="--char-primary: ${char.themePrimary}; --char-secondary: ${char.themeSecondary};">
-                    <div class="char-art-container" id="char-art-slot"></div>
+                    <!-- Clean 256x256 Pixel Art Illustration Frame (No Circle) -->
+                    <div class="char-art-container-256" id="char-art-slot"></div>
 
                     <div class="char-carousel-nav">
                         <button class="btn-arrow" id="btn-prev-char">❮</button>
@@ -58,8 +59,8 @@ export class CharacterSelect {
                         </div>
                     </div>
 
-                    <button class="btn btn-primary btn-large btn-glow" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 16px ${char.themePrimary}">
-                        <span>⚔️ انزل الحارة بهذا البطل (${diffObj.name})</span>
+                    <button class="btn btn-primary btn-large btn-glow btn-confirm-wide" id="btn-play-selected" style="border-color: ${char.themePrimary}; box-shadow: 0 0 16px ${char.themePrimary}">
+                        <span>⚔️ انزل الحارة بهذا البطل (${diffObj.badge})</span>
                     </button>
                 </div>
             </div>
@@ -67,8 +68,16 @@ export class CharacterSelect {
 
         const artSlot = document.getElementById('char-art-slot');
         const illCanvas = assetManager.getIllustration(char.id);
-        if (illCanvas) {
-            artSlot.appendChild(illCanvas);
+        if (artSlot && illCanvas) {
+            artSlot.innerHTML = '';
+            // Clone/render into clean display canvas to avoid DOM node reuse issues
+            const displayCanvas = document.createElement('canvas');
+            displayCanvas.width = illCanvas.width;
+            displayCanvas.height = illCanvas.height;
+            const dctx = displayCanvas.getContext('2d');
+            dctx.imageSmoothingEnabled = false;
+            dctx.drawImage(illCanvas, 0, 0);
+            artSlot.appendChild(displayCanvas);
         }
 
         this.bindEvents();

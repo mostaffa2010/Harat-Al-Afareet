@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Base Weapon Class
+ * Base Weapon Class (Max 5 Levels)
  */
 
 import { DAMAGE_TYPES } from '../data/constants.js';
@@ -13,7 +13,7 @@ export class BaseWeapon {
         this.description = config.description || '';
         this.icon = config.icon || '🪄';
         this.level = 1;
-        this.maxLevel = 8;
+        this.maxLevel = 5; // Exactly 5 levels max per design
 
         // Base Combat Stats
         this.damage = config.damage || 15;
@@ -59,8 +59,8 @@ export class BaseWeapon {
 
     applyLevelStats(level) {
         // Default upgrade progression
-        this.damage = Math.round(this.damage * 1.22);
-        this.cooldown = Math.max(0.25, this.cooldown * 0.92);
+        this.damage = Math.round(this.damage * 1.30);
+        this.cooldown = Math.max(0.35, this.cooldown * 0.90);
     }
 
     findClosestEnemies(enemies, count = 1, maxRange = 600) {

@@ -1,7 +1,7 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Secondary Weapon 4: خرطوش الصياد (Spectral Blunderbuss)
- * Level 8 Evolution: مدفع رمضان الفتاك (Spectral Cannon Barrage)
+ * Secondary Weapon 4: شفرات النحاس الطايرة (Flying Brass Blades)
+ * Max 5 Levels
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -13,16 +13,16 @@ export class HunterShotgun extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'hunterShotgun',
-            name: 'خرطوش الصياد',
-            description: 'طلقات خردق سحرية تنتشر بزاوية واسعة تصد الحشود وتدفعها لورا.',
-            icon: '🔫',
-            damage: 28,
-            cooldown: 1.6,
+            name: 'شفرات النحاس الطايرة',
+            description: 'شفرات نحاسية سحرية تنتشر بزاوية واسعة وتقطع صفوف العفاريت.',
+            icon: '🗡️',
+            damage: 32,
+            cooldown: 1.5,
             projectileSpeed: 420,
-            projectileCount: 4,
-            range: 350,
+            projectileCount: 3,
+            range: 360,
             critChance: 0.15,
-            knockback: 320,
+            knockback: 280,
             pierce: 2,
             damageType: DAMAGE_TYPES.PHYSICAL
         });
@@ -33,39 +33,32 @@ export class HunterShotgun extends BaseWeapon {
 
     applyLevelStats(level) {
         if (level === 2) {
-            this.damage = 36;
-            this.projectileCount = 5;
+            // Level 2: شغل معلمين
+            this.damage = 44;
+            this.projectileCount = 4;
         } else if (level === 3) {
-            this.damage = 46;
-            this.cooldown = 1.45;
+            // Level 3: سحر الفراعنة
+            this.damage = 60;
+            this.projectileCount = 5;
+            this.cooldown = 1.3;
             this.pierce = 3;
         } else if (level === 4) {
-            this.damage = 58;
-            this.projectileCount = 6;
-            this.knockback = 380;
-        } else if (level === 5) {
-            this.damage = 72;
-            this.cooldown = 1.3;
+            // Level 4: بركة الأوليا
+            this.damage = 85;
+            this.projectileCount = 7;
             this.critChance = 0.25;
-        } else if (level === 6) {
-            this.damage = 90;
-            this.projectileCount = 8;
-            this.pierce = 4;
-        } else if (level === 7) {
-            this.damage = 115;
-            this.cooldown = 1.15;
-            this.projectileSpeed = 480;
-        } else if (level >= 8) {
-            // Level 8 Evolution: مدفع رمضان الفتاك
+            this.knockback = 380;
+        } else if (level >= 5) {
+            // Level 5: أسطورة الحارة (Max)
             this.isEvolved = true;
-            this.name = 'مدفع رمضان الفتاك (تطور أسطوري)';
-            this.icon = '💣🔫';
-            this.damage = 195;
-            this.projectileCount = 14; // Massive radial 360 blast!
+            this.name = 'طوفان الشفرات الفرعونية (أسطورة الحارة)';
+            this.icon = '👑🗡️';
+            this.damage = 145;
+            this.projectileCount = 12; // Massive 360 radial storm!
             this.cooldown = 0.85;
-            this.critChance = 0.40;
+            this.critChance = 0.38;
             this.pierce = 999;
-            this.knockback = 550;
+            this.knockback = 500;
         }
     }
 
@@ -86,10 +79,8 @@ export class HunterShotgun extends BaseWeapon {
         for (let i = 0; i < count; i++) {
             let angle;
             if (this.isEvolved) {
-                // 360 degree radial barrage!
                 angle = (Math.PI * 2 / count) * i;
             } else {
-                // Frontal spread cone
                 const spread = (i - (count - 1) / 2) * 0.18;
                 angle = baseAngle + spread;
             }

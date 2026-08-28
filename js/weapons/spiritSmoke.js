@@ -1,7 +1,7 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Secondary Weapon 5: شيشة الأرواح (Spirit Shisha Smoke)
- * Level 8 Evolution: سحابة الجان الخانقة (Eternal Spirit Fog)
+ * Secondary Weapon 3: بخور طرد الشياطين (Holy Incense Smoke)
+ * Max 5 Levels
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -13,11 +13,11 @@ export class SpiritSmoke extends BaseWeapon {
     constructor(player) {
         super(player, {
             id: 'spiritSmoke',
-            name: 'شيشة الأرواح',
-            description: 'سحابة دخان معسل سحري حوالين اللاعب تسمم وتبطئ العفاريت اللي تقرب.',
-            icon: '💨',
-            damage: 16,
-            cooldown: 1.5,
+            name: 'بخور طرد الشياطين',
+            description: 'سحابة بخور عطرية حارقة حول البطل تذيب وتبعد العفاريت وتسممها.',
+            icon: '🪔',
+            damage: 20,
+            cooldown: 1.4,
             range: 160,
             critChance: 0.08,
             damageType: DAMAGE_TYPES.POISON
@@ -25,45 +25,39 @@ export class SpiritSmoke extends BaseWeapon {
         this.isPrimary = false;
         this.isSecondary = true;
         this.isEvolved = false;
-        this.smokeRadius = 130;
+        this.smokeRadius = 135;
     }
 
     applyLevelStats(level) {
         if (level === 2) {
-            this.damage = 22;
-            this.smokeRadius = 150;
-        } else if (level === 3) {
+            // Level 2: شغل معلمين
             this.damage = 30;
-            this.cooldown = 1.35;
+            this.smokeRadius = 160;
+        } else if (level === 3) {
+            // Level 3: سحر الفراعنة
+            this.damage = 45;
+            this.cooldown = 1.2;
+            this.smokeRadius = 190;
         } else if (level === 4) {
-            this.damage = 40;
-            this.smokeRadius = 175;
-        } else if (level === 5) {
-            this.damage = 52;
-            this.cooldown = 1.15;
-            this.critChance = 0.18;
-        } else if (level === 6) {
+            // Level 4: بركة الأوليا
             this.damage = 68;
-            this.smokeRadius = 200;
-        } else if (level === 7) {
-            this.damage = 88;
-            this.cooldown = 0.95;
-        } else if (level >= 8) {
-            // Level 8 Evolution: سحابة الجان الخانقة
+            this.smokeRadius = 225;
+            this.critChance = 0.20;
+        } else if (level >= 5) {
+            // Level 5: أسطورة الحارة (Max)
             this.isEvolved = true;
-            this.name = 'سحابة الجان الخانقة (تطور أسطوري)';
-            this.icon = '🟣💨';
-            this.damage = 150;
-            this.smokeRadius = 260;
-            this.cooldown = 0.65;
-            this.critChance = 0.30;
+            this.name = 'سحابة البخور الملكية (أسطورة الحارة)';
+            this.icon = '🟣🪔';
+            this.damage = 110;
+            this.smokeRadius = 270;
+            this.cooldown = 0.75;
+            this.critChance = 0.32;
         }
     }
 
     fire(enemies, projectiles) {
         if (!enemies) return;
 
-        // Emit smoke particles
         particleSystem.emit({
             x: this.player.x + (Math.random() * 40 - 20),
             y: this.player.y + (Math.random() * 40 - 20),
@@ -84,7 +78,6 @@ export class SpiritSmoke extends BaseWeapon {
                 const dmgResult = damageSystem.calculateDamage(this.damage, this.player, e, this.damageType);
                 e.takeDamage(dmgResult.damage, this.player, true);
                 damageSystem.spawnText(e.x, e.y, dmgResult.damage, dmgResult.isCrit, this.isEvolved ? '#a855f7' : '#10b981');
-                // Apply slow
                 if (e.speed) {
                     e.speed = Math.max(25, e.speed * (this.isEvolved ? 0.55 : 0.75));
                 }

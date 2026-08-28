@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Pause Menu Screen (Egyptian Colloquial Theme)
+ * Pause Menu Screen with Complete Run Stats & Active Weapons Breakdown
  */
 
 import { audioSystem } from '../systems/audioSystem.js';
@@ -13,44 +13,68 @@ export class PauseMenu {
         this.onQuit = onQuit;
     }
 
-    render(player, xpSystem, waveSystem) {
-        const mins = Math.floor(waveSystem.runTime / 60).toString().padStart(2, '0');
-        const secs = Math.floor(waveSystem.runTime % 60).toString().padStart(2, '0');
+    render(player, xpSystem, waveSystem, runStats = {}) {
+        const time = (waveSystem && waveSystem.runTime !== undefined) ? waveSystem.runTime : 0;
+        const mins = Math.floor(time / 60).toString().padStart(2, '0');
+        const secs = Math.floor(time % 60).toString().padStart(2, '0');
+        const lvl = (xpSystem && xpSystem.level !== undefined) ? xpSystem.level : 1;
+        const coins = (xpSystem && xpSystem.runCoins !== undefined) ? xpSystem.runCoins : 0;
+        const charName = (player && player.characterName) ? player.characterName : 'البطل';
+        const charColor = (player && player.themePrimary) ? player.themePrimary : '#fbbf24';
+        const enemiesKilled = runStats.enemiesDefeated || 0;
+
+        const weaponsList = (player && player.weapons) ? player.weapons.map(w => `
+            <div class="pause-weapon-pill">
+                <span>${w.icon}</span>
+                <span>${w.name} (مستوى ${w.level}/${w.maxLevel})</span>
+            </div>
+        `).join('') : '<p class="text-muted">مفيش أسلحة</p>';
 
         this.container.innerHTML = `
             <div class="modal-overlay">
-                <div class="menu-dialog">
-                    <h2 class="dialog-title">⏸ مريح شوية (Pause)</h2>
-                    <p class="dialog-sub">خد نفسك.. العفاريت مستنياك ترجع تدوس!</p>
+                <div class="modal-dialog pause-dialog">
+                    <h2 class="dialog-title">⏸ مريح شوية</h2>
+                    <p class="dialog-sub">خد نفسك.. العفاريت مستنياك ترجع تدوس وتفرتكهم!</p>
 
                     <div class="pause-stats-card">
                         <div class="stat-row">
-                            <span>البطل اللي نازل بيه:</span>
-                            <span class="stat-val" style="color: ${player.themePrimary}">${player.characterName}</span>
+                            <span>البطل المحارب:</span>
+                            <span class="stat-val" style="color: ${charColor}">${charName}</span>
                         </div>
                         <div class="stat-row">
                             <span>وقت الصمود في الحارة:</span>
-                            <span class="stat-val">${mins}:${secs}</span>
+                            <span class="stat-val highlight">${mins}:${secs} / 10:00</span>
                         </div>
                         <div class="stat-row">
                             <span>المستوى الحالي:</span>
-                            <span class="stat-val">${xpSystem.level}</span>
+                            <span class="stat-val highlight">⭐ ليفل ${lvl}</span>
                         </div>
                         <div class="stat-row">
-                            <span>الفلوس اللي جمعتها:</span>
-                            <span class="stat-val">🪙 ${xpSystem.runCoins}</span>
+                            <span>عفاريت مفرتكة:</span>
+                            <span class="stat-val text-gold">💀 ${enemiesKilled}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>العملات المجمعة:</span>
+                            <span class="stat-val text-gold">🪙 +${coins}</span>
+                        </div>
+
+                        <div class="pause-weapons-section">
+                            <span class="detail-label">العتاد والأسلحة النشطة:</span>
+                            <div class="pause-weapons-grid">
+                                ${weaponsList}
+                            </div>
                         </div>
                     </div>
 
                     <div class="dialog-buttons">
-                        <button class="btn btn-primary btn-large" id="btn-pause-resume">
-                            <span>كمل المعركة (Resume)</span>
+                        <button class="btn btn-primary btn-large btn-glow" id="btn-pause-resume">
+                            <span>⚔️ كمل المعركة</span>
                         </button>
                         <button class="btn btn-secondary" id="btn-pause-restart">
-                            <span>ابدأ الجولة من الأول (Restart)</span>
+                            <span>🔄 إعادة المحاولة</span>
                         </button>
                         <button class="btn btn-muted" id="btn-pause-quit">
-                            <span>ارجع للقائمة وسوق العطارين (Menu)</span>
+                            <span>🏠 القائمة الرئيسية</span>
                         </button>
                     </div>
                 </div>

@@ -1,13 +1,12 @@
 /**
  * حارة العفاريت — Harat El Afareet
  * Touch Virtual Joystick & Keyboard Input System
+ * (Zero Dash, Clean UI Event Isolation & Reliable Pause Button)
  */
 
 export class InputSystem {
     constructor() {
         this.movementVector = { x: 0, y: 0 };
-        this.isDashing = false;
-        this.dashTriggered = false;
         this.pauseTriggered = false;
 
         // Virtual Joystick state
@@ -15,15 +14,14 @@ export class InputSystem {
         this.touchId = null;
         this.touchOrigin = { x: 0, y: 0 };
         this.touchCurrent = { x: 0, y: 0 };
-        this.maxRadius = 60; // Max joystick radius in px
+        this.maxRadius = 65; // Max joystick radius in px
 
         // Keyboard state
         this.keys = {
             up: false,
             down: false,
             left: false,
-            right: false,
-            space: false
+            right: false
         };
 
         this.initialized = false;
@@ -55,6 +53,10 @@ export class InputSystem {
         let mouseDown = false;
         this.canvas.addEventListener('mousedown', (e) => {
             if (e.button === 0) {
+                // If top UI area or interactive element, ignore
+                if (e.clientY < 80 || e.target.closest('#hud-btn-pause, .hud-btn, button, .interactive, .modal-dialog')) {
+                    return;
+                }
                 mouseDown = true;
                 this.touchActive = true;
                 this.touchOrigin = { x: e.clientX, y: e.clientY };
@@ -98,12 +100,6 @@ export class InputSystem {
             case 'ArrowRight':
                 this.keys.right = true;
                 break;
-            case 'Space':
-                if (!this.keys.space) {
-                    this.dashTriggered = true;
-                }
-                this.keys.space = true;
-                break;
             case 'Escape':
             case 'KeyP':
                 this.pauseTriggered = true;
@@ -129,20 +125,23 @@ export class InputSystem {
             case 'ArrowRight':
                 this.keys.right = false;
                 break;
-            case 'Space':
-                this.keys.space = false;
-                break;
         }
     }
 
     handleTouchStart(e) {
-        // Ignore if touching an interactive UI button
-        if (e.target.closest('button, .interactive, .hud-btn, .upgrade-card, .menu-card')) {
+        // Strictly ignore if touching interactive UI elements or the top HUD area (< 80px from top)
+        if (e.target.closest('button, .hud-btn, #hud-btn-pause, .interactive, .upgrade-card, .menu-card, .modal-overlay, .modal-dialog, #hud-container')) {
             return;
         }
 
         for (let i = 0; i < e.changedTouches.length; i++) {
             const touch = e.changedTouches[i];
+
+            // If touch is in top bar area, do not start joystick
+            if (touch.clientY < 80) {
+                continue;
+            }
+
             // Primary touch for movement joystick
             if (!this.touchActive) {
                 this.touchActive = true;
@@ -189,7 +188,7 @@ export class InputSystem {
         const dy = this.touchCurrent.y - this.touchOrigin.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 5) {
+        if (dist < 6) {
             this.movementVector = { x: 0, y: 0 };
             return;
         }
@@ -203,13 +202,6 @@ export class InputSystem {
         };
     }
 
-    triggerDash() {
-        this.dashTriggered = true;
-    }
-
-    /**
-     * Poll current movement direction (keyboard + virtual joystick)
-     */
     getMovement() {
         let x = 0;
         let y = 0;
@@ -233,12 +225,6 @@ export class InputSystem {
         return { x: 0, y: 0 };
     }
 
-    consumeDash() {
-        const dash = this.dashTriggered;
-        this.dashTriggered = false;
-        return dash;
-    }
-
     consumePause() {
         const pause = this.pauseTriggered;
         this.pauseTriggered = false;
@@ -249,7 +235,6 @@ export class InputSystem {
         this.movementVector = { x: 0, y: 0 };
         this.touchActive = false;
         this.touchId = null;
-        this.dashTriggered = false;
         this.pauseTriggered = false;
         for (const k in this.keys) {
             this.keys[k] = false;

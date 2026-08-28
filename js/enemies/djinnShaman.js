@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Enemy: Djinn Shaman (ساحر الجان / كاهن العفاريت)
+ * Enemy: ساحر الجان (with Initial Delay)
  */
 
 import { BaseEnemy } from '../entities/baseEnemy.js';
@@ -24,6 +24,7 @@ export class DjinnShaman extends BaseEnemy {
             attackCooldown: 2.2
         });
         this.buffTimer = 0;
+        this.attackTimer = 1.5;
     }
 
     updateAI(dt, player, projectiles) {
@@ -33,7 +34,6 @@ export class DjinnShaman extends BaseEnemy {
         const dy = player.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Keep 280px distance
         if (dist < 230) {
             this.x -= (dx / dist) * this.speed * dt;
             this.y -= (dy / dist) * this.speed * dt;
@@ -44,7 +44,6 @@ export class DjinnShaman extends BaseEnemy {
 
         this.facingDirection = dx >= 0 ? 1 : -1;
 
-        // Buff aura particles
         this.buffTimer += dt;
         if (this.buffTimer >= 3.0) {
             this.buffTimer = 0;
@@ -59,7 +58,6 @@ export class DjinnShaman extends BaseEnemy {
             });
         }
 
-        // Shoot double cursed bolts
         if (dist <= 420 && this.attackTimer <= 0 && projectiles) {
             this.attackTimer = this.attackCooldown;
             const baseAngle = Math.atan2(dy, dx);

@@ -1,6 +1,7 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Weapon: ولاعة الجان
+ * Primary Weapon: ولاعة الجان (الأسطى ريان حصرياً)
+ * Max 5 Levels -> Level 5 (أسطورة الحارة)
  */
 
 import { BaseWeapon } from './baseWeapon.js';
@@ -13,59 +14,57 @@ export class FireWand extends BaseWeapon {
         super(player, {
             id: 'fireWand',
             name: 'ولاعة الجان',
-            description: 'بتحدف كور نار متفجرة بتشوي العفاريت وبتعمل حرائق جماعية.',
+            description: 'تطلق كرات نار متفجرة تشعل العفاريت بحرائق متسلسلة.',
             icon: '🔥',
-            damage: 36,
-            cooldown: 1.25,
-            projectileSpeed: 310,
+            damage: 34,
+            cooldown: 1.20,
+            projectileSpeed: 320,
             projectileCount: 1,
-            range: 460,
-            pierce: 2,
+            range: 440,
+            critChance: 0.12,
+            knockback: 180,
+            pierce: 1,
             damageType: DAMAGE_TYPES.FIRE
         });
-        this.burnDamage = 12;
-        this.burnDuration = 3.0;
-        this.explosionRadius = 55;
+        this.isPrimary = true;
+        this.isEvolved = false;
+        this.explosionRadius = 45;
     }
 
     applyLevelStats(level) {
-        switch (level) {
-            case 2:
-                this.damage += 12;
-                break;
-            case 3:
-                this.projectileCount += 1;
-                this.explosionRadius += 12;
-                break;
-            case 4:
-                this.burnDamage += 8;
-                this.cooldown *= 0.85;
-                break;
-            case 5:
-                this.pierce += 2;
-                this.damage += 16;
-                break;
-            case 6:
-                this.projectileCount += 1;
-                this.explosionRadius += 15;
-                break;
-            case 7:
-                this.cooldown *= 0.80;
-                this.burnDamage += 10;
-                break;
-            case 8:
-                this.projectileCount += 2;
-                this.damage += 28;
-                this.explosionRadius += 25;
-                break;
+        if (level === 2) {
+            // Level 2: شغل معلمين
+            this.damage = 48;
+            this.explosionRadius = 60;
+        } else if (level === 3) {
+            // Level 3: سحر الفراعنة
+            this.damage = 68;
+            this.projectileCount = 2;
+            this.cooldown = 1.05;
+        } else if (level === 4) {
+            // Level 4: بركة الأوليا
+            this.damage = 95;
+            this.explosionRadius = 85;
+            this.critChance = 0.22;
+        } else if (level >= 5) {
+            // Level 5: أسطورة الحارة (Max)
+            this.isEvolved = true;
+            this.name = 'جحيم الشمس الحارق (أسطورة الحارة)';
+            this.icon = '☀️🔥';
+            this.damage = 160;
+            this.projectileCount = 4;
+            this.explosionRadius = 120;
+            this.cooldown = 0.70;
+            this.critChance = 0.35;
         }
     }
 
     fire(enemies, projectiles) {
+        if (!projectiles) return;
+
         const targets = this.findClosestEnemies(enemies, this.projectileCount, this.range);
         if (targets.length === 0) return;
 
-        this.player.triggerCastAnimation();
         audioSystem.playFireball();
 
         for (let i = 0; i < this.projectileCount; i++) {
@@ -73,28 +72,29 @@ export class FireWand extends BaseWeapon {
             const dx = target.x - this.player.x;
             const dy = target.y - this.player.y;
             const baseAngle = Math.atan2(dy, dx);
-            const spread = (this.projectileCount > 1) ? (i - (this.projectileCount - 1) / 2) * 0.22 : 0;
-            const finalAngle = baseAngle + spread;
+            const spread = (i - (this.projectileCount - 1) / 2) * (this.isEvolved ? 0.28 : 0.20);
+            const angle = baseAngle + spread;
 
             projectiles.push(new Projectile({
                 x: this.player.x,
                 y: this.player.y,
-                vx: Math.cos(finalAngle) * this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
-                vy: Math.sin(finalAngle) * this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
-                speed: this.projectileSpeed * (this.player.projectileSpeedMultiplier || 1.0),
-                radius: 13,
-                damage: this.damage,
+                vx: Math.cos(angle) * this.projectileSpeed,
+                vy: Math.sin(angle) * this.projectileSpeed,
+                speed: this.projectileSpeed,
+                radius: this.isEvolved ? 16 : 10,
+                damage: Math.round(this.damage * (this.player.damageMultiplier || 1.0)),
                 damageType: this.damageType,
-                pierce: this.pierce,
-                duration: 2.3,
-                weaponId: this.id,
-                spriteKey: 'fireWandBolt',
+                pierce: 1,
+                duration: 2.8,
+                weaponId: 'fireWand',
+                spriteKey: this.isEvolved ? 'fireWandEvolved' : 'fireWandFireball',
+                color: this.isEvolved ? '#fbbf24' : '#ef4444',
                 explodeOnHit: true,
-                explosionRadius: this.explosionRadius * (this.player.areaMultiplier || 1.0),
+                explosionRadius: this.explosionRadius,
                 appliesBurn: true,
-                burnDamage: this.burnDamage,
-                burnDuration: this.burnDuration,
-                rotation: finalAngle
+                burnDamage: this.isEvolved ? 25 : 10,
+                burnDuration: 3.5,
+                rotation: angle
             }));
         }
     }
