@@ -4,6 +4,7 @@
  */
 
 import { PICKUP_TYPES } from '../data/constants.js';
+import { xpSystem } from '../systems/xpSystem.js';
 
 export class Pickup {
     constructor(x, y, type = PICKUP_TYPES.XP_SMALL, value = 5) {
@@ -16,24 +17,25 @@ export class Pickup {
 
         // Magnet attraction physics
         this.isAttracted = false;
-        this.attractSpeed = 120;
-        this.maxAttractSpeed = 650;
-        this.acceleration = 900;
+        this.attractSpeed = 150;
+        this.maxAttractSpeed = 800;
+        this.acceleration = 1200;
     }
 
-    update(dt, player) {
+    update(dt, player, allPickups = null) {
         if (!this.alive || !player || !player.alive) return;
 
         const dx = player.x - this.x;
         const dy = player.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Check if within player pickup/magnet range
-        if (!this.isAttracted && dist <= player.pickupRadius) {
+        // Check if within player pickup range
+        const pRadius = player.pickupRadius || 110;
+        if (!this.isAttracted && dist <= pRadius) {
             this.isAttracted = true;
         }
 
-        // If attracted, fly toward player
+        // If attracted, fly smoothly toward player
         if (this.isAttracted) {
             this.attractSpeed = Math.min(this.maxAttractSpeed, this.attractSpeed + this.acceleration * dt);
             if (dist > 0.1) {
@@ -41,15 +43,20 @@ export class Pickup {
                 this.y += (dy / dist) * this.attractSpeed * dt;
             }
 
-            // Collection check
-            if (dist <= player.radius + this.radius) {
-                this.collect(player);
+            // Direct Collection check
+            if (dist <= (player.radius || 18) + this.radius + 8) {
+                this.collect(player, allPickups);
             }
         }
     }
 
-    collect(player) {
+    collect(player, allPickups = null) {
+        if (!this.alive) return;
         this.alive = false;
-        // Effect applied in xpSystem or game engine on collect
+        xpSystem.handlePickupCollection(this, player, allPickups);
+    }
+
+    onCollect(player, allPickups = null) {
+        this.collect(player, allPickups);
     }
 }

@@ -216,7 +216,7 @@ export class CollisionSystem {
                         }
                     }
 
-                    // Notify projectile of hit (reduces pierce, explodes, etc.)
+                    // Notify projectile of hit
                     if (typeof proj.onHit === 'function') {
                         proj.onHit(target);
                     }
@@ -232,9 +232,11 @@ export class CollisionSystem {
             if (!pickup || !pickup.alive) continue;
 
             const pickupRad = pickup.radius || 12;
-            if (this.checkCircleOverlap(player.x, player.y, pRadius + 12, pickup.x, pickup.y, pickupRad)) {
-                if (typeof pickup.onCollect === 'function') {
-                    pickup.onCollect(player);
+            if (this.checkCircleOverlap(player.x, player.y, pRadius + 14, pickup.x, pickup.y, pickupRad)) {
+                if (typeof pickup.collect === 'function') {
+                    pickup.collect(player, pickups);
+                } else if (typeof pickup.onCollect === 'function') {
+                    pickup.onCollect(player, pickups);
                 }
             }
         }

@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Canvas 2D Renderer (High-Contrast 20 Minutes Till Dawn Style & Crystal Clear Player)
+ * Canvas 2D Renderer (High-Contrast 20 Minutes Till Dawn Style & Red Hurt Flash on Damage)
  */
 
 import { WORLD_CONFIG } from '../data/constants.js';
@@ -174,7 +174,7 @@ export class Renderer {
     renderPlayer(player) {
         const screen = cameraSystem.worldToScreen(player.x, player.y);
 
-        // Vibrant Ground Aura (High Contrast 20 Minutes Till Dawn Rim)
+        // Vibrant Ground Aura (High Contrast Rim)
         this.ctx.save();
         const auraGrad = this.ctx.createRadialGradient(screen.x, screen.y, 4, screen.x, screen.y, 38);
         auraGrad.addColorStop(0, player.themePrimary + '55');
@@ -209,6 +209,16 @@ export class Renderer {
             this.ctx.arc(screen.x, screen.y, 30, 0, Math.PI * 2);
             this.ctx.stroke();
             this.ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+            this.ctx.fill();
+            this.ctx.restore();
+        }
+
+        // Red Hurt Flash Effect on damage (Quarter-second flash)
+        if (player.hurtTimer > 0) {
+            this.ctx.save();
+            this.ctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
+            this.ctx.beginPath();
+            this.ctx.arc(screen.x, screen.y, 24, 0, Math.PI * 2);
             this.ctx.fill();
             this.ctx.restore();
         }

@@ -1,6 +1,6 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * Character Selection Screen (256x256 Artwork, No Circle, No Color Swatches)
+ * Character Selection Screen (256x256 Pixel Art Illustration, No Background Circle, Pure Egyptian Slang)
  */
 
 import { characterRegistry } from '../characters/characterRegistry.js';
@@ -32,7 +32,7 @@ export class CharacterSelect {
                 </div>
 
                 <div class="char-display-card" style="--char-primary: ${char.themePrimary}; --char-secondary: ${char.themeSecondary};">
-                    <!-- 256x256 Clean Art Frame (No Circle) -->
+                    <!-- Clean 256x256 Pixel Art Illustration Frame (No Circle) -->
                     <div class="char-art-container-256" id="char-art-slot"></div>
 
                     <div class="char-carousel-nav">
@@ -69,7 +69,15 @@ export class CharacterSelect {
         const artSlot = document.getElementById('char-art-slot');
         const illCanvas = assetManager.getIllustration(char.id);
         if (artSlot && illCanvas) {
-            artSlot.appendChild(illCanvas);
+            artSlot.innerHTML = '';
+            // Clone/render into clean display canvas to avoid DOM node reuse issues
+            const displayCanvas = document.createElement('canvas');
+            displayCanvas.width = illCanvas.width;
+            displayCanvas.height = illCanvas.height;
+            const dctx = displayCanvas.getContext('2d');
+            dctx.imageSmoothingEnabled = false;
+            dctx.drawImage(illCanvas, 0, 0);
+            artSlot.appendChild(displayCanvas);
         }
 
         this.bindEvents();

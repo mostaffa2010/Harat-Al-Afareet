@@ -1,9 +1,9 @@
 /**
  * حارة العفاريت — Harat El Afareet
- * PWA Service Worker (Cache v7.0 - Full Combat & Pause Fixes)
+ * PWA Service Worker (Cache v8.0 - Full Combat, XP & Screen Flow Fixes)
  */
 
-const CACHE_NAME = 'harat-afareet-v7';
+const CACHE_NAME = 'harat-afareet-v8';
 
 const ASSETS_TO_CACHE = [
     './',
@@ -63,6 +63,23 @@ const ASSETS_TO_CACHE = [
     './js/bosses/necroShamanBoss.js',
     './js/bosses/infernalBruteBoss.js',
     './js/upgrades/upgradeRegistry.js',
+    './js/upgrades/player/movementSpeed.js',
+    './js/upgrades/player/maxHealth.js',
+    './js/upgrades/player/pickupRange.js',
+    './js/upgrades/player/armorShield.js',
+    './js/upgrades/player/healthRegen.js',
+    './js/upgrades/general/criticalChance.js',
+    './js/upgrades/general/attackSpeed.js',
+    './js/upgrades/general/areaOfEffect.js',
+    './js/upgrades/general/xpBoost.js',
+    './js/upgrades/general/rawDamage.js',
+    './js/upgrades/general/goldDigger.js',
+    './js/upgrades/general/projectileSpeed.js',
+    './js/upgrades/weapons/fireDamage.js',
+    './js/upgrades/weapons/lightningFork.js',
+    './js/upgrades/weapons/projectileCount.js',
+    './js/upgrades/weapons/staffHoming.js',
+    './js/upgrades/weapons/talismanOrbitSpeed.js',
     './js/ui/uiManager.js',
     './js/ui/mainMenu.js',
     './js/ui/difficultySelect.js',
@@ -108,7 +125,7 @@ self.addEventListener('fetch', (event) => {
             return fetch(event.request).then((networkResponse) => {
                 return networkResponse;
             }).catch(() => {
-                // Offline fallback if necessary
+                // Offline fallback
             });
         })
     );
